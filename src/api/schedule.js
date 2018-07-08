@@ -1,14 +1,15 @@
 import axios from 'axios'
-import { paramsify, signify, timestamp } from './utils'
+import { paramsify, signify, timestamp, sid } from './utils'
 import { CONFIG } from './config'
 
 export function getRouterAliaList (params) {
   const url = `${CONFIG.HOST}/getRouterAliaList`
+  const ts = timestamp()
   const data = {
-    timestamp: timestamp(),
-    customerNumId: params.customerNumId,
+    sid: sid(),
+    timestamp: ts,
     params: paramsify(params),
-    sign: signify(params)
+    sign: signify(params, ts)
   }
 
   return axios.get(url, {params: data})
@@ -16,11 +17,12 @@ export function getRouterAliaList (params) {
 
 export function getAllRouterAndEmployee (params) {
   const url = `${CONFIG.HOST}/getAllRouterAndEmployee`
+  const ts = timestamp()
   const data = {
-    timestamp: timestamp(),
-    sid: params.sid,
+    sid: sid(),
+    timestamp: ts,
     params: paramsify(params),
-    sign: signify(params)
+    sign: signify(params, ts)
   }
 
   return axios.get(url, {params: data})
@@ -28,11 +30,12 @@ export function getAllRouterAndEmployee (params) {
 
 export function deleteRouterAndEmployee (params) {
   const url = `${CONFIG.HOST}/deleteRouterAndEmployee`
+  const ts = timestamp()
   const data = {
-    timestamp: timestamp(),
-    sid: params.sid,
+    sid: sid(),
+    timestamp: ts,
     params: paramsify(params),
-    sign: signify(params)
+    sign: signify(params, ts)
   }
 
   return axios.get(url, {params: data})
@@ -40,11 +43,12 @@ export function deleteRouterAndEmployee (params) {
 
 export function addRouterToEmployee (params) {
   const url = `${CONFIG.HOST}/addRouterToEmployee`
+  const ts = timestamp()
   const data = {
-    timestamp: timestamp(),
-    sid: params.sid,
+    sid: sid(),
+    timestamp: ts,
     params: paramsify(params),
-    sign: signify(params)
+    sign: signify(params, ts)
   }
 
   return axios.get(url, {params: data})

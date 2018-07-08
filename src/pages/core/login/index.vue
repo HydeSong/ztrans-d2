@@ -77,55 +77,25 @@ export default {
       'd2adminUsernameSet'
     ]),
     _loginSystem (params) {
-      console.log(params)
       loginSystem(params).then(res => {
-        console.log(res)
-        if (res.status === 200) {
-          const code = res.data.code
-          switch (code) {
-            case 0:
-              console.log('login success!')
-              // cookie 一天的有效期
-              const setting = {
-                expires: 1
-              }
-              // 设置 cookie
-              Cookies.set('token', res.data.sid, setting)
-              Cookies.set('uuid', res.data.customerNumId, setting)
-              Cookies.set('__user__customernumid', res.data.customerNumId, setting)
-              Cookies.set('__user__sid', res.data.sid, setting)
-              Cookies.set('__user__name', this.formLogin.username, setting)
-
-              // 设置 vuex
-              this.d2adminUsernameSet(this.formLogin.username)
-              // 跳转路由
-              this.$router.push({
-                name: 'index'
-              })
-              break
-            case 401:
-              console.log(code)
-              break
-            case 403:
-              console.log(code)
-              break
-            case 404:
-              console.log(code)
-              break
-            case -1:
-              console.log(code)
-              break
-            case -5003:
-              console.log(code)
-              break
-            case -5004:
-              console.log(code)
-              break
-            default:
-              console.log(code)
-              break
-          }
+        // cookie 10分钟的有效期
+        const expireTime = new Date(new Date().getTime() + 10 * 60 * 1000)
+        const setting = {
+          expires: expireTime
         }
+        // 设置 cookie
+        Cookies.set('token', res.sid, setting)
+        Cookies.set('uuid', res.customerNumId, setting)
+        Cookies.set('__user__customernumid', res.customerNumId, setting)
+        Cookies.set('__user__sid', res.sid, setting)
+        Cookies.set('__user__name', this.formLogin.username, setting)
+
+        // 设置 vuex
+        this.d2adminUsernameSet(this.formLogin.username)
+        // 跳转路由
+        this.$router.push({
+          name: 'index'
+        })
       }).catch(err => {
         console.log(err)
       })
@@ -134,49 +104,6 @@ export default {
     submit () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          // this.$axios({
-          //   method: 'post',
-          //   url: '/login',
-          //   data: {
-          //     username: this.formLogin.username,
-          //     password: this.formLogin.password
-          //   }
-          // })
-          //   .then(res => {
-          //     // cookie 一天的有效期
-          //     const setting = {
-          //       expires: 1
-          //     }
-          //     // 设置 cookie
-          //     Cookies.set('uuid', res.uuid, setting)
-          //     Cookies.set('token', res.token, setting)
-          //     // 设置 vuex
-          //     this.d2adminUsernameSet(res.name)
-          //     // 跳转路由
-          //     this.$router.push({
-          //       name: 'index'
-          //     })
-          //   })
-          //   .catch(err => {
-          //     console.log('err', err)
-          //   })
-          // 因为去掉了 mock.js 这里模拟登陆
-          // setTimeout(() => {
-          //   // cookie 一天的有效期
-          //   const setting = {
-          //     expires: 1
-          //   }
-          //   // 设置 cookie
-          //   Cookies.set('uuid', 'test-user-uuid', setting)
-          //   Cookies.set('token', 'hello-d2-admin', setting)
-          //   // 设置 vuex
-          //   this.d2adminUsernameSet('管理员')
-          //   // 跳转路由
-          //   this.$router.push({
-          //     name: 'index'
-          //   })
-          // }, 1000)
-
           // 入参
           const params = {
             customerAccount: this.formLogin.username,

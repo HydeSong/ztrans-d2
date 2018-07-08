@@ -1,10 +1,10 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem" class="demo-form-inline">
+      <el-form :inline="true" :model="searchItem">
         <el-form-item>
           <el-select v-model="searchItem.routerDetailAliaSearchKey" placeholder="线路别名">
-            <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.series"></el-option>
+            <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -18,7 +18,7 @@
         </el-form-item>
       </el-form>
       <el-table
-        :data="tableData"
+        :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
         height="480">
@@ -29,12 +29,12 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="road"
+          prop="routerAlia"
           label="线路别名">
         </el-table-column>
         <el-table-column
           fixed
-          prop="name"
+          prop="customerName"
           label="调度人姓名">
         </el-table-column>
         <el-table-column
@@ -42,7 +42,7 @@
           label="操作"
           width="100">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="onDelete(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -50,236 +50,169 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+          :total="totalPage">
         </el-pagination>
       </div>
+      <el-dialog title="新增调度" :visible.sync="addDialog">
+        <el-table
+          :data="tablePopData"
+          highlight-current-row
+          style="width: 100%"
+          height="400">
+          <el-table-column
+            fixed
+            type="index"
+            width="50">
+          </el-table-column>
+          <el-table-column
+            prop="customerName"
+            label="调度人姓名"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="birthday"
+            label="生日">
+          </el-table-column>
+          <el-table-column
+            prop="jobNum"
+            label="工号">
+          </el-table-column>
+          <el-table-column
+            prop="sexRealName"
+            label="性别">
+          </el-table-column>
+          <el-table-column
+            prop="jobRealName"
+            label="职位">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="60">
+            <template slot-scope="scope">
+              <el-button @click="onAddRouterToEmployee(scope.row)" type="text" size="small">添加</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @size-change="handleSzChange"
+            @current-change="handleCurChange"
+            :current-page="curPage"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="pgSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="addTotalPage">
+          </el-pagination>
+        </div>
+        <el-dialog
+          width="30%"
+          title="线路别名"
+          :visible.sync="innerVisible"
+          append-to-body>
+          <el-form :inline="true" :model="searchItem">
+            <el-form-item>
+              <el-select v-model="addItemParam.routerDetailSeries" placeholder="线路别名">
+                <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.series"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-button type="primary" @click="onAddRouterToEmployeeComfirm">确定</el-button>
+          </el-form>
+        </el-dialog>
+      </el-dialog>
     </template>
   </d2-container>
 </template>
 
 <script>
-  import { getRouterAliaList, getAllRouterAndEmployee, deleteRouterAndEmployee } from '@/api/schedule'
+  import { getRouterAliaList, getAllRouterAndEmployee, deleteRouterAndEmployee, addRouterToEmployee } from '@/api/schedule'
+  import { getAllEmployee } from '@/api/employee'
   import Cookies from 'js-cookie'
   export default {
     data () {
       return {
         customerNumId: Cookies.get('__user__customernumid'),
-        currentPage1: 5,
-        currentPage2: 5,
-        currentPage3: 5,
-        currentPage4: 4,
-        routerDetail: [{
-          routerAlia: '通往天堂之路1',
-          series: 123451
-        }, {
-          routerAlia: '通往天堂之路2',
-          series: 123452
-        }, {
-          routerAlia: '通往天堂之路3',
-          series: 123453
-        }, {
-          routerAlia: '通往天堂之路4',
-          series: 123454
-        }, {
-          routerAlia: '通往天堂之路5',
-          series: 123455
-        }, {
-          routerAlia: '通往天堂之路6',
-          series: 123456
-        }, {
-          routerAlia: '通往天堂之路7',
-          series: 123457
-        }, {
-          routerAlia: '通往天堂之路8',
-          series: 123458
-        }, {
-          routerAlia: '通往天堂之路9',
-          series: 123459
-        }, {
-          routerAlia: '通往天堂之路0',
-          series: 123450
-        }, {
-          routerAlia: '通往天堂之路01',
-          series: 1234501
-        }, {
-          routerAlia: '通往天堂之路02',
-          series: 1234502
-        }],
+        currentPage: 1,
+        pageSize: 20,
+        curPage: 1,
+        pgSize: 10,
+        routerDetail: [],
         searchItem: {
           routerDetailAliaSearchKey: '',
           employeeNameSearchKey: ''
         },
-        tableData: [{
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }, {
-          road: '通往天堂之路',
-          name: '王小虎'
-        }],
-        total: 400,
-        searching: false
+        addItemParam: {
+          routerDetailSeries: '',
+          employeeNumId: ''
+        },
+        tableData: [],
+        searching: false,
+        addDialog: false,
+        baseCustomers: [],
+        dialogTableVisible: false,
+        innerVisible: false
+      }
+    },
+    computed: {
+      totalPage () {
+        return this.tableData.length
+      },
+      addTotalPage () {
+        return this.baseCustomers.length
+      },
+      tableInlineData () {
+        return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      },
+      tablePopData () {
+        return this.baseCustomers.slice((this.curPage - 1) * this.pgSize, this.curPage * this.pgSize)
       }
     },
     created () {
-      this._getRouterAliaList({customerNumId: this.customerNumId})
+      this._getRouterAliaList({
+        customerNumId: this.customerNumId
+      })
+      this._getAllRouterAndEmployee({
+        current: this.currentPage,
+        customerNumId: this.customerNumId,
+        employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+        pageSize: 1000,
+        routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
+      })
     },
     methods: {
-      _deleteRouterAndEmployee (params) {
+      _addRouterToEmployee (params) {
+        addRouterToEmployee(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllEmployee (params) {
+        getAllEmployee(params).then(res => {
+          if (res.code === 0) {
+            this.baseCustomers = res.baseCustomers
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _deleteRouterAndEmployee (params, index) {
         deleteRouterAndEmployee(params).then(res => {
-          console.log(res)
-          if (res.status === 200) {
-            const code = res.data.code
-            switch (code) {
-              case 0:
-                this.tableData = res.data.employeeRouterModel
-                this.total = res.data.total
-                break
-              case 401:
-                console.log(code)
-                break
-              case 403:
-                console.log(code)
-                break
-              case 404:
-                console.log(code)
-                break
-              case -1:
-                console.log(code)
-                break
-              default:
-                console.log(code)
-                break
-            }
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.tableData.splice(index, 1)
           }
         }).catch(err => {
           console.log(err)
@@ -288,31 +221,9 @@
       _getAllRouterAndEmployee (params) {
         this.searching = true
         getAllRouterAndEmployee(params).then(res => {
-          console.log(res)
-          if (res.status === 200) {
+          if (res.code === 0) {
+            this.tableData = res.employeeRouterModel
             this.searching = false
-            const code = res.data.code
-            switch (code) {
-              case 0:
-                this.tableData = res.data.employeeRouterModel
-                this.total = res.data.total
-                break
-              case 401:
-                console.log(code)
-                break
-              case 403:
-                console.log(code)
-                break
-              case 404:
-                console.log(code)
-                break
-              case -1:
-                console.log(code)
-                break
-              default:
-                console.log(code)
-                break
-            }
           }
         }).catch(err => {
           console.log(err)
@@ -320,57 +231,90 @@
       },
       _getRouterAliaList (params) {
         getRouterAliaList(params).then(res => {
-          console.log(res)
-          if (res.status === 200) {
-            const code = res.data.code
-            switch (code) {
-              case 0:
-                this.routerDetail = res.data.routerDetail
-                break
-              case 401:
-                console.log(code)
-                break
-              case 403:
-                console.log(code)
-                break
-              case 404:
-                console.log(code)
-                break
-              case -1:
-                console.log(code)
-                break
-              default:
-                console.log(code)
-                break
-            }
+          if (res.code === 0) {
+            this.routerDetail = res.routerDetail
           }
         }).catch(err => {
           console.log(err)
         })
       },
       onSearch () {
-        console.log('Search!')
         const params = {
-          'current': 1,
-          'customerNumId': 1,
-          'employeeNameSearchKey': '大型车',
-          'pageSize': 1,
-          'routerDetailAliaSearchKey': '1号路线'
+          current: this.currentPage,
+          customerNumId: this.customerNumId,
+          employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+          pageSize: this.pageSize,
+          routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
         }
         this._getAllRouterAndEmployee(params)
       },
       onAdd () {
-        console.log('add!')
+        this.addDialog = true
+        this._getAllEmployee({
+          current: this.curPage,
+          customerNumId: this.customerNumId,
+          employeeJobNumSearchKey: '',
+          employeeNameSearchKey: '',
+          jobId: 0,
+          pageSize: 1000
+        })
       },
-      handleClick (row) {
+      onAddRouterToEmployee (row) {
         console.log(row)
-        this._deleteRouterAndEmployee(row)
+        this.innerVisible = true
+        this.addItemParam.employeeNumId = row.customerNumId
+      },
+      onAddRouterToEmployeeComfirm () {
+        this.innerVisible = false
+        this._addRouterToEmployee({
+          customerNumId: this.customerNumId,
+          employeeNumId: this.addItemParam.employeeNumId,
+          routerDetailSeries: this.addItemParam.routerDetailSeries
+        })
+      },
+      onDelete (index, row) {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteRouterAndEmployee({
+            customerNumId: this.customerNumId,
+            series: row.series
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
+        })
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
+        this.pageSize = val
+
       },
       handleCurrentChange (val) {
         console.log(`当前页: ${val}`)
+        this.currentPage = val
+        // this._getAllRouterAndEmployee({
+        //   current: this.currentPage,
+        //   customerNumId: this.customerNumId,
+        //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+        //   pageSize: val,
+        //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
+        // })
+      },
+      handleSzChange (val) {
+        this.pgSize = val
+      },
+      handleCurChange (val) {
+        this.curPage = val
+        // this._getAllEmployee({
+        //   current: this.curPage,
+        //   customerNumId: this.customerNumId,
+        //   employeeJobNumSearchKey: '',
+        //   employeeNameSearchKey: '',
+        //   jobId: 0,
+        //   pageSize: this.pgSize
+        // })
       }
     }
   }
@@ -378,6 +322,7 @@
 
 <style lang="scss" scoped>
   @import '~@/assets/style/public.scss';
+
   .page {
     .block {
       padding: 10px 0;

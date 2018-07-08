@@ -1,13 +1,14 @@
 import axios from 'axios'
-import { paramsify, signify, timestamp } from './utils'
+import { paramsify, signify, signifyLogin, timestamp } from './utils'
 import { CONFIG } from './config'
 
 export function loginSystem (params) {
   const url = `${CONFIG.HOST}/loginSystem`
+  const ts = timestamp()
   const data = {
-    timestamp: timestamp(),
+    timestamp: ts,
     params: paramsify(params),
-    sign: signify(params)
+    sign: signifyLogin(params, ts)
   }
 
   return axios.get(url, {params: data})
@@ -15,14 +16,13 @@ export function loginSystem (params) {
 
 export function cancelLoginSystem (params) {
   const url = `${CONFIG.HOST}/cancelLoginSystem`
+  const ts = timestamp()
   const data = {
-    timestamp: timestamp(),
+    timestamp: ts,
     sid: params.sid,
     params: paramsify(params),
-    sign: signify(params)
+    sign: signify(params, ts)
   }
-
-  console.log(data)
 
   return axios.get(url, {params: data})
 }

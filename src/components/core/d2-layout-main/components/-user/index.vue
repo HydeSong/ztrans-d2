@@ -32,45 +32,21 @@ export default {
       'd2adminDbRemoveByUuid'
     ]),
     _cancelLoginSystem (params) {
-      console.log(params)
       cancelLoginSystem(params).then(res => {
-        console.log(res)
-        if (res.status === 200) {
-          const code = res.data.code
-          switch (code) {
-            case 0:
-              // 删除用户名
-              this.d2adminDbRemoveByUuid({
-                key: 'username',
-                emptyValue: ''
-              })
-              // 删除cookie
-              Cookies.remove('token')
-              Cookies.remove('uuid')
-              Cookies.remove('__user__sid')
-              Cookies.remove('__user__customernumid')
-              // 跳转路由
-              this.$router.push({
-                name: 'login'
-              })
-              break
-            case 401:
-              console.log(code)
-              break
-            case 403:
-              console.log(code)
-              break
-            case 404:
-              console.log(code)
-              break
-            case -1:
-              console.log(code)
-              break
-            default:
-              console.log(code)
-              break
-          }
-        }
+        // 删除用户名
+        this.d2adminDbRemoveByUuid({
+          key: 'username',
+          emptyValue: ''
+        })
+        // 删除cookie
+        Cookies.remove('token')
+        Cookies.remove('uuid')
+        Cookies.remove('__user__sid')
+        Cookies.remove('__user__customernumid')
+        // 跳转路由
+        this.$router.push({
+          name: 'login'
+        })
       }).catch(err => {
         console.log(err)
       })
