@@ -13,8 +13,8 @@ const schedule = {
   title: '调度中心',
   icon: 'briefcase',
   children: (pre => [
-    { path: `${pre}employee`, title: '调度人', icon: 'user-o' },
-    { path: `${pre}driver`, title: '司机', icon: 'id-card-o' }
+    { path: `${pre}employee`, title: '调度人', icon: 'user' },
+    { path: `${pre}car`, title: '车辆', icon: 'car' }
   ])('/schedule/')
 }
 
