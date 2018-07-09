@@ -21,7 +21,7 @@
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
-        height="480">
+        stripe>
         <el-table-column
           fixed
           type="index"
