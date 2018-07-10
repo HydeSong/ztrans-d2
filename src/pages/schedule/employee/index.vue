@@ -57,7 +57,7 @@
           :total="totalPage">
         </el-pagination>
       </div>
-      <el-dialog title="新增调度" :visible.sync="addDialog">
+      <el-dialog title="新增调度人" :visible.sync="addDialog">
         <el-table
           :data="tablePopData"
           highlight-current-row
@@ -110,7 +110,7 @@
           </el-pagination>
         </div>
         <el-dialog
-          width="30%"
+          width="18%"
           title="线路别名"
           :visible.sync="innerVisible"
           append-to-body>

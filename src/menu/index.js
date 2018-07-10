@@ -18,9 +18,19 @@ const schedule = {
   ])('/schedule/')
 }
 
+const order = {
+  path: '/order',
+  title: '订单查询',
+  icon: 'file-text',
+  children: (pre => [
+    { path: `${pre}car`, title: '指派车辆', icon: 'car' }
+  ])('/order/')
+}
+
 // 菜单 侧边栏
 export const side = [
   schedule,
+  order,
   setting
 ]
 
@@ -32,5 +42,6 @@ export default [
     icon: 'home'
   },
   schedule,
+  order,
   setting
 ]
