@@ -119,14 +119,6 @@
             prop="district"
             label="省/市/区">
           </el-table-column>
-          <!--<el-table-column-->
-            <!--prop="cityRealName"-->
-            <!--label="市">-->
-          <!--</el-table-column>-->
-          <!--<el-table-column-->
-            <!--prop="cityAreaRealName"-->
-            <!--label="区">-->
-          <!--</el-table-column>-->
           <el-table-column
             prop="carTypeRealName"
             label="车型">
@@ -229,15 +221,15 @@
       })
       this._getAllRouterAndCar({
         current: this.currentPage,
+        pageSize: 1000,
         customerNumId: this.customerNumId,
         driverNameSearchKey: this.searchItem.driverNameSearchKey,
-        pageSize: 1000,
+        carPlateNumberSearchKey: this.searchItem.carPlateNumberSearchKey,
         routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
       })
     },
     methods: {
       _addRouterToCar (params) {
-        console.log(params)
         addRouterToCar(params).then(res => {
           if (res.code === 0) {
             this.$message({
@@ -250,7 +242,6 @@
         })
       },
       _getAllDriver (params) {
-        console.log(params)
         getAllDriver(params).then(res => {
           if (res.code === 0) {
             this.customerDrivers = res.customerDrivers
@@ -295,9 +286,10 @@
       onSearch () {
         const params = {
           current: this.currentPage,
+          pageSize: this.pageSize,
           customerNumId: this.customerNumId,
           driverNameSearchKey: this.searchItem.driverNameSearchKey,
-          pageSize: this.pageSize,
+          carPlateNumberSearchKey: this.searchItem.carPlateNumberSearchKey,
           routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
         }
         this._getAllRouterAndCar(params)
