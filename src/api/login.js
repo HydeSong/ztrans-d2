@@ -1,3 +1,6 @@
+/**
+ * 登录接口
+ */
 import axios from 'axios'
 import { paramsify, signify, signifyLogin, timestamp } from './utils'
 import { CONFIG } from './config'

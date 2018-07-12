@@ -1,3 +1,6 @@
+/**
+ * 调度接口
+ */
 import axios from 'axios'
 import { paramsify, signify, timestamp, sid } from './utils'
 import { CONFIG } from './config'

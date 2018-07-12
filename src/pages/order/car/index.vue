@@ -3,21 +3,27 @@
     <template>
       <el-form :inline="true" :model="searchItem">
         <el-form-item>
+          <el-input v-model="searchItem.driverNameSearchKey" placeholder="客户姓名"></el-input>
+        </el-form-item>
+        <el-form-item>
           <el-select v-model="searchItem.routerDetailAliaSearchKey" placeholder="线路别名">
             <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="searchItem.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
+          <el-select v-model="searchItem.typeId" placeholder="车型">
+            <el-option v-for="(item, index) in CarType" :key="index" :label="item.typeName" :value="item.typeName"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="searchItem.driverNameSearchKey" placeholder="司机姓名"></el-input>
-        </el-form-item>
+        <el-date-picker
+          v-model="value2"
+          type="datetime"
+          placeholder="约车时间"
+          align="right"
+          :picker-options="pickerOptions1">
+        </el-date-picker>
         <el-form-item>
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onAdd" icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -33,29 +39,95 @@
         <el-table-column
           fixed
           prop="routerAlia"
-          label="线路别名">
+          label="订单号">
         </el-table-column>
         <el-table-column
-          fixed
+          width="140"
           prop="driverName"
-          label="司机姓名">
+          label="线路别名（编号）">
         </el-table-column>
         <el-table-column
-          fixed
           prop="carPlateNumber"
-          label="车牌号">
+          label="车型">
         </el-table-column>
         <el-table-column
-          fixed
           prop="driverPhone"
-          label="手机号">
+          label="需要搬卸">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="用车时间">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="起步价">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="超出价格">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="客户姓名">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="需要搬卸">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="下单人">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="发货/收货点数">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="货物描述">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="需要搬卸">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="补充信息">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="下单时间">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="发货详细地址">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="发货人">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="联系电话">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="收货详细地址">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="收货人">
+        </el-table-column>
+        <el-table-column
+          prop="driverPhone"
+          label="联系电话">
         </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
           width="100">
           <template slot-scope="scope">
-            <el-button @click="onDelete(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="onDelete(scope.$index, scope.row)" type="text" size="small">指派车辆</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -119,14 +191,6 @@
             prop="district"
             label="省/市/区">
           </el-table-column>
-          <!--<el-table-column-->
-            <!--prop="cityRealName"-->
-            <!--label="市">-->
-          <!--</el-table-column>-->
-          <!--<el-table-column-->
-            <!--prop="cityAreaRealName"-->
-            <!--label="区">-->
-          <!--</el-table-column>-->
           <el-table-column
             prop="carTypeRealName"
             label="车型">
@@ -172,6 +236,7 @@
 
 <script>
   import { getRouterAliaList, getAllDriver, getAllRouterAndCar, deleteRouterAndCar, addRouterToCar } from '@/api/schedule'
+  import { getCarTypeList } from '@/api/order'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -182,10 +247,12 @@
         curPage: 1,
         pgSize: 10,
         routerDetail: [],
+        carTypes: [],
         searchItem: {
           routerDetailAliaSearchKey: '',
           carPlateNumberSearchKey: '',
-          driverNameSearchKey: ''
+          driverNameSearchKey: '',
+          typeId: ''
         },
         searchItemAdd: {
           carPlateNumberSearchKey: '',
@@ -203,7 +270,30 @@
         addDialog: false,
         customerDrivers: [],
         dialogTableVisible: false,
-        innerVisible: false
+        innerVisible: false,
+        pickerOptions1: {
+          shortcuts: [{
+            text: '今天',
+            onClick (picker) {
+              picker.$emit('pick', new Date())
+            }
+          }, {
+            text: '昨天',
+            onClick (picker) {
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24)
+              picker.$emit('pick', date)
+            }
+          }, {
+            text: '一周前',
+            onClick (picker) {
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', date)
+            }
+          }]
+        },
+        value2: ''
       }
     },
     computed: {
@@ -227,6 +317,9 @@
       this._getRouterAliaList({
         customerNumId: this.customerNumId
       })
+      this._getCarTypeList({
+        customerNumId: this.customerNumId
+      })
       this._getAllRouterAndCar({
         current: this.currentPage,
         customerNumId: this.customerNumId,
@@ -236,6 +329,17 @@
       })
     },
     methods: {
+      _getCarTypeList (params) {
+        console.log(params)
+        getCarTypeList(params).then(res => {
+          if (res.code === 0) {
+            console.log(res)
+            this.carTypes = res.carTypes
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _addRouterToCar (params) {
         console.log(params)
         addRouterToCar(params).then(res => {

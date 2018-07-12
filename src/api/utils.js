@@ -1,3 +1,7 @@
+/**
+ * 工具
+ */
+
 import { Base64 } from 'js-base64'
 import MD5 from 'md5'
 import { CONFIG } from './config'
