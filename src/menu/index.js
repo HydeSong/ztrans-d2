@@ -13,14 +13,24 @@ const schedule = {
   title: '调度中心',
   icon: 'briefcase',
   children: (pre => [
-    { path: `${pre}employee`, title: '调度人', icon: 'user-o' },
-    { path: `${pre}driver`, title: '司机', icon: 'id-card-o' }
+    { path: `${pre}employee`, title: '调度人', icon: 'user' },
+    { path: `${pre}car`, title: '车辆', icon: 'car' }
   ])('/schedule/')
+}
+
+const order = {
+  path: '/order',
+  title: '订单查询',
+  icon: 'file-text',
+  children: (pre => [
+    { path: `${pre}car`, title: '指派车辆', icon: 'car' }
+  ])('/order/')
 }
 
 // 菜单 侧边栏
 export const side = [
   schedule,
+  order,
   setting
 ]
 
@@ -32,5 +42,6 @@ export default [
     icon: 'home'
   },
   schedule,
+  order,
   setting
 ]

@@ -8,7 +8,10 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="searchItem.employeeNameSearchKey" placeholder="调度人姓名"></el-input>
+          <el-input v-model="searchItem.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="searchItem.driverNameSearchKey" placeholder="司机姓名"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
@@ -34,8 +37,18 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="customerName"
-          label="调度人姓名">
+          prop="driverName"
+          label="司机姓名">
+        </el-table-column>
+        <el-table-column
+          fixed
+          prop="carPlateNumber"
+          label="车牌号">
+        </el-table-column>
+        <el-table-column
+          fixed
+          prop="driverPhone"
+          label="手机号">
         </el-table-column>
         <el-table-column
           fixed="right"
@@ -57,7 +70,21 @@
           :total="totalPage">
         </el-pagination>
       </div>
-      <el-dialog title="新增调度人" :visible.sync="addDialog">
+      <el-dialog title="新增车辆" :visible.sync="addDialog">
+        <el-form :inline="true" :model="searchItemAdd">
+          <el-form-item>
+            <el-input v-model="searchItemAdd.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="searchItemAdd.driverNameSearchKey" placeholder="司机姓名"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="searchItemAdd.driverPhoneSearchKey" placeholder="手机号"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSearchAdd" icon="el-icon-search" :loading="searching">查询</el-button>
+          </el-form-item>
+        </el-form>
         <el-table
           :data="tablePopData"
           highlight-current-row
@@ -69,32 +96,47 @@
             width="50">
           </el-table-column>
           <el-table-column
-            prop="customerName"
-            label="调度人姓名"
+            prop="carPlateNumber"
+            label="车牌号"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="driverName"
+            label="司机姓名"
             width="100">
           </el-table-column>
           <el-table-column
-            prop="birthday"
-            label="生日">
+            prop="driverIdentityId"
+            label="身份证"
+            width="160">
           </el-table-column>
           <el-table-column
-            prop="jobNum"
-            label="工号">
+            prop="workSpace"
+            label="接单区域起始地"
+            width="200">
           </el-table-column>
           <el-table-column
-            prop="sexRealName"
-            label="性别">
+            prop="district"
+            label="省/市/区">
           </el-table-column>
+          <!--<el-table-column-->
+            <!--prop="cityRealName"-->
+            <!--label="市">-->
+          <!--</el-table-column>-->
+          <!--<el-table-column-->
+            <!--prop="cityAreaRealName"-->
+            <!--label="区">-->
+          <!--</el-table-column>-->
           <el-table-column
-            prop="jobRealName"
-            label="职位">
+            prop="carTypeRealName"
+            label="车型">
           </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
             width="60">
             <template slot-scope="scope">
-              <el-button @click="onAddRouterToEmployee(scope.row)" type="text" size="small">添加</el-button>
+              <el-button @click="onAddRouterToCar(scope.row)" type="text" size="small">添加</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -120,7 +162,7 @@
                 <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.series"></el-option>
               </el-select>
             </el-form-item>
-            <el-button type="primary" @click="onAddRouterToEmployeeComfirm">确定</el-button>
+            <el-button type="primary" @click="onAddRouterToCarComfirm">确定</el-button>
           </el-form>
         </el-dialog>
       </el-dialog>
@@ -129,8 +171,7 @@
 </template>
 
 <script>
-  import { getRouterAliaList, getAllRouterAndEmployee, deleteRouterAndEmployee, addRouterToEmployee } from '@/api/schedule'
-  import { getAllEmployee } from '@/api/employee'
+  import { getRouterAliaList, getAllDriver, getAllRouterAndCar, deleteRouterAndCar, addRouterToCar } from '@/api/schedule'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -143,16 +184,24 @@
         routerDetail: [],
         searchItem: {
           routerDetailAliaSearchKey: '',
-          employeeNameSearchKey: ''
+          carPlateNumberSearchKey: '',
+          driverNameSearchKey: ''
+        },
+        searchItemAdd: {
+          carPlateNumberSearchKey: '',
+          driverNameSearchKey: '',
+          driverPhoneSearchKey: '',
+          motorcadeId: '',
+          checkStatus: 1
         },
         addItemParam: {
           routerDetailSeries: '',
-          employeeNumId: ''
+          driverSeries: ''
         },
         tableData: [],
         searching: false,
         addDialog: false,
-        baseCustomers: [],
+        customerDrivers: [],
         dialogTableVisible: false,
         innerVisible: false
       }
@@ -162,30 +211,34 @@
         return this.tableData.length
       },
       addTotalPage () {
-        return this.baseCustomers.length
+        return this.customerDrivers.length
       },
       tableInlineData () {
         return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
       },
       tablePopData () {
-        return this.baseCustomers.slice((this.curPage - 1) * this.pgSize, this.curPage * this.pgSize)
+        this.customerDrivers.forEach((item) => {
+          item.district = `${item.prvRealName}/${item.cityRealName}/${item.cityAreaRealName}`
+        })
+        return this.customerDrivers.slice((this.curPage - 1) * this.pgSize, this.curPage * this.pgSize)
       }
     },
     created () {
       this._getRouterAliaList({
         customerNumId: this.customerNumId
       })
-      this._getAllRouterAndEmployee({
+      this._getAllRouterAndCar({
         current: this.currentPage,
         customerNumId: this.customerNumId,
-        employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+        driverNameSearchKey: this.searchItem.driverNameSearchKey,
         pageSize: 1000,
         routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
       })
     },
     methods: {
-      _addRouterToEmployee (params) {
-        addRouterToEmployee(params).then(res => {
+      _addRouterToCar (params) {
+        console.log(params)
+        addRouterToCar(params).then(res => {
           if (res.code === 0) {
             this.$message({
               type: 'success',
@@ -196,17 +249,18 @@
           console.log(err)
         })
       },
-      _getAllEmployee (params) {
-        getAllEmployee(params).then(res => {
+      _getAllDriver (params) {
+        console.log(params)
+        getAllDriver(params).then(res => {
           if (res.code === 0) {
-            this.baseCustomers = res.baseCustomers
+            this.customerDrivers = res.customerDrivers
           }
         }).catch(err => {
           console.log(err)
         })
       },
-      _deleteRouterAndEmployee (params, index) {
-        deleteRouterAndEmployee(params).then(res => {
+      _deleteRouterAndCar (params, index) {
+        deleteRouterAndCar(params).then(res => {
           if (res.code === 0) {
             this.$message({
               type: 'success',
@@ -218,11 +272,11 @@
           console.log(err)
         })
       },
-      _getAllRouterAndEmployee (params) {
+      _getAllRouterAndCar (params) {
         this.searching = true
-        getAllRouterAndEmployee(params).then(res => {
+        getAllRouterAndCar(params).then(res => {
           if (res.code === 0) {
-            this.tableData = res.employeeRouterModel
+            this.tableData = res.carRouterModel
             this.searching = false
           }
         }).catch(err => {
@@ -242,33 +296,37 @@
         const params = {
           current: this.currentPage,
           customerNumId: this.customerNumId,
-          employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+          driverNameSearchKey: this.searchItem.driverNameSearchKey,
           pageSize: this.pageSize,
           routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
         }
-        this._getAllRouterAndEmployee(params)
+        this._getAllRouterAndCar(params)
       },
-      onAdd () {
-        this.addDialog = true
-        this._getAllEmployee({
+      onSearchAdd () {
+        this._getAllDriver({
           current: this.curPage,
+          carPlateNumberSearchKey: this.searchItemAdd.carPlateNumberSearchKey,
+          checkStatus: 1,
           customerNumId: this.customerNumId,
-          employeeJobNumSearchKey: '',
-          employeeNameSearchKey: '',
-          jobId: 0,
+          driverNameSearchKey: this.searchItemAdd.driverNameSearchKey,
+          driverPhoneSearchKey: this.searchItemAdd.driverPhoneSearchKey,
+          motorcadeId: this.searchItemAdd.motorcadeId,
           pageSize: 1000
         })
       },
-      onAddRouterToEmployee (row) {
+      onAdd () {
+        this.addDialog = true
+      },
+      onAddRouterToCar (row) {
         console.log(row)
         this.innerVisible = true
-        this.addItemParam.employeeNumId = row.customerNumId
+        this.addItemParam.driverSeries = row.driverId
       },
-      onAddRouterToEmployeeComfirm () {
+      onAddRouterToCarComfirm () {
         this.innerVisible = false
-        this._addRouterToEmployee({
+        this._addRouterToCar({
           customerNumId: this.customerNumId,
-          employeeNumId: this.addItemParam.employeeNumId,
+          driverSeries: this.addItemParam.driverSeries,
           routerDetailSeries: this.addItemParam.routerDetailSeries
         })
       },
@@ -278,7 +336,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this._deleteRouterAndEmployee({
+          this._deleteRouterAndCar({
             customerNumId: this.customerNumId,
             series: row.series
           }, index)

@@ -37,7 +37,17 @@ const frameIn = [
     component: () => import('@/components/core/d2-layout-main'),
     children: (pre => [
       { path: 'employee', name: `${pre}employee`, component: () => import('@/pages/schedule/employee'), meta: { ...meta, title: '调度人' } },
-      { path: 'driver', name: `${pre}driver`, component: () => import('@/pages/schedule/driver'), meta: { ...meta, title: '司机' } }
+      { path: 'car', name: `${pre}car`, component: () => import('@/pages/schedule/car'), meta: { ...meta, title: '车辆' } }
+    ])('schedule-')
+  },
+  {
+    path: '/order',
+    name: 'order',
+    meta,
+    redirect: { name: 'order-car' },
+    component: () => import('@/components/core/d2-layout-main'),
+    children: (pre => [
+      { path: 'car', name: `${pre}car`, component: () => import('@/pages/order/car'), meta: { ...meta, title: '指派车辆' } }
     ])('schedule-')
   }
 ]

@@ -20,23 +20,18 @@
                 <i slot="prepend" class="fa fa-keyboard-o"></i>
               </el-input>
             </el-form-item>
-            <!--<el-form-item prop="code">-->
-              <!--<el-input type="text" v-model="formLogin.code" placeholder="- - - -">-->
-                <!--<template slot="prepend">验证码</template>-->
-                <!--<template slot="append">-->
-                  <!--<img class="login-code" :src="`${$assetsPublicPath}static/image/login-code.png`">-->
-                <!--</template>-->
-              <!--</el-input>-->
-            <!--</el-form-item>-->
             <el-button @click="submit" type="primary" class="button-login">登录</el-button>
           </el-form>
         </el-card>
       </div>
+<<<<<<< HEAD
       <!-- 帮助按钮 -->
       <!--<el-button type="info" class="button-help">-->
         <!--需要帮助-->
         <!--<i class="fa fa-question-circle"></i>-->
       <!--</el-button>-->
+=======
+>>>>>>> cfdeec5903eb02b3d557729e21b24edbcbd3f71c
     </div>
   </div>
 </template>
