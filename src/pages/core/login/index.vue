@@ -33,10 +33,10 @@
         </el-card>
       </div>
       <!-- 帮助按钮 -->
-      <el-button type="info" class="button-help">
-        需要帮助
-        <i class="fa fa-question-circle"></i>
-      </el-button>
+      <!--<el-button type="info" class="button-help">-->
+        <!--需要帮助-->
+        <!--<i class="fa fa-question-circle"></i>-->
+      <!--</el-button>-->
     </div>
   </div>
 </template>
