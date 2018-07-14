@@ -3,15 +3,54 @@
  */
 
 import axios from 'axios'
-import { paramsify, signify, timestamp } from './utils'
+import { paramsify, signify, timestamp, sid } from './utils'
 import { CONFIG } from './config'
 
 export function getCarTypeList (params) {
   const url = `${CONFIG.HOST}/getCarTypeList`
   const ts = timestamp()
   const data = {
+    sid: sid(),
     timestamp: ts,
-    sid: params.sid,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function getOrderByCustomerNumId (params) {
+  const url = `${CONFIG.HOST}/getOrderByCustomerNumId`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function selectDriver (params) {
+  const url = `${CONFIG.HOST}/selectDriver`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function confirmDriver (params) {
+  const url = `${CONFIG.HOST}/confirmDriver`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
     params: paramsify(params),
     sign: signify(params, ts)
   }
