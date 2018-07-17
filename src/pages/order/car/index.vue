@@ -23,7 +23,7 @@
           type="datetime"
           placeholder="约车时间"
           align="right"
-          value-format="yyyy-MM-DD HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           :picker-options="pickerOptions">
         </el-date-picker>
         <el-form-item>
@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column
           width="140"
-          prop="routerDetailSeries"
+          prop="routerAlisa"
           label="线路别名（编号）">
         </el-table-column>
         <el-table-column
@@ -244,6 +244,9 @@
         dialogTableVisible: false,
         innerVisible: false,
         pickerOptions: {
+          disabledDate (time) {
+            return time.getTime() > Date.now()
+          },
           shortcuts: [{
             text: '今天',
             onClick (picker) {
