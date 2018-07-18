@@ -252,7 +252,6 @@
           registerEndTime: this.searchItem.registerEndTime,
           registerStartTime: this.searchItem.registerStartTime
         }
-        console.log(params)
         this._getAllMasterCustomer(params)
       },
       onRegisterTimeChange (time) {
