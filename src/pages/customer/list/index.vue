@@ -17,7 +17,7 @@
           <!--</el-select>-->
         <!--</el-form-item>-->
         <el-form-item>
-          <el-select v-model="searchItem.saleId" placeholder="销售员">
+          <el-select v-model="searchItem.saleId" placeholder="销售员" clearable>
             <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
           </el-select>
         </el-form-item>
@@ -32,7 +32,8 @@
           <!--</el-select>-->
         <!--</el-form-item>-->
         <el-date-picker
-          v-model="value5"
+          v-model="searchItem.registerTime"
+          @change="onRegisterTimeChange"
           type="datetimerange"
           value-format="yyyy-MM-dd HH:mm:ss"
           :picker-options="pickerOptions"
@@ -156,7 +157,8 @@
           customerNameSearchKey: '',
           mobilePhoneSearchKey: '',
           registerEndTime: '',
-          registerStartTime: ''
+          registerStartTime: '',
+          registerTime: ''
         },
         tableData: [],
         customerSales: [],
@@ -250,7 +252,12 @@
           registerEndTime: this.searchItem.registerEndTime,
           registerStartTime: this.searchItem.registerStartTime
         }
+        console.log(params)
         this._getAllMasterCustomer(params)
+      },
+      onRegisterTimeChange (time) {
+        this.searchItem.registerStartTime = time[0]
+        this.searchItem.registerEndTime = time[1]
       },
       onView () {
         this.popDialog = true
