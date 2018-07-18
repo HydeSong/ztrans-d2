@@ -21,7 +21,7 @@ util.uuid = function () {
  * @param {string} title 标题
  */
 util.title = function (title) {
-  const prefix = 'D2Admin'
+  const prefix = '中福通物流'
   window.document.title = `${prefix}${title ? ` | ${title}` : ''}`
 }
 

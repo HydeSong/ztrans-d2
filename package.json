@@ -1,8 +1,8 @@
 {
-  "name": "d2-admin-start-kit",
+  "name": "中福通物流后台管理系统",
   "version": "1.1.4",
-  "description": "A management system framework based on element",
-  "author": "李杨 <1711467488@qq.com>",
+  "description": "中福通物流后台管理系统",
+  "author": "Hyde Song",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
