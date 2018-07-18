@@ -3,28 +3,44 @@
     <template>
       <el-form :inline="true" :model="searchItem">
         <el-form-item>
-          <el-input v-model="searchItem.customerNameSearchKey" placeholder="客户姓名"></el-input>
+          <el-input v-model="searchItem.customerNameSearchKey" placeholder="客户名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="searchItem.routerNumberSearchKey" placeholder="线路编号"></el-input>
+          <el-input v-model="searchItem.contactNameSearchKey" placeholder="联系人"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchItem.routerAliaSearchKey" placeholder="线路别名">
-            <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
+          <el-input v-model="searchItem.mobilePhoneSearchKey" placeholder="联系电话"></el-input>
+        </el-form-item>
+        <!--<el-form-item>-->
+          <!--<el-select v-model="searchItem.routerAliaSearchKey" placeholder="所在地区">-->
+            <!--<el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
+        <el-form-item>
+          <el-select v-model="searchItem.saleId" placeholder="销售员" clearable>
+            <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-select v-model="searchItem.carType" placeholder="车型">
-            <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
-          </el-select>
-        </el-form-item>
+        <!--<el-form-item>-->
+          <!--<el-select v-model="searchItem.carType" placeholder="客户类型">-->
+            <!--<el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item>-->
+          <!--<el-select v-model="searchItem.carType" placeholder="服务类型">-->
+            <!--<el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
         <el-date-picker
-          v-model="searchItem.appointmentDate"
-          type="datetime"
-          placeholder="约车时间"
-          align="right"
+          v-model="searchItem.registerTime"
+          @change="onRegisterTimeChange"
+          type="datetimerange"
           value-format="yyyy-MM-dd HH:mm:ss"
-          :picker-options="pickerOptions">
+          :picker-options="pickerOptions"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          align="right">
         </el-date-picker>
         <el-form-item>
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
@@ -42,92 +58,52 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="series"
-          label="订单号">
+          prop="customerName"
+          label="客户名称">
         </el-table-column>
         <el-table-column
           width="140"
-          prop="routerAlisa"
-          label="线路别名（编号）">
+          prop="customerSimpleCode"
+          label="客户代码">
+        </el-table-column>
+        <!--<el-table-column-->
+          <!--prop="carTypeName"-->
+          <!--label="客户类型">-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+          <!--prop="wetherTakeover"-->
+          <!--label="服务类型">-->
+        <!--</el-table-column>-->
+        <el-table-column
+          prop="prvCityArea"
+          label="所在地区">
         </el-table-column>
         <el-table-column
-          prop="carTypeName"
-          label="车型">
+          prop="contactName"
+          label="联系人">
         </el-table-column>
         <el-table-column
-          prop="wetherTakeover"
-          label="需要搬卸">
+          prop="contactPhone"
+          label="联系电话">
         </el-table-column>
         <el-table-column
-          prop="appointmentDate"
-          label="用车时间">
+          prop="saleName"
+          label="销售员">
         </el-table-column>
         <el-table-column
-          prop="initPrice"
-          label="起步价">
-        </el-table-column>
-        <el-table-column
-          prop="overstepPrice"
-          label="超出价格">
-        </el-table-column>
-        <el-table-column
-          prop="masterCustomerName"
-          label="客户姓名">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsLocationNum"
-          label="发货/收货点数">
-        </el-table-column>
-        <el-table-column
-          prop="createOrderName"
-          label="下单人">
-        </el-table-column>
-        <el-table-column
-          prop="createOrderTime"
-          label="下单时间">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsPersonName"
-          label="发货人">
-        </el-table-column>
-        <el-table-column
-          prop="sendAddressDetail"
-          label="发货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsPersonMobile"
-          label="发货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonName"
-          label="收货人">
-        </el-table-column>
-        <el-table-column
-          prop="receiveAddressDetail"
-          label="收货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonMobile"
-          label="收货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="goodsRemark"
-          label="货物描述">
-        </el-table-column>
-        <el-table-column
-          prop="remark"
-          label="补充信息">
+          prop="createDtme"
+          label="注册日期">
         </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
           width="100">
           <template slot-scope="scope">
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">指派车辆</el-button>
+            <el-button @click="onView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <div class="block">
+      <div class="pagination-wrapper">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -138,134 +114,83 @@
           :total="totalPage">
         </el-pagination>
       </div>
-      <el-dialog title="指派车辆" :visible.sync="addDialog">
-        <el-form :inline="true" :model="searchItemPop">
-          <el-form-item>
-            <el-input v-model="searchItemPop.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="searchItemPop.driverNameSearchKey" placeholder="司机姓名"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
-          </el-form-item>
-        </el-form>
-        <el-table
-          :data="tablePopData"
-          highlight-current-row
-          style="width: 100%"
-          height="400">
-          <el-table-column
-            fixed
-            type="index"
-            width="50">
-          </el-table-column>
-          <el-table-column
-            prop="carPlateNumber"
-            label="车牌号"
-            width="120">
-          </el-table-column>
-          <el-table-column
-            prop="driverName"
-            label="司机姓名">
-          </el-table-column>
-          <el-table-column
-            prop="driverPhone"
-            label="手机号"
-            width="160">
-          </el-table-column>
-          <el-table-column
-            prop="driverIdentityId"
-            label="身份证"
-            width="160">
-          </el-table-column>
-          <el-table-column
-            prop="cityName"
-            label="起始地->目的地">
-          </el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="120">
-            <template slot-scope="scope">
-              <el-button @click="onAssignConfirm(scope.row)" type="text" size="small">确定此人接单</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+      <el-dialog title="客户详情" :visible.sync="popDialog">
         <div class="block">
-          <el-pagination
-            @size-change="handleSzChange"
-            @current-change="handleCurChange"
-            :current-page="curPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pgSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="addTotalPage">
-          </el-pagination>
+          客户信息
         </div>
+        <div class="content">
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+        <div class="block">
+          联系人信息
+          <el-button style="float: right; padding: 2px 0" type="text">添加联系人</el-button>
+        </div>
+
       </el-dialog>
     </template>
   </d2-container>
 </template>
 
 <script>
-  import { getRouterAliaList } from '@/api/schedule'
-  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver } from '@/api/order'
+  import { getAllMasterCustomer, getAllSaleList } from '@/api/customer'
   import Cookies from 'js-cookie'
   export default {
     data () {
       return {
+        value5: '',
         customerNumId: Cookies.get('__user__customernumid'),
+        franchiseeId: '',
         currentPage: 1,
         pageSize: 200,
-        curPage: 1,
-        pgSize: 100,
-        routerDetail: [],
-        carTypes: [],
         searchItem: {
-          carType: '',
-          appointmentDate: '',
+          saleId: '',
+          contactNameSearchKey: '',
           customerNameSearchKey: '',
-          routerAliaSearchKey: '',
-          routerNumberSearchKey: '',
-          deliverStatus: 0
-        },
-        searchItemPop: {
-          appointmentDate: '',
-          carPlateNumberSearchKey: '',
-          carTypeSeries: '',
-          driverNameSearchKey: '',
-          routerDetailSeries: '',
-          series: ''
+          mobilePhoneSearchKey: '',
+          registerEndTime: '',
+          registerStartTime: '',
+          registerTime: ''
         },
         tableData: [],
+        customerSales: [],
         searching: false,
-        addDialog: false,
-        driverModel: [],
-        dialogTableVisible: false,
-        innerVisible: false,
+        popDialog: false,
         pickerOptions: {
           disabledDate (time) {
             return time.getTime() > Date.now()
           },
           shortcuts: [{
-            text: '今天',
+            text: '最近一周',
             onClick (picker) {
-              picker.$emit('pick', new Date())
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
             }
           }, {
-            text: '昨天',
+            text: '最近一个月',
             onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
             }
           }, {
-            text: '一周前',
+            text: '最近三个月',
             onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
             }
           }]
         }
@@ -275,81 +200,41 @@
       totalPage () {
         return this.tableData.length
       },
-      addTotalPage () {
-        return this.driverModel.length
-      },
       tableInlineData () {
         return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
-      },
-      tablePopData () {
-        this.driverModel.forEach((item) => {
-          item.district = `${item.prvRealName}/${item.cityRealName}/${item.cityAreaRealName}`
-        })
-        return this.driverModel.slice((this.curPage - 1) * this.pgSize, this.curPage * this.pgSize)
       }
     },
     created () {
-      this._getRouterAliaList({
-        customerNumId: this.customerNumId
-      })
-      this._getCarTypeList({
-        customerNumId: this.customerNumId
-      })
-      this._getOrderByCustomerNumId({
-        current: this.currentPage,
-        pageSize: 1000,
+      this._getAllSaleList({
         customerNumId: this.customerNumId,
-        carType: this.searchItem.carType,
-        appointmentDate: this.searchItem.appointmentDate,
+        franchiseeId: this.franchiseeId
+      })
+      this._getAllMasterCustomer({
+        current: this.currentPage,
+        pageSize: this.pageSize,
+        customerNumId: this.customerNumId,
+        saleId: this.searchItem.saleId,
+        contactNameSearchKey: this.searchItem.contactNameSearchKey,
         customerNameSearchKey: this.searchItem.customerNameSearchKey,
-        routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-        routerNumberSearchKey: this.searchItem.routerNumberSearchKey
+        mobilePhoneSearchKey: this.searchItem.mobilePhoneSearchKey,
+        registerEndTime: this.searchItem.registerEndTime,
+        registerStartTime: this.searchItem.registerStartTime
       })
     },
     methods: {
-      _confirmDriver (params) {
-        confirmDriver(params).then(res => {
+      _getAllMasterCustomer (params) {
+        getAllMasterCustomer(params).then(res => {
           if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '指派成功!'
-            })
+            this.tableData = res.customerMaster
           }
         }).catch(err => {
           console.log(err)
         })
       },
-      _selectDriver (params) {
-        selectDriver(params).then(res => {
+      _getAllSaleList (params) {
+        getAllSaleList(params).then(res => {
           if (res.code === 0) {
-            this.driverModel = res.driverModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getOrderByCustomerNumId (params) {
-        getOrderByCustomerNumId(params).then(res => {
-          if (res.code === 0) {
-            this.tableData = res.orderModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getCarTypeList (params) {
-        getCarTypeList(params).then(res => {
-          if (res.code === 0) {
-            this.carTypes = res.carTypes
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getRouterAliaList (params) {
-        getRouterAliaList(params).then(res => {
-          if (res.code === 0) {
-            this.routerDetail = res.routerDetail
+            this.customerSales = res.customerSales
           }
         }).catch(err => {
           console.log(err)
@@ -360,42 +245,22 @@
           current: this.currentPage,
           pageSize: this.pageSize,
           customerNumId: this.customerNumId,
-          deliverStatus: this.searchItem.deliverStatus,
-          carType: this.searchItem.carType,
-          appointmentDate: this.searchItem.appointmentDate,
+          saleId: this.searchItem.saleId,
+          contactNameSearchKey: this.searchItem.contactNameSearchKey,
           customerNameSearchKey: this.searchItem.customerNameSearchKey,
-          routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-          routerNumberSearchKey: this.searchItem.routerNumberSearchKey
+          mobilePhoneSearchKey: this.searchItem.mobilePhoneSearchKey,
+          registerEndTime: this.searchItem.registerEndTime,
+          registerStartTime: this.searchItem.registerStartTime
         }
-        this._getOrderByCustomerNumId(params)
+        console.log(params)
+        this._getAllMasterCustomer(params)
       },
-      onSearchPop () {
-        this._selectDriver({
-          current: this.curPage,
-          pageSize: this.pgSize,
-          customerNumId: this.customerNumId,
-          appointmentDate: this.searchItemPop.appointmentDate,
-          carPlateNumberSearchKey: this.searchItemPop.carPlateNumberSearchKey,
-          carTypeSeries: this.searchItemPop.carTypeSeries,
-          driverNameSearchKey: this.searchItemPop.driverNameSearchKey,
-          routerDetailSeries: this.searchItemPop.routerDetailSeries
-        })
+      onRegisterTimeChange (time) {
+        this.searchItem.registerStartTime = time[0]
+        this.searchItem.registerEndTime = time[1]
       },
-      onAssign (index, row) {
-        this.addDialog = true
-        this.searchItemPop.appointmentDate = row.appointmentDate
-        this.searchItemPop.carTypeSeries = row.carType
-        this.searchItemPop.routerDetailSeries = row.routerDetailSeries
-        this.searchItemPop.series = row.series
-        // 加载全部数据
-        this.onSearchPop()
-      },
-      onAssignConfirm (row) {
-        this._confirmDriver({
-          customerNumId: this.customerNumId,
-          driverSeries: row.series,
-          orderSeries: this.searchItemPop.series
-        })
+      onView () {
+        this.popDialog = true
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
@@ -411,20 +276,6 @@
         //   pageSize: val,
         //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
         // })
-      },
-      handleSzChange (val) {
-        this.pgSize = val
-      },
-      handleCurChange (val) {
-        this.curPage = val
-        // this._getAllEmployee({
-        //   current: this.curPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeJobNumSearchKey: '',
-        //   employeeNameSearchKey: '',
-        //   jobId: 0,
-        //   pageSize: this.pgSize
-        // })
       }
     }
   }
@@ -435,6 +286,10 @@
 
   .page {
     .block {
+      padding: 10px 0;
+      text-align: left;
+    }
+    .pagination-wrapper {
       padding: 10px 0;
       text-align: right;
     }

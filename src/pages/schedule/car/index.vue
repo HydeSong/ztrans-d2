@@ -3,7 +3,7 @@
     <template>
       <el-form :inline="true" :model="searchItem">
         <el-form-item>
-          <el-select v-model="searchItem.routerDetailAliaSearchKey" placeholder="线路别名">
+          <el-select v-model="searchItem.routerDetailAliaSearchKey" placeholder="线路别名" clearable>
             <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
           </el-select>
         </el-form-item>
@@ -150,7 +150,7 @@
           append-to-body>
           <el-form :inline="true" :model="searchItem">
             <el-form-item>
-              <el-select v-model="addItemParam.routerDetailSeries" placeholder="线路别名">
+              <el-select v-model="addItemParam.routerDetailSeries" placeholder="线路别名" clearable>
                 <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.series"></el-option>
               </el-select>
             </el-form-item>

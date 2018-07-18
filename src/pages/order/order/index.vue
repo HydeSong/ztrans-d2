@@ -9,12 +9,12 @@
           <el-input v-model="searchItem.routerNumberSearchKey" placeholder="线路编号"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchItem.routerAliaSearchKey" placeholder="线路别名">
+          <el-select v-model="searchItem.routerAliaSearchKey" placeholder="线路别名" clearable>
             <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchItem.carType" placeholder="车型">
+          <el-select v-model="searchItem.carType" placeholder="车型" clearable>
             <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
           </el-select>
         </el-form-item>
