@@ -49,6 +49,36 @@ const frameIn = [
     children: (pre => [
       { path: 'car', name: `${pre}car`, component: () => import('@/pages/order/car'), meta: { ...meta, title: '指派车辆' } }
     ])('order-')
+  },
+  {
+    path: '/customer',
+    name: 'customer',
+    meta,
+    redirect: { name: 'customer-list' },
+    component: () => import('@/components/core/d2-layout-main'),
+    children: (pre => [
+      { path: 'list', name: `${pre}list`, component: () => import('@/pages/customer/list'), meta: { ...meta, title: '客户列表' } }
+    ])('customer-')
+  },
+  {
+    path: '/truck',
+    name: 'truck',
+    meta,
+    redirect: { name: 'truck-list' },
+    component: () => import('@/components/core/d2-layout-main'),
+    children: (pre => [
+      { path: 'list', name: `${pre}list`, component: () => import('@/pages/truck/list'), meta: { ...meta, title: '车辆列表' } }
+    ])('truck-')
+  },
+  {
+    path: '/price',
+    name: 'price',
+    meta,
+    redirect: { name: 'price-list' },
+    component: () => import('@/components/core/d2-layout-main'),
+    children: (pre => [
+      { path: 'list', name: `${pre}list`, component: () => import('@/pages/price/list'), meta: { ...meta, title: '报价列表' } }
+    ])('price-')
   }
 ]
 
