@@ -1,2 +1,0 @@
-webpackJsonp([11],{Xk2V:function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var s={render:function(){var t=this.$createElement,e=this._self._c||t;return e("d2-container",{attrs:{type:"full"}},[e("d2-page-cover",{attrs:{title:"欢迎使用中福通物流系统","sub-title":""}},[e("img",{attrs:{src:this.$assetsPublicPath+"static/image/icon/500/d2admin.png"}})])],1)},staticRenderFns:[]},l=n("VU/8")(null,s,!1,null,null,null);e.default=l.exports}});
-//# sourceMappingURL=11.b58aab5789ff217fa6d2.js.map
