@@ -23,7 +23,8 @@ const order = {
   title: '订单管理',
   icon: 'file-text',
   children: (pre => [
-    { path: `${pre}car`, title: '指派车辆', icon: 'truck' }
+    { path: `${pre}car`, title: '指派车辆', icon: 'truck' },
+    { path: `${pre}order`, title: '订单', icon: 'file-text' }
   ])('/order/')
 }
 
