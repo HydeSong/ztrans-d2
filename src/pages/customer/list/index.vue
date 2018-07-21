@@ -11,26 +11,11 @@
         <el-form-item>
           <el-input v-model="searchItem.mobilePhoneSearchKey" placeholder="联系电话"></el-input>
         </el-form-item>
-        <!--<el-form-item>-->
-          <!--<el-select v-model="searchItem.routerAliaSearchKey" placeholder="所在地区">-->
-            <!--<el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
         <el-form-item>
           <el-select v-model="searchItem.saleId" placeholder="销售员" clearable>
             <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
           </el-select>
         </el-form-item>
-        <!--<el-form-item>-->
-          <!--<el-select v-model="searchItem.carType" placeholder="客户类型">-->
-            <!--<el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item>-->
-          <!--<el-select v-model="searchItem.carType" placeholder="服务类型">-->
-            <!--<el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
         <el-date-picker
           v-model="searchItem.registerTime"
           @change="onRegisterTimeChange"
@@ -44,6 +29,9 @@
         </el-date-picker>
         <el-form-item>
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onAdd" icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -66,14 +54,6 @@
           prop="customerSimpleCode"
           label="客户代码">
         </el-table-column>
-        <!--<el-table-column-->
-          <!--prop="carTypeName"-->
-          <!--label="客户类型">-->
-        <!--</el-table-column>-->
-        <!--<el-table-column-->
-          <!--prop="wetherTakeover"-->
-          <!--label="服务类型">-->
-        <!--</el-table-column>-->
         <el-table-column
           prop="prvCityArea"
           label="所在地区">
@@ -97,9 +77,11 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="100">
+          width="160">
           <template slot-scope="scope">
+            <el-button @click="onEditCustomer(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="onView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="onDeleteCustomer(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -118,30 +100,77 @@
         <div class="block">
           客户信息
         </div>
-        <div class="content">
-          <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-          </ul>
+        <div class="block">
+          <el-row>
+            <el-col :span="12">
+              <ul class="i-list">
+                <li>客户名称：{{customerDetail.customerName}}</li>
+                <li>所在地区：{{customerDetail.prvRealName}}{{customerDetail.cityRealName}}{{customerDetail.cityAreaRealName}}</li>
+                <li>销售员：{{customerDetail.saleName}}</li>
+                <li>注册时间：{{customerDetail.finalDate}}</li>
+              </ul>
+            </el-col>
+            <el-col :span="12">
+              <ul class="i-list">
+                <li>客户代码：{{customerDetail.customerSimpleCode}}</li>
+                <li>详细地址：{{customerDetail.detailAddress}}</li>
+                <li>客户类型：{{customerDetail.customerTypeName}}</li>
+                <li>服务类型：{{customerDetail.serviceTypeName}}</li>
+              </ul>
+            </el-col>
+          </el-row>
         </div>
         <div class="block">
           联系人信息
-          <el-button style="float: right; padding: 2px 0" type="text">添加联系人</el-button>
+          <el-button style="padding: 2px 0" type="text">添加联系人</el-button>
         </div>
-
+        <div class="block">
+          <el-table
+            :data="constantDetail"
+            highlight-current-row
+            style="width: 100%"
+            stripe>
+            <el-table-column
+              fixed
+              type="index"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              fixed
+              prop="contactName"
+              label="联系人">
+            </el-table-column>
+            <el-table-column
+              width="140"
+              prop="contactPhone"
+              label="联系电话">
+            </el-table-column>
+            <el-table-column
+              prop="wxName"
+              label="微信名称">
+            </el-table-column>
+            <el-table-column
+              prop="activeDtme"
+              label="创建日期">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="100">
+              <template slot-scope="scope">
+                <el-button @click="onEditContact(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+                <el-button @click="onDeleteContact(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </el-dialog>
     </template>
   </d2-container>
 </template>
 
 <script>
-  import { getAllMasterCustomer, getAllSaleList } from '@/api/customer'
+  import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact } from '@/api/customer'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -162,6 +191,8 @@
         },
         tableData: [],
         customerSales: [],
+        customerDetail: {},
+        constantDetail: [],
         searching: false,
         popDialog: false,
         pickerOptions: {
@@ -231,6 +262,39 @@
           console.log(err)
         })
       },
+      _getMasterCustomerDetail (params) {
+        getMasterCustomerDetail(params).then(res => {
+          if (res.code === 0) {
+            this.constantDetail = res.constantDetailModel
+            this.customerDetail = res.customerMaster
+            console.log(this.customerDetail)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _deleteMasterCustomer (params, index) {
+        deleteMasterCustomer(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.tableData.splice(index, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _addMasterCustomer (params) {
+        addMasterCustomer(params).then(res => {
+          if (res.code === 0) {
+            console.log(res)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getAllSaleList (params) {
         getAllSaleList(params).then(res => {
           if (res.code === 0) {
@@ -240,8 +304,21 @@
           console.log(err)
         })
       },
+      _deleteCustomerContact (params, index) {
+        deleteCustomerContact(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.constantDetail.splice(index, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       onSearch () {
-        const params = {
+        this._getAllMasterCustomer({
           current: this.currentPage,
           pageSize: this.pageSize,
           customerNumId: this.customerNumId,
@@ -251,15 +328,57 @@
           mobilePhoneSearchKey: this.searchItem.mobilePhoneSearchKey,
           registerEndTime: this.searchItem.registerEndTime,
           registerStartTime: this.searchItem.registerStartTime
-        }
-        this._getAllMasterCustomer(params)
+        })
+      },
+      onAdd () {
+        console.log('add......')
+        this._addMasterCustomer({})
       },
       onRegisterTimeChange (time) {
         this.searchItem.registerStartTime = time[0]
         this.searchItem.registerEndTime = time[1]
       },
-      onView () {
+      onView (index, row) {
         this.popDialog = true
+        this._getMasterCustomerDetail({
+          customerNumId: this.customerNumId,
+          customerMasterId: row.customerMasterId
+        })
+      },
+      onEditCustomer () {
+        console.log('edit...')
+      },
+      onEditContact () {
+        console.log('edit...')
+      },
+      onDeleteCustomer (index, row) {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteMasterCustomer({
+            customerNumId: this.customerNumId,
+            series: row.customerMasterId
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
+        })
+      },
+      onDeleteContact (index, row) {
+        console.log(index, row)
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteCustomerContact({
+            customerNumId: this.customerNumId,
+            customerContactId: row.customerContactId
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
+        })
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
@@ -285,12 +404,20 @@
 
   .page {
     .block {
-      padding: 10px 0;
+      padding: 10px 30px;
       text-align: left;
     }
     .pagination-wrapper {
       padding: 10px 0;
       text-align: right;
+    }
+    .i-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      & li{
+        padding: 5px 15px;
+      }
     }
   }
 </style>
