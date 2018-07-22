@@ -83,3 +83,16 @@ export function deleteCustomerContact (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function updateMasterCustomer (params) {
+  const url = `${CONFIG.HOST}/updateMasterCustomer`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}

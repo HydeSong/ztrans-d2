@@ -122,7 +122,7 @@
         </div>
         <div class="block">
           联系人信息
-          <el-button style="padding: 2px 0" type="text">添加联系人</el-button>
+          <el-button style="padding: 2px 0" type="text" @click="onAddContact">添加联系人</el-button>
         </div>
         <div class="block">
           <el-table
@@ -165,12 +165,32 @@
           </el-table>
         </div>
       </el-dialog>
+      <el-dialog title="编辑客户" :visible.sync="editCustomerPopDialog">
+        <div class="block">
+          编辑客户
+        </div>
+      </el-dialog>
+      <el-dialog title="新增客户" :visible.sync="addCustomerPopDialog">
+        <div class="block">
+          新增客户
+        </div>
+      </el-dialog>
+      <el-dialog title="编辑联系人" :visible.sync="editContactPopDialog">
+        <div class="block">
+          编辑联系人
+        </div>
+      </el-dialog>
+      <el-dialog title="新增联系人" :visible.sync="addContactPopDialog">
+        <div class="block">
+          新增联系人
+        </div>
+      </el-dialog>
     </template>
   </d2-container>
 </template>
 
 <script>
-  import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact } from '@/api/customer'
+  import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact, updateMasterCustomer } from '@/api/customer'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -195,6 +215,10 @@
         constantDetail: [],
         searching: false,
         popDialog: false,
+        editCustomerPopDialog: false,
+        addCustomerPopDialog: false,
+        editContactPopDialog: false,
+        addContactPopDialog: false,
         pickerOptions: {
           disabledDate (time) {
             return time.getTime() > Date.now()
@@ -295,6 +319,15 @@
           console.log(err)
         })
       },
+      _updateMasterCustomer (params) {
+        updateMasterCustomer(params).then(res => {
+          if (res.code === 0) {
+            console.log(res)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getAllSaleList (params) {
         getAllSaleList(params).then(res => {
           if (res.code === 0) {
@@ -331,8 +364,8 @@
         })
       },
       onAdd () {
-        console.log('add......')
-        this._addMasterCustomer({})
+        this.addCustomerPopDialog = true
+        // this._addMasterCustomer({})
       },
       onRegisterTimeChange (time) {
         this.searchItem.registerStartTime = time[0]
@@ -346,10 +379,13 @@
         })
       },
       onEditCustomer () {
-        console.log('edit...')
+        this.editCustomerPopDialog = true
       },
       onEditContact () {
-        console.log('edit...')
+        this.editContactPopDialog = true
+      },
+      onAddContact () {
+        this.addContactPopDialog = true
       },
       onDeleteCustomer (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
