@@ -166,23 +166,248 @@
         </div>
       </el-dialog>
       <el-dialog title="编辑客户" :visible.sync="editCustomerPopDialog">
-        <div class="block">
-          编辑客户
+        <el-form :inline="true" :model="editCustomerItem">
+          <el-form-item>
+            <el-select v-model="editCustomerItem.serviceType" placeholder="服务类型" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.caculateType" placeholder="结算方式" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.checkStatus" placeholder="审核状态" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.cityAreaName" placeholder="区Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.cityName" placeholder="市Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.customerLevel" placeholder="客户级别Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.customerSource" placeholder="客户来源" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.customerType" placeholder="客户类型Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.orderLevel" placeholder="下单级别Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.prvName" placeholder="省Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.saleId" placeholder="销售ID" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editCustomerItem.checkRemark" placeholder="审核备注"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editCustomerItem.customerName" placeholder="大客户名字"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editCustomerItem.customerNumId" placeholder="用户id"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editCustomerItem.customerSimpleCode" placeholder="大客户简码"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editCustomerItem.detailAddress" placeholder="详细地址"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editCustomerItem.finalDate" placeholder="最后合作日期"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editCustomerItem.series" placeholder="大客户Id"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editCustomerPopDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onEditCustomerConfirm">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="新增客户" :visible.sync="addCustomerPopDialog">
-        <div class="block">
-          新增客户
+        <el-form :inline="true" :model="addCustomerItem">
+          <el-form-item>
+            <el-select v-model="addCustomerItem.serviceType" placeholder="服务类型" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.caculateType" placeholder="结算方式" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.checkStatus" placeholder="审核状态" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.cityAreaName" placeholder="区Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.cityName" placeholder="市Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.customerLevel" placeholder="客户级别Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.customerSource" placeholder="客户来源" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.customerType" placeholder="客户类型Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.orderLevel" placeholder="下单级别Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.prvName" placeholder="省Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.saleId" placeholder="销售ID" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addCustomerItem.checkRemark" placeholder="审核备注"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addCustomerItem.customerName" placeholder="大客户名字"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addCustomerItem.customerNumId" placeholder="用户id"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addCustomerItem.customerSimpleCode" placeholder="大客户简码"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addCustomerItem.detailAddress" placeholder="详细地址"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addCustomerItem.finalDate" placeholder="最后合作日期"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addCustomerItem.series" placeholder="大客户Id"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addCustomerPopDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onAddCustomerConfirm">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="编辑联系人" :visible.sync="editContactPopDialog">
-        <div class="block">
-          编辑联系人
+        <el-form :inline="true" :model="editContactItem">
+          <el-form-item>
+            <el-input v-model="editContactItem.activeDtme" placeholder="激活时间"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.commendFranchisee" placeholder="推荐加盟商"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.commendSale" placeholder="推荐销售"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.contactName" placeholder="客户联系人姓名"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.contactOpenId" placeholder="客户联系人openid"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.contactPhone" placeholder="客户联系人电话"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.customerContactId" placeholder="联系人ID"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.customerMasterId" placeholder="大客户ID"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="editContactItem.customerNumId" placeholder="用户id"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editContactItem.activeStatus" placeholder="激活状态Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editContactPopDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onEditContactConfirm">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="新增联系人" :visible.sync="addContactPopDialog">
-        <div class="block">
-          新增联系人
+        <el-form :inline="true" :model="addContactItem">
+          <el-form-item>
+            <el-input v-model="addContactItem.activeDtme" placeholder="激活时间"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addContactItem.commendFranchisee" placeholder="推荐加盟商"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addContactItem.commendSale" placeholder="推荐销售"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addContactItem.contactName" placeholder="客户联系人姓名"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addContactItem.contactPhone" placeholder="客户联系人电话"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addContactItem.customerContactId" placeholder="联系人ID"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addContactItem.customerMasterId" placeholder="大客户ID"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="addContactItem.customerNumId" placeholder="用户id"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addContactItem.activeStatus" placeholder="激活状态Id" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addContactPopDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onAddContactConfirm">确 定</el-button>
         </div>
       </el-dialog>
     </template>
@@ -190,7 +415,7 @@
 </template>
 
 <script>
-  import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact, updateMasterCustomer } from '@/api/customer'
+  import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact, updateMasterCustomer, addCustomerContact, updateCustomerContact } from '@/api/customer'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -248,6 +473,68 @@
               picker.$emit('pick', [start, end])
             }
           }]
+        },
+        editCustomerItem: {
+          caculateType: '',
+          checkRemark: '',
+          checkStatus: '',
+          cityAreaName: '',
+          cityName: '',
+          customerLevel: '',
+          customerName: '',
+          customerNumId: '',
+          customerSimpleCode: '',
+          customerSource: '',
+          customerType: '',
+          detailAddress: '',
+          finalDate: '',
+          orderLevel: '',
+          prvName: '',
+          saleId: '',
+          series: '',
+          serviceType: ''
+        },
+        addCustomerItem: {
+          caculateType: '',
+          checkRemark: '',
+          checkStatus: '',
+          cityAreaName: '',
+          cityName: '',
+          customerLevel: '',
+          customerName: '',
+          customerNumId: '',
+          customerSimpleCode: '',
+          customerSource: '',
+          customerType: '',
+          detailAddress: '',
+          finalDate: '',
+          orderLevel: '',
+          prvName: '',
+          saleId: '',
+          serviceType: ''
+        },
+        editContactItem: {
+          activeDtme: '',
+          activeStatus: '',
+          commendFranchisee: '',
+          commendSale: '',
+          contactName: '',
+          contactOpenId: '',
+          contactPhone: '',
+          customerContactId: '',
+          customerMasterId: '',
+          customerNumId: ''
+        },
+        addContactItem: {
+          activeDtme: '',
+          activeStatus: '',
+          commendFranchisee: '',
+          commendSale: '',
+          contactName: '',
+          contactPhone: '',
+          customerContactId: '',
+          customerMasterId: '',
+          customerNumId: ''
         }
       }
     },
@@ -313,7 +600,24 @@
       _addMasterCustomer (params) {
         addMasterCustomer(params).then(res => {
           if (res.code === 0) {
-            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            })
+            this.addCustomerPopDialog = false
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _updateCustomerContact (params) {
+        updateCustomerContact(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
+            this.editContactPopDialog = false
           }
         }).catch(err => {
           console.log(err)
@@ -322,7 +626,11 @@
       _updateMasterCustomer (params) {
         updateMasterCustomer(params).then(res => {
           if (res.code === 0) {
-            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
+            this.editCustomerPopDialog = false
           }
         }).catch(err => {
           console.log(err)
@@ -350,6 +658,19 @@
           console.log(err)
         })
       },
+      _addCustomerContact (params) {
+        addCustomerContact(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            })
+            this.addContactPopDialog = false
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       onSearch () {
         this._getAllMasterCustomer({
           current: this.currentPage,
@@ -365,7 +686,9 @@
       },
       onAdd () {
         this.addCustomerPopDialog = true
-        // this._addMasterCustomer({})
+      },
+      onAddCustomerConfirm () {
+        this._addMasterCustomer(this.addCustomerItem)
       },
       onRegisterTimeChange (time) {
         this.searchItem.registerStartTime = time[0]
@@ -378,8 +701,12 @@
           customerMasterId: row.customerMasterId
         })
       },
-      onEditCustomer () {
+      onEditCustomer (index, row) {
         this.editCustomerPopDialog = true
+        this.editCustomerItem = Object.assign({}, this.editCustomerItem, row)
+      },
+      onEditCustomerConfirm () {
+        this._updateMasterCustomer(this.editCustomerItem)
       },
       onEditContact () {
         this.editContactPopDialog = true
@@ -415,6 +742,12 @@
         }).catch(() => {
           console.log('取消删除')
         })
+      },
+      onEditContactConfirm () {
+        this._updateCustomerContact(this.editContactItem)
+      },
+      onAddContactConfirm () {
+        this._addCustomerContact(this.addContactItem)
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)

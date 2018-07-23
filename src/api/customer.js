@@ -84,6 +84,32 @@ export function deleteCustomerContact (params) {
   return axios.get(url, {params: data})
 }
 
+export function updateCustomerContact (params) {
+  const url = `${CONFIG.HOST}/updateCustomerContact`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function addCustomerContact (params) {
+  const url = `${CONFIG.HOST}/addCustomerContact`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
 export function updateMasterCustomer (params) {
   const url = `${CONFIG.HOST}/updateMasterCustomer`
   const ts = timestamp()
