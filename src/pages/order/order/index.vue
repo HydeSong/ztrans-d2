@@ -222,6 +222,7 @@
         current: this.currentPage,
         pageSize: 1000,
         customerNumId: this.customerNumId,
+        deliverStatus: this.searchItem.deliverStatus,
         carType: this.searchItem.carType,
         appointmentDate: this.searchItem.appointmentDate,
         customerNameSearchKey: this.searchItem.customerNameSearchKey,
@@ -231,6 +232,7 @@
     },
     methods: {
       _getOrderByCustomerNumId (params) {
+        console.log(params)
         getOrderByCustomerNumId(params).then(res => {
           if (res.code === 0) {
             this.tableData = res.orderModel

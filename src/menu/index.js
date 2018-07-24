@@ -42,7 +42,7 @@ const truck = {
   title: '车辆管理',
   icon: 'truck',
   children: (pre => [
-    { path: `${pre}list`, title: '车辆列表', icon: 'list-ol' }
+    { path: `${pre}list`, title: '车辆管理', icon: 'truck' }
   ])('/truck/')
 }
 
