@@ -174,16 +174,16 @@
           </el-form-item>
           <el-form-item>
             <el-select v-model="editCustomerItem.caculateType" placeholder="结算方式" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerCaclulateTypeModels" :key="index" :label="item.customerCaclulateTypeName" :value="item.customerCaclulateTypeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="editCustomerItem.checkStatus" placeholder="审核状态" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="editCustomerItem.cityAreaName" placeholder="区Id" clearable>
+            <el-select v-model="editCustomerItem.prvName" placeholder="省Id" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
             </el-select>
           </el-form-item>
@@ -193,28 +193,28 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="editCustomerItem.customerLevel" placeholder="客户级别Id" clearable>
+            <el-select v-model="editCustomerItem.cityAreaName" placeholder="区Id" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="editCustomerItem.customerLevel" placeholder="客户级别Id" clearable>
+              <el-option v-for="(item, index) in customerLevelModels" :key="index" :label="item.customerLevelName" :value="item.customerLevelId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="editCustomerItem.customerSource" placeholder="客户来源" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerSourceModels" :key="index" :label="item.customerSourceName" :value="item.customerSourceId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="editCustomerItem.customerType" placeholder="客户类型Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerTypeModels" :key="index" :label="item.customerTypeName" :value="item.customerTypeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="editCustomerItem.orderLevel" placeholder="下单级别Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="editCustomerItem.prvName" placeholder="省Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerOrderLevelModels" :key="index" :label="item.customerOrderLevelName" :value="item.customerOrderLevelId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -258,16 +258,16 @@
           </el-form-item>
           <el-form-item>
             <el-select v-model="addCustomerItem.caculateType" placeholder="结算方式" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerCaclulateTypeModels" :key="index" :label="item.customerCaclulateTypeName" :value="item.customerCaclulateTypeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="addCustomerItem.checkStatus" placeholder="审核状态" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="addCustomerItem.cityAreaName" placeholder="区Id" clearable>
+            <el-select v-model="addCustomerItem.prvName" placeholder="省Id" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
             </el-select>
           </el-form-item>
@@ -277,28 +277,28 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="addCustomerItem.customerLevel" placeholder="客户级别Id" clearable>
+            <el-select v-model="addCustomerItem.cityAreaName" placeholder="区Id" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="addCustomerItem.customerLevel" placeholder="客户级别Id" clearable>
+              <el-option v-for="(item, index) in customerLevelModels" :key="index" :label="item.customerLevelName" :value="item.customerLevelId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="addCustomerItem.customerSource" placeholder="客户来源" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerSourceModels" :key="index" :label="item.customerSourceName" :value="item.customerSourceId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="addCustomerItem.customerType" placeholder="客户类型Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerTypeModels" :key="index" :label="item.customerTypeName" :value="item.customerTypeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select v-model="addCustomerItem.orderLevel" placeholder="下单级别Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="addCustomerItem.prvName" placeholder="省Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in customerOrderLevelModels" :key="index" :label="item.customerOrderLevelName" :value="item.customerOrderLevelId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -364,7 +364,7 @@
           </el-form-item>
           <el-form-item>
             <el-select v-model="editContactItem.activeStatus" placeholder="激活状态Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -401,7 +401,7 @@
           </el-form-item>
           <el-form-item>
             <el-select v-model="addContactItem.activeStatus" placeholder="激活状态Id" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -416,6 +416,7 @@
 
 <script>
   import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact, updateMasterCustomer, addCustomerContact, updateCustomerContact } from '@/api/customer'
+  import { getCheckStatus, getActiveStatus, getCustomerCaclulateType, getCustomerJob, getCustomerLevel, getCustomerOrderLevel, getCustomerSex, getCustomerSource, getCustomerType, getOperateStatus } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -535,7 +536,17 @@
           customerContactId: '',
           customerMasterId: '',
           customerNumId: ''
-        }
+        },
+        checkIdAndCheckStatus: [],
+        activeStatusModels: [],
+        customerCaclulateTypeModels: [],
+        customerJobModels: [],
+        customerLevelModels: [],
+        customerOrderLevelModels: [],
+        customerSexModels: [],
+        customerSourceModels: [],
+        customerTypeModels: [],
+        operateIdAndoperateStatus: []
       }
     },
     computed: {
@@ -562,8 +573,133 @@
         registerEndTime: this.searchItem.registerEndTime,
         registerStartTime: this.searchItem.registerStartTime
       })
+
+      // 获取字典接口数据
+      this._getCheckStatus({
+        customerNumId: this.customerNumId
+      })
+      this._getActiveStatus({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerCaclulateType({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerSource({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerType({
+        customerNumId: this.customerNumId
+      })
+      this._getOperateStatus({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerSource({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerSex({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerOrderLevel({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerLevel({
+        customerNumId: this.customerNumId
+      })
+      this._getCustomerJob({
+        customerNumId: this.customerNumId
+      })
     },
     methods: {
+      _getCheckStatus (params) {
+        getCheckStatus(params).then(res => {
+          if (res.code === 0) {
+            this.checkIdAndCheckStatus = res.checkIdAndCheckStatus
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getActiveStatus (params) {
+        getActiveStatus(params).then(res => {
+          if (res.code === 0) {
+            this.activeStatusModels = res.activeStatusModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCustomerCaclulateType (params) {
+        getCustomerCaclulateType(params).then(res => {
+          if (res.code === 0) {
+            this.customerCaclulateTypeModels = res.customerCaclulateTypeModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCustomerJob (params) {
+        getCustomerJob(params).then(res => {
+          if (res.code === 0) {
+            this.customerJobModels = res.customerJobModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCustomerLevel (params) {
+        getCustomerLevel(params).then(res => {
+          if (res.code === 0) {
+            this.customerLevelModels = res.customerLevelModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCustomerOrderLevel (params) {
+        getCustomerOrderLevel(params).then(res => {
+          if (res.code === 0) {
+            this.customerOrderLevelModels = res.customerOrderLevelModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCustomerSex (params) {
+        getCustomerSex(params).then(res => {
+          if (res.code === 0) {
+            this.customerSexModels = res.customerSexModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCustomerSource (params) {
+        getCustomerSource(params).then(res => {
+          if (res.code === 0) {
+            this.customerSourceModels = res.customerSourceModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCustomerType (params) {
+        getCustomerType(params).then(res => {
+          if (res.code === 0) {
+            this.customerTypeModels = res.customerTypeModels
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getOperateStatus (params) {
+        getOperateStatus(params).then(res => {
+          if (res.code === 0) {
+            this.operateIdAndoperateStatus = res.operateIdAndoperateStatus
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getAllMasterCustomer (params) {
         getAllMasterCustomer(params).then(res => {
           if (res.code === 0) {
@@ -659,6 +795,7 @@
         })
       },
       _addCustomerContact (params) {
+        console.log(params)
         addCustomerContact(params).then(res => {
           if (res.code === 0) {
             this.$message({
@@ -708,8 +845,10 @@
       onEditCustomerConfirm () {
         this._updateMasterCustomer(this.editCustomerItem)
       },
-      onEditContact () {
+      onEditContact (index, row) {
         this.editContactPopDialog = true
+        console.log(row)
+        this.editContactItem = row
       },
       onAddContact () {
         this.addContactPopDialog = true
