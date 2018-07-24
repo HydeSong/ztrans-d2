@@ -416,7 +416,7 @@
 
 <script>
   import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact, updateMasterCustomer, addCustomerContact, updateCustomerContact } from '@/api/customer'
-  import { getCheckStatus, getActiveStatus, getCustomerCaclulateType, getCustomerJob, getCustomerLevel, getCustomerOrderLevel, getCustomerSex, getCustomerSource, getCustomerType, getOperateStatus } from '@/api/dictionary'
+  import { getCheckStatus, getActiveStatus, getCustomerCaclulateType, getCustomerJob, getCustomerLevel, getCustomerOrderLevel, getCustomerSex, getCustomerSource, getCustomerType, getOperateStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -546,7 +546,11 @@
         customerSexModels: [],
         customerSourceModels: [],
         customerTypeModels: [],
-        operateIdAndoperateStatus: []
+        operateIdAndoperateStatus: [],
+        townNameAndTownIdModel: [],
+        prvNameAndPrvIds: [],
+        cityAreaNameAndCityAreaIdModel: [],
+        cityeNameAndCityeIds: []
       }
     },
     computed: {
@@ -608,8 +612,45 @@
       this._getCustomerJob({
         customerNumId: this.customerNumId
       })
+      // 省市区联动数据
     },
     methods: {
+      _getAllTown (params) {
+        getAllTown(params).then(res => {
+          if (res.code === 0) {
+            this.townNameAndTownIdModel = res.townNameAndTownIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllPrv (params) {
+        getAllTown(params).then(res => {
+          if (res.code === 0) {
+            this.prvNameAndPrvIds = res.prvNameAndPrvIds
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCityArea (params) {
+        getAllCityArea(params).then(res => {
+          if (res.code === 0) {
+            this.cityAreaNameAndCityAreaIdModel = res.cityAreaNameAndCityAreaIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCity (params) {
+        getAllCityArea(params).then(res => {
+          if (res.code === 0) {
+            this.cityeNameAndCityeIds = res.cityeNameAndCityeIds
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getCheckStatus (params) {
         getCheckStatus(params).then(res => {
           if (res.code === 0) {

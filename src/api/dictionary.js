@@ -131,3 +131,55 @@ export function getOperateStatus (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function getAllCity (params) {
+  const url = `${CONFIG.HOST}/getAllCity`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function getAllCityArea (params) {
+  const url = `${CONFIG.HOST}/getAllCityArea`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function getAllPrv (params) {
+  const url = `${CONFIG.HOST}/getAllPrv`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function getAllTown (params) {
+  const url = `${CONFIG.HOST}/getAllTown`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
