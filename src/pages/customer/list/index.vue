@@ -777,6 +777,8 @@
           if (res.code === 0) {
             this.constantDetail = res.constantDetailModel
             this.customerDetail = res.customerMaster
+            // 数据大客户编辑
+            this.editCustomerItem = Object.assign({}, this.editCustomerItem, res.customerMaster)
           }
         }).catch(err => {
           console.log(err)
@@ -911,10 +913,12 @@
       },
       onEditCustomer (index, row) {
         this.editCustomerPopDialog = true
-        this.editCustomerItem = Object.assign({}, this.editCustomerItem, row)
+        this._getMasterCustomerDetail({
+          customerNumId: this.customerNumId,
+          customerMasterId: row.customerMasterId
+        })
         this.editCustomerItem.customerNumId = this.customerNumId
         this.editCustomerItem.series = row.customerMasterId
-        console.log(row)
       },
       onEditCustomerConfirm () {
         this._updateMasterCustomer(this.editCustomerItem)
