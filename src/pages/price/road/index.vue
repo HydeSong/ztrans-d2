@@ -3,31 +3,18 @@
     <template>
       <el-form :inline="true" :model="searchItem">
         <el-form-item>
-          <el-input v-model="searchItem.customerNameSearchKey" placeholder="客户姓名"></el-input>
-        </el-form-item>
-        <el-form-item>
           <el-input v-model="searchItem.routerNumberSearchKey" placeholder="线路编号"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchItem.routerAliaSearchKey" placeholder="线路别名" clearable>
+          <el-select v-model="searchItem.routerDetailAliaSearchKey" placeholder="线路别名" clearable>
             <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchItem.carType" placeholder="车型" clearable>
-            <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-date-picker
-          v-model="searchItem.appointmentDate"
-          type="datetime"
-          placeholder="约车时间"
-          align="right"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          :picker-options="pickerOptions">
-        </el-date-picker>
-        <el-form-item>
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onAdd" icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -42,88 +29,25 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="series"
-          label="订单号">
+          prop="routerDetailSeries"
+          label="线路报价ID">
         </el-table-column>
         <el-table-column
-          width="140"
-          prop="routerAlisa"
-          label="线路别名（编号）">
+          prop="routerNumber"
+          label="线路编号">
         </el-table-column>
         <el-table-column
-          prop="carTypeName"
-          label="车型">
-        </el-table-column>
-        <el-table-column
-          prop="wetherTakeover"
-          label="需要搬卸">
-        </el-table-column>
-        <el-table-column
-          prop="appointmentDate"
-          label="用车时间">
-        </el-table-column>
-        <el-table-column
-          prop="initPrice"
-          label="起步价">
-        </el-table-column>
-        <el-table-column
-          prop="overstepPrice"
-          label="超出价格">
-        </el-table-column>
-        <el-table-column
-          prop="masterCustomerName"
-          label="客户姓名">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsLocationNum"
-          label="发货/收货点数">
-        </el-table-column>
-        <el-table-column
-          prop="createOrderName"
-          label="下单人">
-        </el-table-column>
-        <el-table-column
-          prop="createOrderTime"
-          label="下单时间">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsPersonName"
-          label="发货人">
-        </el-table-column>
-        <el-table-column
-          prop="sendAddressDetail"
-          label="发货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsPersonMobile"
-          label="发货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonName"
-          label="收货人">
-        </el-table-column>
-        <el-table-column
-          prop="receiveAddressDetail"
-          label="收货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonMobile"
-          label="收货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="goodsRemark"
-          label="货物描述">
-        </el-table-column>
-        <el-table-column
-          prop="remark"
-          label="补充信息">
+          prop="routerAlia"
+          label="线路别名">
         </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
-          width="100">
+          width="160">
           <template slot-scope="scope">
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">指派车辆</el-button>
+            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -210,7 +134,7 @@
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver } from '@/api/order'
+  import { getAllRouterPriceByRouterId } from '@/api/price'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -221,14 +145,11 @@
         curPage: 1,
         pgSize: 100,
         routerDetail: [],
-        carTypes: [],
         searchItem: {
-          carType: '',
-          appointmentDate: '',
-          customerNameSearchKey: '',
-          routerAliaSearchKey: '',
+          routerDetailAliaSearchKey: '',
+          routerDetailSeries: '',
           routerNumberSearchKey: '',
-          deliverStatus: 0
+          routerType: ''
         },
         searchItemPop: {
           appointmentDate: '',
@@ -292,55 +213,13 @@
       this._getRouterAliaList({
         customerNumId: this.customerNumId
       })
-      this._getCarTypeList({
-        customerNumId: this.customerNumId
-      })
-      this._getOrderByCustomerNumId({
-        current: this.currentPage,
-        pageSize: 1000,
-        customerNumId: this.customerNumId,
-        carType: this.searchItem.carType,
-        appointmentDate: this.searchItem.appointmentDate,
-        customerNameSearchKey: this.searchItem.customerNameSearchKey,
-        routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-        routerNumberSearchKey: this.searchItem.routerNumberSearchKey
-      })
+      this.onSearch()
     },
     methods: {
-      _confirmDriver (params) {
-        confirmDriver(params).then(res => {
+      _getAllRouterPriceByRouterId (params) {
+        getAllRouterPriceByRouterId(params).then(res => {
           if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '指派成功!'
-            })
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _selectDriver (params) {
-        selectDriver(params).then(res => {
-          if (res.code === 0) {
-            this.driverModel = res.driverModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getOrderByCustomerNumId (params) {
-        getOrderByCustomerNumId(params).then(res => {
-          if (res.code === 0) {
-            this.tableData = res.orderModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getCarTypeList (params) {
-        getCarTypeList(params).then(res => {
-          if (res.code === 0) {
-            this.carTypes = res.carTypes
+            this.tableData = res.allRouterPriceGetModels
           }
         }).catch(err => {
           console.log(err)
@@ -356,18 +235,17 @@
         })
       },
       onSearch () {
-        const params = {
+        this._getAllRouterPriceByRouterId({
           current: this.currentPage,
           pageSize: this.pageSize,
           customerNumId: this.customerNumId,
-          deliverStatus: this.searchItem.deliverStatus,
-          carType: this.searchItem.carType,
-          appointmentDate: this.searchItem.appointmentDate,
-          customerNameSearchKey: this.searchItem.customerNameSearchKey,
-          routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-          routerNumberSearchKey: this.searchItem.routerNumberSearchKey
-        }
-        this._getOrderByCustomerNumId(params)
+          routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
+          routerDetailSeries: this.searchItem.routerDetailSeries,
+          routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
+          routerType: this.searchItem.routerType
+        })
+      },
+      onAdd () {
       },
       onSearchPop () {
         this._selectDriver({

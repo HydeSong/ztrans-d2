@@ -51,7 +51,9 @@ const price = {
   title: '报价管理',
   icon: 'dollar',
   children: (pre => [
-    { path: `${pre}list`, title: '报价列表', icon: 'list-ol' }
+    { path: `${pre}road`, title: '线路报价', icon: 'chain' },
+    { path: `${pre}local`, title: '同城报价', icon: 'bandcamp' },
+    { path: `${pre}customer`, title: '客户报价', icon: 'address-book' }
   ])('/price/')
 }
 

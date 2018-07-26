@@ -68,17 +68,19 @@ const frameIn = [
     redirect: { name: 'truck-list' },
     component: () => import('@/components/core/d2-layout-main'),
     children: (pre => [
-      { path: 'list', name: `${pre}list`, component: () => import('@/pages/truck/list'), meta: { ...meta, title: '车辆列表' } }
+      { path: 'list', name: `${pre}list`, component: () => import('@/pages/truck/list'), meta: { ...meta, title: '车辆管理' } }
     ])('truck-')
   },
   {
     path: '/price',
     name: 'price',
     meta,
-    redirect: { name: 'price-list' },
+    redirect: { name: 'price-road' },
     component: () => import('@/components/core/d2-layout-main'),
     children: (pre => [
-      { path: 'list', name: `${pre}list`, component: () => import('@/pages/price/list'), meta: { ...meta, title: '报价列表' } }
+      { path: 'road', name: `${pre}road`, component: () => import('@/pages/price/road'), meta: { ...meta, title: '线路报价' } },
+      { path: 'local', name: `${pre}local`, component: () => import('@/pages/price/local'), meta: { ...meta, title: '同城报价' } },
+      { path: 'customer', name: `${pre}customer`, component: () => import('@/pages/price/customer'), meta: { ...meta, title: '客户报价' } }
     ])('price-')
   }
 ]

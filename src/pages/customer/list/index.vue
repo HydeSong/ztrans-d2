@@ -166,86 +166,73 @@
         </div>
       </el-dialog>
       <el-dialog title="编辑客户" :visible.sync="editCustomerPopDialog">
-        <el-form :inline="true" :model="editCustomerItem">
-          <el-form-item>
-            服务类型
+        <el-form :inline="true" :model="editCustomerItem" label-position="left">
+          <el-form-item label="服务类型">
             <el-select v-model="editCustomerItem.serviceType" clearable>
               <el-option v-for="(item, index) in serviceTypeModels" :key="index" :label="item.serviceTypeName" :value="item.serviceTypeId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            结算方式
+          <el-form-item label="结算方式">
             <el-select v-model="editCustomerItem.caculateType" clearable>
               <el-option v-for="(item, index) in customerCaclulateTypeModels" :key="index" :label="item.customerCaclulateTypeName" :value="item.customerCaclulateTypeId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            审核状态
+          <el-form-item label="审核状态">
             <el-select v-model="editCustomerItem.checkStatus" clearable>
               <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            省/市/区
+          <el-form-item label="省/市/区">
             <el-select v-model="editCustomerItem.prvName" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
             </el-select>
             <!-- editCustomerItem.cityName editCustomerItem.cityAreaName-->
           </el-form-item>
-          <el-form-item>
-            客户级别
+          <el-form-item label="客户级别">
             <el-select v-model="editCustomerItem.customerLevel" clearable>
               <el-option v-for="(item, index) in customerLevelModels" :key="index" :label="item.customerLevelName" :value="item.customerLevelId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            客户来源
+          <el-form-item label="客户来源">
             <el-select v-model="editCustomerItem.customerSource" clearable>
               <el-option v-for="(item, index) in customerSourceModels" :key="index" :label="item.customerSourceName" :value="item.customerSourceId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            客户类型
+          <el-form-item label="客户类型">
             <el-select v-model="editCustomerItem.customerType" clearable>
               <el-option v-for="(item, index) in customerTypeModels" :key="index" :label="item.customerTypeName" :value="item.customerTypeId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            下单级别
+          <el-form-item label="下单级别">
             <el-select v-model="editCustomerItem.orderLevel" clearable>
               <el-option v-for="(item, index) in customerOrderLevelModels" :key="index" :label="item.customerOrderLevelName" :value="item.customerOrderLevelId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            销售
+          <el-form-item label="销售">
             <el-select v-model="editCustomerItem.saleId" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            最后合作日期
+          <el-form-item label="最后合作日期">
             <el-date-picker
               v-model="editCustomerItem.finalDate"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
-          <el-form-item>
-            大客户名字
+          <el-form-item label="大客户名字">
             <el-input v-model="editCustomerItem.customerName"></el-input>
           </el-form-item>
-          <el-form-item>
-            大客户简码
+          <el-form-item label="大客户简码">
             <el-input v-model="editCustomerItem.customerSimpleCode"></el-input>
-          </el-form-item> 
-          <el-form-item>
-            详细地址
+          </el-form-item>
+          <el-form-item label="详细地址">
             <el-input type="textarea" v-model="editCustomerItem.detailAddress"></el-input>
           </el-form-item>
-          <el-form-item>
-            审核备注
+          <el-form-item label="审核备注">
             <el-input type="textarea" v-model="editCustomerItem.checkRemark"></el-input>
           </el-form-item>
         </el-form>
@@ -255,86 +242,73 @@
         </div>
       </el-dialog>
       <el-dialog title="添加客户" :visible.sync="addCustomerPopDialog">
-        <el-form :inline="true" :model="addCustomerItem">
-          <el-form-item>
-            服务类型
+        <el-form :inline="true" :model="addCustomerItem" label-position="left">
+          <el-form-item label="服务类型">
             <el-select v-model="addCustomerItem.serviceType" clearable>
               <el-option v-for="(item, index) in serviceTypeModels" :key="index" :label="item.serviceTypeName" :value="item.serviceTypeId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            结算方式
+          <el-form-item label="结算方式">
             <el-select v-model="addCustomerItem.caculateType" clearable>
               <el-option v-for="(item, index) in customerCaclulateTypeModels" :key="index" :label="item.customerCaclulateTypeName" :value="item.customerCaclulateTypeId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            审核状态
+          <el-form-item label="审核状态">
             <el-select v-model="addCustomerItem.checkStatus" clearable>
               <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            省/市/区
+          <el-form-item label="省/市/区">
             <el-select v-model="addCustomerItem.prvName" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
             </el-select>
             <!-- addCustomerItem.cityName addCustomerItem.cityAreaName -->
           </el-form-item>
-          <el-form-item>
-            客户级别
+          <el-form-item label="客户级别">
             <el-select v-model="addCustomerItem.customerLevel" clearable>
               <el-option v-for="(item, index) in customerLevelModels" :key="index" :label="item.customerLevelName" :value="item.customerLevelId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            客户来源
+          <el-form-item label="客户来源">
             <el-select v-model="addCustomerItem.customerSource" clearable>
               <el-option v-for="(item, index) in customerSourceModels" :key="index" :label="item.customerSourceName" :value="item.customerSourceId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            客户类型
+          <el-form-item label="客户类型">
             <el-select v-model="addCustomerItem.customerType" clearable>
               <el-option v-for="(item, index) in customerTypeModels" :key="index" :label="item.customerTypeName" :value="item.customerTypeId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            下单级别
+          <el-form-item label="下单级别">
             <el-select v-model="addCustomerItem.orderLevel" clearable>
               <el-option v-for="(item, index) in customerOrderLevelModels" :key="index" :label="item.customerOrderLevelName" :value="item.customerOrderLevelId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            销售
+          <el-form-item label="销售">
             <el-select v-model="addCustomerItem.saleId" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            最后合作日期
+          <el-form-item label="最后合作日期">
             <el-date-picker
               v-model="addCustomerItem.finalDate"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
-          <el-form-item>
-            大客户名字
+          <el-form-item label="大客户名字">
             <el-input v-model="addCustomerItem.customerName"></el-input>
           </el-form-item>
-          <el-form-item>
-            大客户简码
+          <el-form-item label="大客户简码">
             <el-input v-model="addCustomerItem.customerSimpleCode"></el-input>
           </el-form-item>
-          <el-form-item>
-            详细地址
+          <el-form-item label="详细地址">
             <el-input type="textarea" v-model="addCustomerItem.detailAddress"></el-input>
           </el-form-item>
-          <el-form-item>
-            审核备注
+          <el-form-item label="审核备注">
             <el-input type="textarea" v-model="addCustomerItem.checkRemark"></el-input>
           </el-form-item>
         </el-form>
@@ -344,35 +318,30 @@
         </div>
       </el-dialog>
       <el-dialog title="编辑联系人" :visible.sync="editContactPopDialog">
-        <el-form :inline="true" :model="editContactItem">
-          <el-form-item>
-            推荐加盟商
+        <el-form :inline="true" :model="editContactItem" label-position="left">
+          <el-form-item label="推荐加盟商">
             <el-input v-model="editContactItem.commendFranchisee"></el-input>
           </el-form-item>
-          <el-form-item>
-            推荐销售
+          <el-form-item label="推荐销售">
             <el-input v-model="editContactItem.commendSale"></el-input>
           </el-form-item>
-          <el-form-item>
-            联系人姓名
+          <el-form-item label="联系人姓名">
             <el-input v-model="editContactItem.contactName"></el-input>
           </el-form-item>
-          <el-form-item>
-            联系人电话
+          <el-form-item label="联系人电话">
             <el-input v-model="editContactItem.contactPhone"></el-input>
           </el-form-item>
-          <el-form-item>
-            激活时间
+          <el-form-item label="激活时间">
             <el-date-picker
               v-model="editContactItem.activeDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
-          <el-form-item>
-            激活状态
+          <el-form-item label="激活状态">
             <el-select v-model="editContactItem.activeStatus" clearable>
               <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
             </el-select>
@@ -384,36 +353,31 @@
         </div>
       </el-dialog>
       <el-dialog title="添加联系人" :visible.sync="addContactPopDialog">
-        <el-form :inline="true" :model="addContactItem">
-          <el-form-item>
-            推荐加盟商
+        <el-form :inline="true" :model="addContactItem" label-position="left">
+          <el-form-item label="推荐加盟商">
             <el-input v-model="addContactItem.commendFranchisee"></el-input>
           </el-form-item>
-          <el-form-item>
-            推荐销售
+          <el-form-item label="推荐销售">
             <el-input v-model="addContactItem.commendSale"></el-input>
           </el-form-item>
-          <el-form-item>
-            客户联系人姓名
+          <el-form-item label="客户联系人姓名">
             <el-input v-model="addContactItem.contactName"></el-input>
           </el-form-item>
-          <el-form-item>
-            客户联系人电话
+          <el-form-item label="客户联系人电话">
             <el-input v-model="addContactItem.contactPhone"></el-input>
           </el-form-item>
-          <el-form-item>
-            激活状态
+          <el-form-item label="激活状态">
             <el-select v-model="addContactItem.activeStatus" clearable>
               <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            激活时间
+          <el-form-item label="激活时间">
             <el-date-picker
               v-model="addContactItem.activeDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
