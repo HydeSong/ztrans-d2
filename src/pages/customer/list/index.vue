@@ -275,22 +275,11 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            省
+            省/市/区
             <el-select v-model="addCustomerItem.prvName" clearable>
               <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item>
-            市
-            <el-select v-model="addCustomerItem.cityName" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            区
-            <el-select v-model="addCustomerItem.cityAreaName" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
-            </el-select>
+            <!-- addCustomerItem.cityName addCustomerItem.cityAreaName -->
           </el-form-item>
           <el-form-item>
             客户级别
@@ -323,8 +312,14 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            审核备注
-            <el-input v-model="addCustomerItem.checkRemark"></el-input>
+            最后合作日期
+            <el-date-picker
+              v-model="addCustomerItem.finalDate"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              :picker-options="pickerOptions">
+            </el-date-picker>
           </el-form-item>
           <el-form-item>
             大客户名字
@@ -336,11 +331,11 @@
           </el-form-item>
           <el-form-item>
             详细地址
-            <el-input v-model="addCustomerItem.detailAddress"></el-input>
+            <el-input type="textarea" v-model="addCustomerItem.detailAddress"></el-input>
           </el-form-item>
           <el-form-item>
-            最后合作日期
-            <el-input v-model="addCustomerItem.finalDate"></el-input>
+            审核备注
+            <el-input type="textarea" v-model="addCustomerItem.checkRemark"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -798,6 +793,7 @@
         })
       },
       _addMasterCustomer (params) {
+        console.log(params)
         addMasterCustomer(params).then(res => {
           if (res.code === 0) {
             this.$message({
@@ -805,6 +801,7 @@
               message: '添加成功!'
             })
             this.addCustomerPopDialog = false
+            this.onSearch()
           }
         }).catch(err => {
           console.log(err)
@@ -893,6 +890,7 @@
       },
       onAdd () {
         this.addCustomerPopDialog = true
+        this.addCustomerItem.customerNumId = this.customerNumId
       },
       onAddCustomerConfirm () {
         this._addMasterCustomer(this.addCustomerItem)
