@@ -183,3 +183,16 @@ export function getAllTown (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function getServiceType (params) {
+  const url = `${CONFIG.HOST}/getServiceType`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
