@@ -14,7 +14,7 @@
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onAdd" icon="el-icon-plus">新增</el-button>
+          <el-button type="primary" @click="onAddRoadPrice" icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -45,8 +45,8 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="onEditRoadPrice(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="onViewRoadPrice(scope.$index, scope.row)" type="text" size="small">查看</el-button>
             <el-button @click="onDeleteRoadPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -62,18 +62,64 @@
           :total="totalPage">
         </el-pagination>
       </div>
-      <el-dialog title="指派车辆" :visible.sync="addDialog">
-        <el-form :inline="true" :model="searchItemPop">
-          <el-form-item>
-            <el-input v-model="searchItemPop.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="searchItemPop.driverNameSearchKey" placeholder="司机姓名"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
-          </el-form-item>
-        </el-form>
+      <el-dialog title="查看线路报价" :visible.sync="detailDialog">
+        <el-table
+          :data="tablePopData"
+          :span-method="objectSpanMethod"
+          highlight-current-row
+          style="width: 100%"
+          height="400">
+          <el-table-column
+            fixed
+            type="index"
+            width="50">
+          </el-table-column>
+          <el-table-column
+            prop="carTypeRealName"
+            label="车型"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="routerCustomerTypeTxt"
+            label="报价类型">
+          </el-table-column>
+          <el-table-column
+            prop="initPriceTxt"
+            label="起步价"
+            width="160">
+          </el-table-column>
+          <el-table-column
+            prop="overstepPriceTxt"
+            label="超过价格"
+            width="160">
+          </el-table-column>
+          <el-table-column
+            prop="franchiseeProportionTxt"
+            label="提成比例">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="120">
+            <template slot-scope="scope">
+              <el-button @click="onDeletePriceDetail(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @size-change="handleSzChange"
+            @current-change="handleCurChange"
+            :current-page="curPage"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="pgSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="addTotalPage">
+          </el-pagination>
+        </div>
+      </el-dialog>
+      <el-dialog title="编辑线路报价" :visible.sync="editDialog">
+        <!--:span-method="objectSpanMethod"-->
         <el-table
           :data="tablePopData"
           highlight-current-row
@@ -85,34 +131,90 @@
             width="50">
           </el-table-column>
           <el-table-column
-            prop="carPlateNumber"
-            label="车牌号"
+            prop="carTypeRealName"
+            label="车型"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="driverName"
-            label="司机姓名">
+            prop="routerCustomerType"
+            label="报价类型">
           </el-table-column>
           <el-table-column
-            prop="driverPhone"
-            label="手机号"
+            prop="initPrice"
+            label="起步价"
             width="160">
           </el-table-column>
           <el-table-column
-            prop="driverIdentityId"
-            label="身份证"
+            prop="overstepPrice"
+            label="超过价格"
             width="160">
           </el-table-column>
           <el-table-column
-            prop="cityName"
-            label="起始地->目的地">
+            prop="franchiseeProportion"
+            label="提成比例">
           </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
             width="120">
             <template slot-scope="scope">
-              <el-button @click="onAssignConfirm(scope.row)" type="text" size="small">确定此人接单</el-button>
+              <el-button @click="onAssignConfirm(scope.row)" type="text" size="small">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @size-change="handleSzChange"
+            @current-change="handleCurChange"
+            :current-page="curPage"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="pgSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="addTotalPage">
+          </el-pagination>
+        </div>
+      </el-dialog>
+      <el-dialog title="新增线路报价" :visible.sync="addDialog">
+        <!--:span-method="objectSpanMethod"-->
+        <el-table
+          :data="tablePopData"
+          highlight-current-row
+          style="width: 100%"
+          height="400">
+          <el-table-column
+            fixed
+            type="index"
+            width="50">
+          </el-table-column>
+          <el-table-column
+            prop="carTypeRealName"
+            label="车型"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="routerCustomerType"
+            label="报价类型">
+          </el-table-column>
+          <el-table-column
+            prop="initPrice"
+            label="起步价"
+            width="160">
+          </el-table-column>
+          <el-table-column
+            prop="overstepPrice"
+            label="超过价格"
+            width="160">
+          </el-table-column>
+          <el-table-column
+            prop="franchiseeProportion"
+            label="提成比例">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="120">
+            <template slot-scope="scope">
+              <el-button @click="onAssignConfirm(scope.row)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -134,7 +236,7 @@
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getAllRouterPriceByRouterId, deleteRouterPrice } from '@/api/price'
+  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, deleteRouterPrice } from '@/api/price'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -145,26 +247,18 @@
         curPage: 1,
         pgSize: 100,
         routerDetail: [],
+        routerPriceList: [],
         searchItem: {
           routerDetailAliaSearchKey: '',
           routerDetailSeries: '',
           routerNumberSearchKey: '',
           routerType: ''
         },
-        searchItemPop: {
-          appointmentDate: '',
-          carPlateNumberSearchKey: '',
-          carTypeSeries: '',
-          driverNameSearchKey: '',
-          routerDetailSeries: '',
-          series: ''
-        },
         tableData: [],
         searching: false,
+        detailDialog: false,
+        editDialog: false,
         addDialog: false,
-        driverModel: [],
-        dialogTableVisible: false,
-        innerVisible: false,
         pickerOptions: {
           disabledDate (time) {
             return time.getTime() > Date.now()
@@ -197,16 +291,19 @@
         return this.tableData.length
       },
       addTotalPage () {
-        return this.driverModel.length
+        return this.routerPriceList.length
       },
       tableInlineData () {
         return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
       },
       tablePopData () {
-        this.driverModel.forEach((item) => {
-          item.district = `${item.prvRealName}/${item.cityRealName}/${item.cityAreaRealName}`
+        this.routerPriceList.forEach((item) => {
+          item.routerCustomerTypeTxt = item.routerCustomerType === 0 ? '客户报价' : '司机报价'
+          item.franchiseeProportionTxt = `${item.franchiseeProportion}%`
+          item.overstepPriceTxt = `${item.overstepPrice}元/公里`
+          item.initPriceTxt = `${item.initPrice}元/${item.initDistance}公里`
         })
-        return this.driverModel.slice((this.curPage - 1) * this.pgSize, this.curPage * this.pgSize)
+        return this.routerPriceList
       }
     },
     created () {
@@ -216,6 +313,21 @@
       this.onSearch()
     },
     methods: {
+      objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          if (rowIndex % 2 === 0) {
+            return {
+              rowspan: 2,
+              colspan: 1
+            }
+          } else {
+            return {
+              rowspan: 0,
+              colspan: 0
+            }
+          }
+        }
+      },
       _getAllRouterPriceByRouterId (params) {
         getAllRouterPriceByRouterId(params).then(res => {
           if (res.code === 0) {
@@ -241,6 +353,26 @@
               type: 'success',
               message: '删除成功!'
             })
+            let idx = ''
+            if (index % 2 === 0) {
+              idx = index - 1
+            } else {
+              idx = index + 1
+            }
+            this.tablePopData.splice(index, 1)
+            this.tablePopData.splice(idx, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _deleteRouterByRouterId (params, index) {
+        deleteRouterByRouterId(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
             this.tableData.splice(index, 1)
           }
         }).catch(err => {
@@ -258,7 +390,8 @@
           routerType: this.searchItem.routerType
         })
       },
-      onAdd () {
+      onAddRoadPrice () {
+        this.addDialog = true
       },
       onSearchPop () {
         this._selectDriver({
@@ -272,14 +405,13 @@
           routerDetailSeries: this.searchItemPop.routerDetailSeries
         })
       },
-      onAssign (index, row) {
-        this.addDialog = true
-        this.searchItemPop.appointmentDate = row.appointmentDate
-        this.searchItemPop.carTypeSeries = row.carType
-        this.searchItemPop.routerDetailSeries = row.routerDetailSeries
-        this.searchItemPop.series = row.series
-        // 加载全部数据
-        this.onSearchPop()
+      onEditRoadPrice (index, row) {
+        this.editDialog = true
+      },
+      onViewRoadPrice (index, row) {
+        this.detailDialog = true
+        this.routerPriceList = row.routerPriceList
+        console.log(row)
       },
       onDeleteRoadPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
@@ -287,19 +419,26 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this._deleteRouterPrice({
+          this._deleteRouterByRouterId({
             customerNumId: this.customerNumId,
-            routerPriceId: row.routerDetailSeries
+            routerDetailSeries: row.routerDetailSeries
           }, index)
         }).catch(() => {
           console.log('取消删除')
         })
       },
-      onAssignConfirm (row) {
-        this._confirmDriver({
-          customerNumId: this.customerNumId,
-          driverSeries: row.series,
-          orderSeries: this.searchItemPop.series
+      onDeletePriceDetail (index, row) {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteRouterPrice({
+            customerNumId: this.customerNumId,
+            routerPriceId: row.routerPriceId
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
         })
       },
       handleSizeChange (val) {
@@ -336,8 +475,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/assets/style/public.scss';
-
   .page {
     .block {
       padding: 10px 0;

@@ -25,7 +25,7 @@
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="on" icon="el-icon-plus">新增</el-button>
+          <el-button type="primary" @click="onAddCar" icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -76,9 +76,9 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">查看</el-button>
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="onEditCar(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="onDetailCar(scope.$index, scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="onDeleteCar(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -93,18 +93,7 @@
           :total="totalPage">
         </el-pagination>
       </div>
-      <el-dialog title="指派车辆" :visible.sync="addDialog">
-        <el-form :inline="true" :model="searchItemPop">
-          <el-form-item>
-            <el-input v-model="searchItemPop.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="searchItemPop.driverNameSearchKey" placeholder="司机姓名"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
-          </el-form-item>
-        </el-form>
+      <el-dialog title="查看车辆" :visible.sync="detailCarDialog">
         <el-table
           :data="tablePopData"
           highlight-current-row
@@ -159,6 +148,96 @@
           </el-pagination>
         </div>
       </el-dialog>
+      <el-dialog title="添加车辆" :visible.sync="addCarPopDialog">
+        <el-form :inline="true" :model="addCarItem" label-position="left">
+          <el-form-item label="车队名字">
+            <el-select v-model="addCarItem.serviceType" clearable>
+              <el-option v-for="(item, index) in serviceTypeModels" :key="index" :label="item.serviceTypeName" :value="item.serviceTypeId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车辆颜色">
+            <el-select v-model="addCarItem.caculateType" clearable>
+              <el-option v-for="(item, index) in customerCaclulateTypeModels" :key="index" :label="item.customerCaclulateTypeName" :value="item.customerCaclulateTypeId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车型">
+            <el-select v-model="addCarItem.checkStatus" clearable>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车辆品牌">
+            <el-select v-model="addCarItem.checkStatus" clearable>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="省/市/区">
+            <el-select v-model="addCarItem.prvName" clearable>
+              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            </el-select>
+            <!-- addCustomerItem.cityName addCustomerItem.cityAreaName -->
+          </el-form-item>
+          <el-form-item label="申请时间">
+            <el-date-picker
+              v-model="addCarItem.finalDate"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :file-list="fileList2">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :file-list="fileList2">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :file-list="fileList2">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :file-list="fileList2">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
+              </el-upload>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addCarPopDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onAddCarConfirm">确 定</el-button>
+        </div>
+      </el-dialog>
     </template>
   </d2-container>
 </template>
@@ -166,7 +245,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllCar, getMotorcadeList } from '@/api/truck'
+  import { getAllCar, deleteCar, getMotorcadeList } from '@/api/truck'
   import { getCheckStatus } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -186,20 +265,30 @@
           driverPhoneSearchKey: '',
           motorcadeId: ''
         },
-        searchItemPop: {
-          appointmentDate: '',
-          carPlateNumberSearchKey: '',
-          carTypeSeries: '',
-          driverNameSearchKey: '',
-          routerDetailSeries: '',
-          series: ''
+        addCarItem: {
+          caculateType: '',
+          checkRemark: '',
+          checkStatus: '',
+          cityAreaName: '',
+          cityName: '',
+          customerLevel: '',
+          customerName: '',
+          customerNumId: '',
+          customerSimpleCode: '',
+          customerSource: '',
+          customerType: '',
+          detailAddress: '',
+          finalDate: '',
+          orderLevel: '',
+          prvName: '',
+          saleId: '',
+          serviceType: ''
         },
         tableData: [],
         searching: false,
-        addDialog: false,
+        detailCarDialog: false,
         driverModel: [],
-        dialogTableVisible: false,
-        innerVisible: false,
+        addCarPopDialog: false,
         pickerOptions: {
           disabledDate (time) {
             return time.getTime() > Date.now()
@@ -256,16 +345,7 @@
       this._getCarTypeList({
         customerNumId: this.customerNumId
       })
-      this._getAllCar({
-        current: this.currentPage,
-        pageSize: 1000,
-        customerNumId: this.customerNumId,
-        checkStatus: this.searchItem.checkStatus,
-        carPlateNumberSearchKey: this.searchItem.carPlateNumberSearchKey,
-        driverNameSearchKey: this.searchItem.driverNameSearchKey,
-        driverPhoneSearchKey: this.searchItem.driverPhoneSearchKey,
-        motorcadeId: this.searchItem.motorcadeId
-      })
+      this.onSearch()
       // 获取字典接口数据
       this._getCheckStatus({
         customerNumId: this.customerNumId
@@ -287,7 +367,20 @@
       _getMotorcadeList (params) {
         getMotorcadeList(params).then(res => {
           if (res.code === 0) {
-            this.tableData = res.cars
+            this.motorcadeNameList = res.motorcadeNameList
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _deleteCar (params, index) {
+        deleteCar(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.tableData.splice(index, 1)
           }
         }).catch(err => {
           console.log(err)
@@ -332,32 +425,29 @@
           motorcadeId: this.searchItem.motorcadeId
         })
       },
-      onSearchPop () {
-        this._selectDriver({
-          current: this.curPage,
-          pageSize: this.pgSize,
-          customerNumId: this.customerNumId,
-          appointmentDate: this.searchItemPop.appointmentDate,
-          carPlateNumberSearchKey: this.searchItemPop.carPlateNumberSearchKey,
-          carTypeSeries: this.searchItemPop.carTypeSeries,
-          driverNameSearchKey: this.searchItemPop.driverNameSearchKey,
-          routerDetailSeries: this.searchItemPop.routerDetailSeries
-        })
+      onAddCar () {
+        this.addCarPopDialog = true
       },
-      onAssign (index, row) {
-        this.addDialog = true
-        this.searchItemPop.appointmentDate = row.appointmentDate
-        this.searchItemPop.carTypeSeries = row.carType
-        this.searchItemPop.routerDetailSeries = row.routerDetailSeries
-        this.searchItemPop.series = row.series
-        // 加载全部数据
-        this.onSearchPop()
+      onAddCarConfirm () {
+
       },
-      onAssignConfirm (row) {
-        this._confirmDriver({
-          customerNumId: this.customerNumId,
-          driverSeries: row.series,
-          orderSeries: this.searchItemPop.series
+      onEditCar () {
+      },
+      onDetailCar () {
+      },
+      onDeleteCar (index, row) {
+        console.log(row)
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteCar({
+            customerNumId: this.customerNumId,
+            driverId: row.carId
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
         })
       },
       handleSizeChange (val) {
@@ -394,12 +484,13 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/assets/style/public.scss';
-
-  .page {
+.page {
     .block {
       padding: 10px 0;
       text-align: right;
+    }
+    .el-dialog__body {
+      text-align: center;
     }
   }
 </style>

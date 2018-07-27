@@ -32,6 +32,19 @@ export function getAllRouterCustomerPrice (params) {
   return axios.get(url, {params: data})
 }
 
+export function deleteRouterByRouterId (params) {
+  const url = `${CONFIG.HOST}/deleteRouterByRouterId`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
 export function deleteRouterPrice (params) {
   const url = `${CONFIG.HOST}/deleteRouterPrice`
   const ts = timestamp()

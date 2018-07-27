@@ -293,8 +293,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/assets/style/public.scss';
-
   .page {
     .block {
       padding: 10px 0;
