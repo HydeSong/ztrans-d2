@@ -229,7 +229,7 @@
         customerSeries: this.searchItem.customerSeries,
         routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
         routerDetailSeries: this.searchItem.routerDetailSeries,
-        routerNumberSearchKey: this.searchItem.routerNumberSearchKey ,
+        routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
         routerType: this.searchItem.routerType
       })
     },

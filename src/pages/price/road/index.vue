@@ -47,7 +47,7 @@
           <template slot-scope="scope">
             <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">查看</el-button>
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="onDeleteRoadPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -134,7 +134,7 @@
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getAllRouterPriceByRouterId } from '@/api/price'
+  import { getAllRouterPriceByRouterId, deleteRouterPrice } from '@/api/price'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -234,6 +234,19 @@
           console.log(err)
         })
       },
+      _deleteRouterPrice (params, index) {
+        deleteRouterPrice(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.tableData.splice(index, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       onSearch () {
         this._getAllRouterPriceByRouterId({
           current: this.currentPage,
@@ -267,6 +280,20 @@
         this.searchItemPop.series = row.series
         // 加载全部数据
         this.onSearchPop()
+      },
+      onDeleteRoadPrice (index, row) {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteRouterPrice({
+            customerNumId: this.customerNumId,
+            routerPriceId: row.routerDetailSeries
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
+        })
       },
       onAssignConfirm (row) {
         this._confirmDriver({
