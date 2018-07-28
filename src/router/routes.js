@@ -82,6 +82,16 @@ const frameIn = [
       { path: 'local', name: `${pre}local`, component: () => import('@/pages/price/local'), meta: { ...meta, title: '同城报价' } },
       { path: 'customer', name: `${pre}customer`, component: () => import('@/pages/price/customer'), meta: { ...meta, title: '客户报价' } }
     ])('price-')
+  },
+  {
+    path: '/orderprice',
+    name: 'orderprice',
+    meta,
+    redirect: { name: 'orderprice-list' },
+    component: () => import('@/components/core/d2-layout-main'),
+    children: (pre => [
+      { path: 'list', name: `${pre}list`, component: () => import('@/pages/orderprice/list'), meta: { ...meta, title: '订单费用' } }
+    ])('orderprice-')
   }
 ]
 

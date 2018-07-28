@@ -57,13 +57,23 @@ const price = {
   ])('/price/')
 }
 
+const orderprice = {
+  path: '/orderprice',
+  title: '订单费用',
+  icon: 'money',
+  children: (pre => [
+    { path: `${pre}list`, title: '订单费用', icon: 'list-ol' }
+  ])('/orderprice/')
+}
+
 // 菜单 侧边栏
 export const side = [
   schedule,
   order,
   customer,
   truck,
-  price
+  price,
+  orderprice
 ]
 
 // 菜单 顶栏
@@ -77,5 +87,6 @@ export default [
   order,
   customer,
   truck,
-  price
+  price,
+  orderprice
 ]
