@@ -70,3 +70,29 @@ export function updateBatchRouterPrice (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function getMasterCustomerList (params) {
+  const url = `${CONFIG.HOST}/getMasterCustomerList`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+export function deleteRouterCustomerPrice (params) {
+  const url = `${CONFIG.HOST}/deleteRouterCustomerPrice`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}

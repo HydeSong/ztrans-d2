@@ -192,8 +192,34 @@
         </div>
       </el-dialog>
       <el-dialog title="新增线路报价" :visible.sync="addDialog">
-        <!--:span-method="objectSpanMethod"-->
-        <el-table
+        <div class="block" style="text-align: left">
+          线路设置
+        </div>  
+        <div class="block" style="text-align: center">
+          <el-form :inline="true" :model="editItem">
+            <el-form-item label="线路编号">
+              <el-input v-model="editItem.routerNumberSearchKey" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="线路别名">
+              <el-input v-model="editItem.routerNumberSearchKey" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="起始点">
+              <el-cascader
+                :options="options"
+                change-on-select
+              ></el-cascader>
+            </el-form-item>
+            <el-form-item label="目的地">
+              <el-cascader
+                :options="options"
+                change-on-select
+              ></el-cascader>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="block" style="text-align: left">
+          报价设置
+          <el-table
           :data="tablePopData"
           highlight-current-row
           style="width: 100%"
@@ -235,16 +261,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block">
-          <el-pagination
-            @size-change="handleSzChange"
-            @current-change="handleCurChange"
-            :current-page="curPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pgSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="addTotalPage">
-          </el-pagination>
         </div>
       </el-dialog>
     </template>

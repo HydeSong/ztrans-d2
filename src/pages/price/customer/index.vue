@@ -3,15 +3,15 @@
     <template>
       <el-form :inline="true" :model="searchItem">
         <el-form-item>
-          <el-select v-model="searchItem.routerAliaSearchKey" placeholder="客户编号" clearable>
-            <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
+          <el-select v-model="searchItem.customerSeries" placeholder="客户编号" clearable>
+            <el-option v-for="(item, index) in customerMasterList" :key="index" :label="item.customerName" :value="item.customerMasterId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-input v-model="searchItem.routerNumberSearchKey" placeholder="线路编号"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchItem.routerAliaSearchKey" placeholder="线路别名" clearable>
+          <el-select v-model="searchItem.routerDetailAliaSearchKey" placeholder="线路别名" clearable>
             <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
           </el-select>
         </el-form-item>
@@ -50,9 +50,9 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">查看</el-button>
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+            <el-button type="text" size="small">编辑</el-button>
+            <el-button type="text" size="small">查看</el-button>
+            <el-button @click="onDeleteCustomerPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,7 +76,7 @@
             <el-input v-model="searchItemPop.driverNameSearchKey" placeholder="司机姓名"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" :loading="searching">查询</el-button>
           </el-form-item>
         </el-form>
         <el-table
@@ -139,7 +139,7 @@
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getAllRouterCustomerPrice } from '@/api/price'
+  import { getAllRouterCustomerPrice, getMasterCustomerList, deleteRouterCustomerPrice } from '@/api/price'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -197,7 +197,8 @@
               picker.$emit('pick', date)
             }
           }]
-        }
+        },
+        customerMasterList: []
       }
     },
     computed: {
@@ -221,19 +222,35 @@
       this._getRouterAliaList({
         customerNumId: this.customerNumId
       })
-      this._getAllRouterCustomerPrice({
-        current: this.currentPage,
-        pageSize: this.pageSize,
+      this._getMasterCustomerList({
         customerNumId: this.customerNumId,
-        carSizeNameAliaSearchKey: this.searchItem.carSizeNameAliaSearchKey,
-        customerSeries: this.searchItem.customerSeries,
-        routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
-        routerDetailSeries: this.searchItem.routerDetailSeries,
-        routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
-        routerType: this.searchItem.routerType
+        saleId: ''
       })
+      this.onSearch()
     },
     methods: {
+      _deleteRouterCustomerPrice (params, index) {
+        deleteRouterCustomerPrice(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.tableData.splice(index, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getMasterCustomerList (params) {
+        getMasterCustomerList(params).then(res => {
+          if (res.code === 0) {
+            this.customerMasterList = res.customerMasterList
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getAllRouterCustomerPrice (params) {
         getAllRouterCustomerPrice(params).then(res => {
           if (res.code === 0) {
@@ -257,42 +274,29 @@
           current: this.currentPage,
           pageSize: this.pageSize,
           customerNumId: this.customerNumId,
-          deliverStatus: this.searchItem.deliverStatus,
-          carType: this.searchItem.carType,
-          appointmentDate: this.searchItem.appointmentDate,
-          customerNameSearchKey: this.searchItem.customerNameSearchKey,
-          routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-          routerNumberSearchKey: this.searchItem.routerNumberSearchKey
+          carSizeNameAliaSearchKey: this.searchItem.carSizeNameAliaSearchKey,
+          customerSeries: this.searchItem.customerSeries,
+          routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
+          routerDetailSeries: this.searchItem.routerDetailSeries,
+          routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
+          routerType: this.searchItem.routerType
         })
       },
       onAdd () {
       },
-      onSearchPop () {
-        this._selectDriver({
-          current: this.curPage,
-          pageSize: this.pgSize,
-          customerNumId: this.customerNumId,
-          appointmentDate: this.searchItemPop.appointmentDate,
-          carPlateNumberSearchKey: this.searchItemPop.carPlateNumberSearchKey,
-          carTypeSeries: this.searchItemPop.carTypeSeries,
-          driverNameSearchKey: this.searchItemPop.driverNameSearchKey,
-          routerDetailSeries: this.searchItemPop.routerDetailSeries
-        })
-      },
-      onAssign (index, row) {
-        this.addDialog = true
-        this.searchItemPop.appointmentDate = row.appointmentDate
-        this.searchItemPop.carTypeSeries = row.carType
-        this.searchItemPop.routerDetailSeries = row.routerDetailSeries
-        this.searchItemPop.series = row.series
-        // 加载全部数据
-        this.onSearchPop()
-      },
-      onAssignConfirm (row) {
-        this._confirmDriver({
-          customerNumId: this.customerNumId,
-          driverSeries: row.series,
-          orderSeries: this.searchItemPop.series
+      onDeleteCustomerPrice (index, row) {
+        console.log(row)
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteRouterCustomerPrice({
+            customerNumId: this.customerNumId,
+            routerPriceId: row.routerDetailSeries
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
         })
       },
       handleSizeChange (val) {
