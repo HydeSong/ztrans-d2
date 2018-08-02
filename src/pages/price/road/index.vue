@@ -285,7 +285,7 @@
           routerDetailAliaSearchKey: '',
           routerDetailSeries: '',
           routerNumberSearchKey: '',
-          routerType: ''
+          routerType: 0
         },
         editItem: {
           routerNumberSearchKey: ''
@@ -623,18 +623,6 @@
       },
       onAddRoadPrice () {
         this.addDialog = true
-      },
-      onSearchPop () {
-        this._selectDriver({
-          current: this.curPage,
-          pageSize: this.pgSize,
-          customerNumId: this.customerNumId,
-          appointmentDate: this.searchItemPop.appointmentDate,
-          carPlateNumberSearchKey: this.searchItemPop.carPlateNumberSearchKey,
-          carTypeSeries: this.searchItemPop.carTypeSeries,
-          driverNameSearchKey: this.searchItemPop.driverNameSearchKey,
-          routerDetailSeries: this.searchItemPop.routerDetailSeries
-        })
       },
       onEditRoadPrice (index, row) {
         this.editDialog = true
