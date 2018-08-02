@@ -96,3 +96,16 @@ export function deleteRouterCustomerPrice (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function addRouterCustomerPrice (params) {
+  const url = `${CONFIG.HOST}/addRouterCustomerPrice`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}

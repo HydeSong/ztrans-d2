@@ -74,31 +74,15 @@
         </el-table-column>
         <el-table-column
           prop="orderMoney"
-          label="订单报价">
+          label="客户应付">
         </el-table-column>
         <el-table-column
           prop="driverMoney"
-          label="司机金额">
-        </el-table-column>
-        <el-table-column
-          prop="customerSaleMoney"
-          label="客户销售获得金额">
-        </el-table-column>
-        <el-table-column
-          prop="customerFranchiseeMoney"
-          label="客户加盟商获得金额">
-        </el-table-column>
-        <el-table-column
-          prop="driverSaleMoney"
-          label="司机销售获得金额">
-        </el-table-column>
-        <el-table-column
-          prop="driverFranchiseeMoney"
-          label="司机加盟商获得金额">
+          label="司机应收">
         </el-table-column>
         <el-table-column
           prop="platformMoney"
-          label="平台获得金额">
+          label="平台利润">
         </el-table-column>
       </el-table>
       <div class="pagination-wrapper">
@@ -195,7 +179,6 @@
         })
       },
       _getOrderPriceList (params) {
-        console.log(params)
         getOrderPriceList(params).then(res => {
           if (res.code === 0) {
             this.searching = false

@@ -122,8 +122,8 @@
         <!--:span-method="objectSpanMethod"-->
         <div class="block" style="text-align: left">
           线路设置
-        </div>  
-        <div class="block" style="text-align: center">
+        </div>
+        <div class="block" style="text-align: left">
           <el-form :inline="true" :model="editItem">
             <el-form-item label="线路编号">
               <el-input v-model="editItem.routerNumberSearchKey" placeholder=""></el-input>
@@ -194,8 +194,8 @@
       <el-dialog title="新增线路报价" :visible.sync="addDialog">
         <div class="block" style="text-align: left">
           线路设置
-        </div>  
-        <div class="block" style="text-align: center">
+        </div>
+        <div class="block" style="text-align: left">
           <el-form :inline="true" :model="editItem">
             <el-form-item label="线路编号">
               <el-input v-model="editItem.routerNumberSearchKey" placeholder=""></el-input>
