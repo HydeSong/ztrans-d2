@@ -269,7 +269,7 @@
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, deleteRouterPrice, updateBatchRouterPrice } from '@/api/price'
+  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, deleteRouterPrice } from '@/api/price'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -630,7 +630,6 @@
       onViewRoadPrice (index, row) {
         this.detailDialog = true
         this.routerPriceList = row.routerPriceList
-        console.log(row)
       },
       onDeleteRoadPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {

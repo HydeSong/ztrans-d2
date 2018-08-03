@@ -50,8 +50,8 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">查看</el-button>
+            <el-button @click="onEditCustomerPrice(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+            <!--<el-button type="text" size="small">查看</el-button>-->
             <el-button @click="onDeleteCustomerPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -170,7 +170,8 @@
             </el-table-column>
             <el-table-column
               prop="routerCustomerType"
-              label="报价类型">
+              label="报价类型"
+              :formatter="routerCustomerTypeFormat">
             </el-table-column>
             <el-table-column
               prop="initDistance"
@@ -196,7 +197,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="onDeletePrice(scope.$index, scope.row)">删除</el-button>
+                <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -213,8 +214,8 @@
         append-to-body>
         <el-form :inline="true" :model="childrenItem">
           <el-form-item label="车型">
-            <el-select v-model="childrenItem.carTypeName" placeholder="请选择" clearable>
-              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
+            <el-select v-model="childrenItem.carTypeName" placeholder="请选择" clearable @change="onCarTypeNameChange">
+              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -261,6 +262,147 @@
           <el-button type="primary" @click="onAddPriceConfirm">确 定</el-button>
         </span>
       </el-dialog>
+      <el-dialog title="编辑客户报价" :visible.sync="editDialog">
+        <div class="block" style="text-align: left">
+          线路设置
+        </div>
+        <div class="block" style="text-align: left; padding: 0 15px">
+          <el-form :inline="true" :model="addItem">
+            <el-form-item label="客户">
+              <el-select v-model="addItem.customerSeries" placeholder="请选择" clearable>
+                <el-option v-for="(item, index) in customerMasterList" :key="index" :label="item.customerName" :value="item.customerMasterId"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="线路编号">
+              <el-input v-model="addItem.routerNumber" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="线路别名">
+              <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="线路备注">
+              <el-input v-model="addItem.remark" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="起始点">
+              <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
+                <el-option
+                  v-for="item in allPrv"
+                  :key="item.prvId"
+                  :label="item.prvName"
+                  :value="item.prvId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceCity" placeholder="请选择市" @change="onSourceCityChange">
+                <el-option
+                  v-for="item in allCity"
+                  :key="item.cityId"
+                  :label="item.cityName"
+                  :value="item.cityId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceCityArea" placeholder="请选择区" @change="onSourceCityAreaChange">
+                <el-option
+                  v-for="item in allCityArea"
+                  :key="item.cityAreaId"
+                  :label="item.cityAreaName"
+                  :value="item.cityAreaId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceTown" placeholder="请选择镇">
+                <el-option
+                  v-for="item in allTown"
+                  :key="item.townId"
+                  :label="item.townName"
+                  :value="item.townId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="目的地">
+              <el-select v-model="addItem.destinationPrv" placeholder="请选择省" @change="onDestinationPrvChange">
+                <el-option
+                  v-for="item in allPrv"
+                  :key="item.prvId"
+                  :label="item.prvName"
+                  :value="item.prvId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.destinationCity" placeholder="请选择市" @change="onDestinationCityChange">
+                <el-option
+                  v-for="item in allCity"
+                  :key="item.cityId"
+                  :label="item.cityName"
+                  :value="item.cityId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.destinationCityArea" placeholder="请选择区" @change="onDestinationCityAreaChange">
+                <el-option
+                  v-for="item in allCityArea"
+                  :key="item.cityAreaId"
+                  :label="item.cityAreaName"
+                  :value="item.cityAreaId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.destinationTown" placeholder="请选择镇">
+                <el-option
+                  v-for="item in allTown"
+                  :key="item.townId"
+                  :label="item.townName"
+                  :value="item.townId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="block" style="text-align: left">
+          报价设置
+          <el-table
+            :data="priceSetAddList"
+            highlight-current-row
+            style="width: 100%">
+            <el-table-column
+              prop="carTypeRealName"
+              label="车型"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="routerCustomerType"
+              label="报价类型"
+              :formatter="routerCustomerTypeFormat">
+            </el-table-column>
+            <el-table-column
+              prop="initDistance"
+              label="起步距离(公里)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="initPrice"
+              label="起步价格(元)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="overstepPrice"
+              label="超出价格(元/公里)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="saleProportion"
+              label="提成比例">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="120">
+              <template slot-scope="scope">
+                <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editDialog = false">取 消</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
+          <el-button type="primary" @click="onEditConfirm">确 定</el-button>
+        </span>
+      </el-dialog>
     </template>
   </d2-container>
 </template>
@@ -268,7 +410,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllRouterCustomerPrice, getMasterCustomerList, deleteRouterCustomerPrice, addRouterCustomerPrice } from '@/api/price'
+  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, updateBatchRouterPrice } from '@/api/price'
   import { getAllPrv, getAllCity, getAllCityArea, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -287,9 +429,6 @@
           routerDetailSeries: '',
           routerNumberSearchKey: '',
           routerType: ''
-        },
-        editItem: {
-          routerNumberSearchKey: ''
         },
         addItem: {
           children: [],
@@ -310,7 +449,8 @@
         },
         childrenItem: {
           carTypeName: '',
-          routerType: 0
+          routerType: 0,
+          routerPriceList: []
         },
         priceSetAddList: [],
         priceSetAddItem0: {
@@ -340,6 +480,7 @@
         tableData: [],
         searching: false,
         addDialog: false,
+        editDialog: false,
         innerAddVisible: false,
         innerEditVisible: false,
         customerMasterList: [],
@@ -369,6 +510,9 @@
       this.onSearch()
     },
     methods: {
+      routerCustomerTypeFormat (val) {
+        return val.routerCustomerType === 0 ? '客户报价' : '司机报价'
+      },
       _getCarTypeList (params) {
         getCarTypeList(params).then(res => {
           if (res.code === 0) {
@@ -430,14 +574,28 @@
           console.log(err)
         })
       },
-      _deleteRouterCustomerPrice (params, index) {
-        deleteRouterCustomerPrice(params).then(res => {
+      _deleteRouterByRouterId (params, index) {
+        deleteRouterByRouterId(params).then(res => {
           if (res.code === 0) {
             this.$message({
               type: 'success',
               message: '删除成功!'
             })
             this.tableData.splice(index, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _updateBatchRouterPrice (params) {
+        updateBatchRouterPrice(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '编辑成功!'
+            })
+            this.editDialog = false
+            this.onSearch()
           }
         }).catch(err => {
           console.log(err)
@@ -490,10 +648,34 @@
           customerNumId: this.customerNumId,
           pageSize: 200
         })
+        // 清空数据
+        this.addItem = {
+          children: [],
+          customerNumId: '',
+          customerSeries: '',
+          destinationCity: '',
+          destinationCityArea: '',
+          destinationPrv: '',
+          destinationTown: '',
+          remark: '',
+          routerAlia: '',
+          routerNumber: '',
+          routerType: 0,
+          sourceCity: '',
+          sourceCityArea: '',
+          sourcePrv: '',
+          sourceTown: ''
+        }
+        this.priceSetAddList = []
       },
       onAddConfirm () {
         this.addItem.customerNumId = this.customerNumId
         this._addRouterCustomerPrice(this.addItem)
+      },
+      onEditConfirm () {
+        this.addItem.customerNumId = this.customerNumId
+        console.log(this.addItem)
+        this._updateBatchRouterPrice(this.addItem)
       },
       onAddPrice () {
         this.innerAddVisible = true
@@ -503,17 +685,48 @@
 
         // 清空数据
         this.childrenItem.carTypeName = ''
-        this.priceSetAddItem0 = {}
-        this.priceSetAddItem1 = {}
+        this.priceSetAddItem0 = {
+          carTypeName: '',
+          carTypeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 0,
+          routerPriceId: '',
+          routerType: '',
+          saleProportion: ''
+        }
+        this.priceSetAddItem1 = {
+          carTypeName: '',
+          carTypeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 1,
+          routerPriceId: '',
+          routerType: '',
+          saleProportion: ''
+        }
       },
-      onDeletePrice (index, row) {
-        console.log(index, row)
+      onDeletePrice (index) {
+        let idx = ''
+        if (index % 2 === 0) {
+          idx = index + 1
+        } else {
+          idx = index - 1
+        }
+        this.priceSetAddList.splice(index, 1)
+        this.priceSetAddList.splice(idx, 1)
       },
       onAddPriceConfirm () {
         this.innerAddVisible = false
+        this.childrenItem.carTypeName = this.priceSetAddItem0.carTypeName
         this.priceSetAddList.push(this.priceSetAddItem0)
         this.priceSetAddList.push(this.priceSetAddItem1)
-        this.childrenItem.routerPriceList = this.priceSetAddList
+        this.childrenItem.routerPriceList.push(this.priceSetAddItem0)
+        this.childrenItem.routerPriceList.push(this.priceSetAddItem1)
         this.addItem.children.push(this.childrenItem)
       },
       onDeleteCustomerPrice (index, row) {
@@ -522,13 +735,46 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this._deleteRouterCustomerPrice({
+          this._deleteRouterByRouterId({
             customerNumId: this.customerNumId,
             routerPriceId: row.routerDetailSeries
           }, index)
         }).catch(() => {
           console.log('取消删除')
         })
+      },
+      onEditCustomerPrice (index, row) {
+        console.log(row)
+        this._getAllPrv({
+          current: 1,
+          customerNumId: this.customerNumId,
+          pageSize: 200
+        })
+
+        this.addItem.children = []
+        this.addItem.children.push({
+          carTypeName: row.routerPriceList[0].carTypeName,
+          routerType: 0,
+          routerPriceList: row.routerPriceList
+        })
+
+        this.addItem.customerNumId = row.customerNumId
+        this.addItem.customerSeries = row.customerSeries
+        this.addItem.destinationCity = row.destinationCity
+        this.addItem.destinationCityArea = row.destinationCityArea
+        this.addItem.destinationPrv = row.destinationPrv
+        this.addItem.destinationTown = row.destinationTown
+        this.addItem.remark = row.remark
+        this.addItem.routerAlia = row.routerAlia
+        this.addItem.routerDetailSeries = row.routerDetailSeries
+        this.addItem.routerNumber = row.routerNumber
+        this.addItem.sourceCity = row.sourceCity
+        this.addItem.sourceCityArea = row.sourceCityArea
+        this.addItem.sourcePrv = row.sourcePrv
+        this.addItem.sourceTown = row.sourceTown
+
+        this.priceSetAddList = row.routerPriceList
+        this.editDialog = true
       },
       onSourcePrvChange () {
         this.addItem.sourceCity = ''
@@ -591,6 +837,13 @@
           customerNumId: this.customerNumId,
           cityAreaId: this.addItem.destinationCityArea
         })
+      },
+      onCarTypeNameChange () {
+        const item = this.childrenItem.carTypeName.split('-')
+        this.priceSetAddItem0.carTypeName = item[0]
+        this.priceSetAddItem0.carTypeRealName = item[1]
+        this.priceSetAddItem1.carTypeName = item[0]
+        this.priceSetAddItem1.carTypeRealName = item[1]
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
