@@ -84,9 +84,6 @@
             <el-form-item label="线路别名">
               <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
             </el-form-item>
-            <el-form-item label="线路备注">
-              <el-input v-model="addItem.remark" placeholder="请输入"></el-input>
-            </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
                 <el-option
@@ -154,6 +151,9 @@
                   :value="item.townId">
                 </el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item label="线路备注">
+              <el-input type="textarea" :autosize="{ minRows: 6, maxRows: 12}" v-model="addItem.remark" placeholder="请输入"></el-input>
             </el-form-item>
           </el-form>
         </div>
@@ -233,8 +233,11 @@
             <el-form-item label="超出价格(元/公里)">
               <el-input v-model="priceSetAddItem0.overstepPrice" placeholder=""></el-input>
             </el-form-item>
-            <el-form-item label="提成比例">
+            <el-form-item label="销售比例">
               <el-input v-model="priceSetAddItem0.saleProportion" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="加盟商比例">
+              <el-input v-model="priceSetAddItem0.franchiseeProportion" placeholder=""></el-input>
             </el-form-item>
           </el-form>
         </div>
@@ -252,8 +255,11 @@
             <el-form-item label="超出价格(元/公里)">
               <el-input v-model="priceSetAddItem1.overstepPrice" placeholder=""></el-input>
             </el-form-item>
-            <el-form-item label="提成比例">
+            <el-form-item label="销售比例">
               <el-input v-model="priceSetAddItem1.saleProportion" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="加盟商比例">
+              <el-input v-model="priceSetAddItem1.franchiseeProportion" placeholder=""></el-input>
             </el-form-item>
           </el-form>
         </div>
