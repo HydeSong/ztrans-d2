@@ -70,3 +70,16 @@ export function getDriverOrderDetail (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function getUnDealOrderCount (params) {
+  const url = `${CONFIG.HOST}/getUnDealOrderCount`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
