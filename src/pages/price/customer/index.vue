@@ -192,7 +192,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="线路备注">
-              <el-input type="textarea" :autosize="{ minRows: 6, maxRows: 12}" v-model="addItem.remark" placeholder="请输入"></el-input>
+              <el-input type="textarea" :rows="4" v-model="addItem.remark" placeholder="请输入"></el-input>
             </el-form-item>
           </el-form>
         </div>
@@ -248,7 +248,7 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="addDialog = false">取 消</el-button>
           <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
-          <el-button type="primary" @click="onAddConfirm">确 定</el-button>
+          <el-button type="primary" @click="onAddConfirm">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog
@@ -308,7 +308,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="innerAddVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onAddPriceConfirm">确 定</el-button>
+          <el-button type="primary" @click="onAddPriceConfirm">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog title="编辑客户报价" :visible.sync="editDialog">
@@ -327,9 +327,6 @@
             </el-form-item>
             <el-form-item label="线路别名">
               <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
-            </el-form-item>
-            <el-form-item label="线路备注">
-              <el-input v-model="addItem.remark" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
@@ -399,6 +396,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="线路备注">
+              <el-input type="textarea" :rows="4" v-model="addItem.remark" placeholder="请输入"></el-input>
+            </el-form-item>
           </el-form>
         </div>
         <div class="block" style="text-align: left">
@@ -453,7 +453,7 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="editDialog = false">取 消</el-button>
           <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
-          <el-button type="primary" @click="onEditConfirm">确 定</el-button>
+          <el-button type="primary" @click="onEditConfirm">提 交</el-button>
         </span>
       </el-dialog>
     </template>
@@ -613,7 +613,6 @@
         })
       },
       _addRouterCustomerPrice (params) {
-        console.log(params)
         addRouterCustomerPrice(params).then(res => {
           if (res.code === 0) {
             this.$message({
@@ -699,7 +698,7 @@
           current: this.currentPage,
           pageSize: this.pageSize,
           customerNumId: this.customerNumId,
-          carSizeNameAliaSearchKey: this.searchItem.carSizeNameAliaSearchKey,
+          carSizeNameAli_getAllTownaSearchKey: this.searchItem.carSizeNameAliaSearchKey,
           customerSeries: this.searchItem.customerSeries,
           routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
           routerDetailSeries: this.searchItem.routerDetailSeries,

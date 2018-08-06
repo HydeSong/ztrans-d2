@@ -14,7 +14,7 @@
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-plus">新增</el-button>
+          <el-button type="primary" @click="onAdd"  icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -101,13 +101,287 @@
           :total="totalPage">
         </el-pagination>
       </div>
+      <el-dialog title="新增同城报价" :visible.sync="addDialog">
+        <div class="block" style="text-align: left">
+          线路设置
+        </div>
+        <div class="block" style="text-align: left; padding: 0 15px">
+          <el-form :inline="true" :model="addItem">
+            <el-form-item label="线路编号">
+              <el-input v-model="addItem.routerNumber" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="线路别名">
+              <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="起始点">
+              <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
+                <el-option
+                  v-for="item in allPrv"
+                  :key="item.prvId"
+                  :label="item.prvName"
+                  :value="item.prvId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceCity" placeholder="请选择市" @change="onSourceCityChange">
+                <el-option
+                  v-for="item in allCity"
+                  :key="item.cityId"
+                  :label="item.cityName"
+                  :value="item.cityId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceCityArea" placeholder="请选择区" @change="onSourceCityAreaChange">
+                <el-option
+                  v-for="item in allCityArea"
+                  :key="item.cityAreaId"
+                  :label="item.cityAreaName"
+                  :value="item.cityAreaId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceTown" placeholder="请选择镇">
+                <el-option
+                  v-for="item in allTown"
+                  :key="item.townId"
+                  :label="item.townName"
+                  :value="item.townId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="线路备注">
+              <el-input type="textarea" :rows="2" v-model="addItem.remark" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="block" style="text-align: left">
+          报价设置
+          <el-table
+            :data="priceSetAddList"
+            highlight-current-row
+            style="width: 100%">
+            <el-table-column
+              prop="carTypeRealName"
+              label="车型"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="routerCustomerType"
+              label="报价类型"
+              :formatter="routerCustomerTypeFormat">
+            </el-table-column>
+            <el-table-column
+              prop="initDistance"
+              label="起步距离(公里)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="initPrice"
+              label="起步价格(元)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="overstepPrice"
+              label="超出价格(元/公里)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="saleProportion"
+              label="销售比例">
+            </el-table-column>
+            <el-table-column
+              prop="franchiseeProportion"
+              label="加盟商比例">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="120">
+              <template slot-scope="scope">
+                <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="addDialog = false">取 消</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
+          <el-button type="primary" @click="onAddConfirm">提 交</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="新增报价"
+        :visible.sync="innerAddVisible"
+        append-to-body>
+        <el-form :inline="true" :model="childrenItem">
+          <el-form-item label="车型">
+            <el-select v-model="childrenItem.carTypeName" placeholder="请选择" clearable @change="onCarTypeNameChange">
+              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div class="block" style="padding: 15px 0">
+          客户报价
+        </div>
+        <div class="block" style="padding: 0 15px">
+          <el-form :inline="true" :model="priceSetAddItem0">
+            <el-form-item label="起步距离(公里)">
+              <el-input v-model="priceSetAddItem0.initDistance" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="起步价格(元)">
+              <el-input v-model="priceSetAddItem0.initPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="超出价格(元/公里)">
+              <el-input v-model="priceSetAddItem0.overstepPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="销售比例">
+              <el-input v-model="priceSetAddItem0.saleProportion" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="加盟商比例">
+              <el-input v-model="priceSetAddItem0.franchiseeProportion" placeholder=""></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="block" style="padding: 15px 0">
+          司机报价
+        </div>
+        <div class="block" style="padding: 0 15px">
+          <el-form :inline="true" :model="priceSetAddItem1">
+            <el-form-item label="起步距离(公里)">
+              <el-input v-model="priceSetAddItem1.initDistance" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="起步价格(元)">
+              <el-input v-model="priceSetAddItem1.initPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="超出价格(元/公里)">
+              <el-input v-model="priceSetAddItem1.overstepPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="销售比例">
+              <el-input v-model="priceSetAddItem1.saleProportion" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="加盟商比例">
+              <el-input v-model="priceSetAddItem1.franchiseeProportion" placeholder=""></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="innerAddVisible = false">取 消</el-button>
+          <el-button type="primary" @click="onAddPriceConfirm">提 交</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog title="编辑同城报价" :visible.sync="editDialog">
+        <div class="block" style="text-align: left">
+          线路设置
+        </div>
+        <div class="block" style="text-align: left; padding: 0 15px">
+          <el-form :inline="true" :model="addItem">
+            <el-form-item label="线路编号">
+              <el-input v-model="addItem.routerNumber" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="线路别名">
+              <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="起始点">
+              <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
+                <el-option
+                  v-for="item in allPrv"
+                  :key="item.prvId"
+                  :label="item.prvName"
+                  :value="item.prvId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceCity" placeholder="请选择市" @change="onSourceCityChange">
+                <el-option
+                  v-for="item in allCity"
+                  :key="item.cityId"
+                  :label="item.cityName"
+                  :value="item.cityId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceCityArea" placeholder="请选择区" @change="onSourceCityAreaChange">
+                <el-option
+                  v-for="item in allCityArea"
+                  :key="item.cityAreaId"
+                  :label="item.cityAreaName"
+                  :value="item.cityAreaId">
+                </el-option>
+              </el-select>
+              <el-select v-model="addItem.sourceTown" placeholder="请选择镇">
+                <el-option
+                  v-for="item in allTown"
+                  :key="item.townId"
+                  :label="item.townName"
+                  :value="item.townId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="线路备注">
+              <el-input type="textarea" :rows="4" v-model="addItem.remark" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="block" style="text-align: left">
+          报价设置
+          <el-table
+            :data="priceSetAddList"
+            highlight-current-row
+            style="width: 100%">
+            <el-table-column
+              prop="carTypeRealName"
+              label="车型"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="routerCustomerType"
+              label="报价类型"
+              :formatter="routerCustomerTypeFormat">
+            </el-table-column>
+            <el-table-column
+              prop="initDistance"
+              label="起步距离(公里)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="initPrice"
+              label="起步价格(元)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="overstepPrice"
+              label="超出价格(元/公里)"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="saleProportion"
+              label="销售比例">
+            </el-table-column>
+            <el-table-column
+              prop="franchiseeProportion"
+              label="加盟商比例">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="120">
+              <template slot-scope="scope">
+                <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editDialog = false">取 消</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
+          <el-button type="primary" @click="onEditConfirm">提 交</el-button>
+        </span>
+      </el-dialog>
     </template>
   </d2-container>
 </template>
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, deleteRouterPrice } from '@/api/price'
+  import { getCarTypeList } from '@/api/order'
+  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, addRouterPrice, deleteRouterPrice } from '@/api/price'
+  import { getAllPrv, getAllCity, getAllCityArea, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -124,8 +398,63 @@
           routerNumberSearchKey: '',
           routerType: 1
         },
+        addItem: {
+          children: [],
+          customerNumId: '',
+          destinationCity: '',
+          destinationCityArea: '',
+          destinationPrv: '',
+          destinationTown: '',
+          remark: '',
+          routerAlia: '',
+          routerNumber: '',
+          routerType: 1,
+          sourceCity: '',
+          sourceCityArea: '',
+          sourcePrv: '',
+          sourceTown: ''
+        },
+        childrenItem: {
+          carTypeName: '',
+          routerType: 1,
+          routerPriceList: []
+        },
+        priceSetAddList: [],
+        priceSetAddItem0: {
+          carTypeName: '',
+          carTypeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 0,
+          routerPriceId: '',
+          routerType: 1,
+          saleProportion: ''
+        },
+        priceSetAddItem1: {
+          carTypeName: '',
+          carTypeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 1,
+          routerPriceId: '',
+          routerType: 1,
+          saleProportion: ''
+        },
         tableData: [],
-        searching: false
+        searching: false,
+        addDialog: false,
+        editDialog: false,
+        innerAddVisible: false,
+        innerEditVisible: false,
+        allPrv: [],
+        allCity: [],
+        allCityArea: [],
+        allTown: [],
+        carTypes: []
       }
     },
     computed: {
@@ -145,6 +474,52 @@
     methods: {
       routerCustomerTypeFormat (val) {
         return val.routerCustomerType === 0 ? '客户报价' : '司机报价'
+      },
+      _getCarTypeList (params) {
+        getCarTypeList(params).then(res => {
+          if (res.code === 0) {
+            this.carTypes = res.carTypes
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllPrv (params) {
+        getAllPrv(params).then(res => {
+          if (res.code === 0) {
+            this.allPrv = res.prvNameAndPrvIds
+            console.log(this.allPrv)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCity (params) {
+        getAllCity(params).then(res => {
+          if (res.code === 0) {
+            this.allCity = res.cityeNameAndCityeIds
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCityArea (params) {
+        getAllCityArea(params).then(res => {
+          if (res.code === 0) {
+            this.allCityArea = res.cityAreaNameAndCityAreaIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllTown (params) {
+        getAllTown(params).then(res => {
+          if (res.code === 0) {
+            this.allTown = res.townNameAndTownIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
       },
       _getRouterAliaList (params) {
         getRouterAliaList(params).then(res => {
@@ -175,8 +550,6 @@
           routerType: this.searchItem.routerType
         })
       },
-      onAdd () {
-      },
       onDeleteLocalPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -205,6 +578,19 @@
           console.log('取消删除')
         })
       },
+      _addRouterPrice (params) {
+        addRouterPrice(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            })
+            this.onSearch()
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _deleteRouterPrice (params, index) {
         deleteRouterPrice(params).then(res => {
           if (res.code === 0) {
@@ -230,6 +616,221 @@
         }).catch(err => {
           console.log(err)
         })
+      },
+      onAdd () {
+        this.addDialog = true
+        this._getAllPrv({
+          current: 1,
+          customerNumId: this.customerNumId,
+          pageSize: 200
+        })
+        // 清空数据
+        this.addItem = {
+          children: [],
+          customerNumId: '',
+          destinationCity: '',
+          destinationCityArea: '',
+          destinationPrv: '',
+          destinationTown: '',
+          remark: '',
+          routerAlia: '',
+          routerNumber: '',
+          routerType: 1,
+          sourceCity: '',
+          sourceCityArea: '',
+          sourcePrv: '',
+          sourceTown: ''
+        }
+        this.priceSetAddList = []
+      },
+      onAddConfirm () {
+        this.addItem.customerNumId = this.customerNumId
+        console.log(this.addItem)
+        this._addRouterPrice(this.addItem)
+      },
+      onEditConfirm () {
+        this.addItem.customerNumId = this.customerNumId
+        this._updateBatchRouterPrice(this.addItem)
+      },
+      onAddPrice () {
+        this.innerAddVisible = true
+        this._getCarTypeList({
+          customerNumId: this.customerNumId
+        })
+
+        // 清空数据
+        this.childrenItem.carTypeName = ''
+        this.priceSetAddItem0 = {
+          carTypeName: '',
+          carTypeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 0,
+          routerPriceId: '',
+          routerType: 1,
+          saleProportion: ''
+        }
+        this.priceSetAddItem1 = {
+          carTypeName: '',
+          carTypeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 1,
+          routerPriceId: '',
+          routerType: 1,
+          saleProportion: ''
+        }
+      },
+      onDeletePrice (index) {
+        let idx = ''
+        if (index % 2 === 0) {
+          idx = index + 1
+        } else {
+          idx = index - 1
+        }
+        this.priceSetAddList.splice(index, 1)
+        this.priceSetAddList.splice(idx, 1)
+      },
+      onDeleteDetailPrice (index, row) {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteRouterCustomerPrice({
+            customerNumId: this.customerNumId,
+            routerPriceId: row.routerPriceId
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
+        })
+      },
+      onAddPriceConfirm () {
+        this.innerAddVisible = false
+        this.childrenItem.carTypeName = this.priceSetAddItem0.carTypeName
+        this.priceSetAddList.push(this.priceSetAddItem0)
+        this.priceSetAddList.push(this.priceSetAddItem1)
+        this.childrenItem.routerPriceList.push(this.priceSetAddItem0)
+        this.childrenItem.routerPriceList.push(this.priceSetAddItem1)
+        this.addItem.children.push(this.childrenItem)
+      },
+      onDeleteCustomerPrice (index, row) {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteRouterByRouterId({
+            customerNumId: this.customerNumId,
+            routerDetailSeries: row.routerDetailSeries
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
+        })
+      },
+      onEditCustomerPrice (index, row) {
+        this._getAllPrv({
+          current: 1,
+          customerNumId: this.customerNumId,
+          pageSize: 200
+        })
+
+        this.addItem.children = []
+        this.addItem.children.push({
+          carTypeName: row.routerPriceList[0].carTypeName,
+          routerType: 1,
+          routerPriceList: row.routerPriceList
+        })
+
+        this.addItem.customerNumId = row.customerNumId
+        this.addItem.destinationCity = row.destinationCity
+        this.addItem.destinationCityArea = row.destinationCityArea
+        this.addItem.destinationPrv = row.destinationPrv
+        this.addItem.destinationTown = row.destinationTown
+        this.addItem.remark = row.remark
+        this.addItem.routerAlia = row.routerAlia
+        this.addItem.routerDetailSeries = row.routerDetailSeries
+        this.addItem.routerNumber = row.routerNumber
+        this.addItem.sourceCity = row.sourceCity
+        this.addItem.sourceCityArea = row.sourceCityArea
+        this.addItem.sourcePrv = row.sourcePrv
+        this.addItem.sourceTown = row.sourceTown
+
+        this.priceSetAddList = row.routerPriceList
+        this.editDialog = true
+      },
+      onSourcePrvChange () {
+        this.addItem.sourceCity = ''
+        this.addItem.sourceCityArea = ''
+        this.addItem.sourceTown = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.sourcePrv
+        })
+      },
+      onSourceCityChange () {
+        this.addItem.sourceCityArea = ''
+        this.addItem.sourceTown = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.sourcePrv,
+          cityId: this.addItem.sourceCity
+        })
+      },
+      onSourceCityAreaChange () {
+        this.addItem.sourceTown = ''
+        this._getAllTown({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          cityAreaId: this.addItem.sourceCityArea
+        })
+      },
+      onDestinationPrvChange () {
+        this.addItem.destinationCity = ''
+        this.addItem.destinationCityArea = ''
+        this.addItem.destinationTown = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.destinationPrv
+        })
+      },
+      onDestinationCityChange () {
+        this.addItem.destinationCityArea = ''
+        this.addItem.destinationTown = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.destinationPrv,
+          cityId: this.addItem.destinationCity
+        })
+      },
+      onDestinationCityAreaChange () {
+        this.addItem.destinationTown = ''
+        this._getAllTown({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          cityAreaId: this.addItem.destinationCityArea
+        })
+      },
+      onCarTypeNameChange () {
+        const item = this.childrenItem.carTypeName.split('-')
+        this.priceSetAddItem0.carTypeName = item[0]
+        this.priceSetAddItem0.carTypeRealName = item[1]
+        this.priceSetAddItem1.carTypeName = item[0]
+        this.priceSetAddItem1.carTypeRealName = item[1]
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
