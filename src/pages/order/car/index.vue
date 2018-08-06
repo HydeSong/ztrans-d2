@@ -293,6 +293,7 @@
           routerDetailSeries: '',
           series: ''
         },
+        driverSeries: '',
         tableData: [],
         searching: false,
         addDialog: false,
@@ -459,7 +460,7 @@
         // 加载全部数据
         this.onSearchPop()
       },
-      onAssignConfirm (row) {
+      onAssignConfirm () {
         if (this.orderDetail.carRealMoney <= this.orderDetail.carMoney) {
           this._confirmDriver({
             carRealMoney: this.orderDetail.carRealMoney,
