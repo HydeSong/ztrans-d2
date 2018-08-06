@@ -85,7 +85,7 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button @click="onEditLocalPrice(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="onDeleteLocalPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -585,6 +585,7 @@
               type: 'success',
               message: '添加成功!'
             })
+            this.addDialog = false
             this.onSearch()
           }
         }).catch(err => {
@@ -645,7 +646,10 @@
       },
       onAddConfirm () {
         this.addItem.customerNumId = this.customerNumId
-        console.log(this.addItem)
+        this.addItem.destinationCity = this.addItem.sourceCity
+        this.addItem.destinationCityArea = this.addItem.sourceCityArea
+        this.addItem.destinationPrv = this.addItem.sourcePrv
+        this.addItem.destinationTown = this.addItem.sourceTown
         this._addRouterPrice(this.addItem)
       },
       onEditConfirm () {
@@ -732,7 +736,7 @@
           console.log('取消删除')
         })
       },
-      onEditCustomerPrice (index, row) {
+      onEditLocalPrice (index, row) {
         this._getAllPrv({
           current: 1,
           customerNumId: this.customerNumId,
