@@ -29,7 +29,44 @@
         stripe>
         <el-table-column type="expand">
           <template slot-scope="props">
-
+            <el-table
+              :data="props.row.routerPriceList"
+              highlight-current-row
+              style="width: 100%">
+              <el-table-column
+                prop="carTypeRealName"
+                label="车型">
+              </el-table-column>
+              <el-table-column
+                prop="routerCustomerType"
+                label="报价类型"
+                :formatter="routerCustomerTypeFormat">
+              </el-table-column>
+              <el-table-column
+                prop="initPrice"
+                label="起步价格(元)">
+              </el-table-column>
+              <el-table-column
+                prop="overstepPrice"
+                label="超出价格(元/公里)">
+              </el-table-column>
+              <el-table-column
+                prop="saleProportion"
+                label="销售比例">
+              </el-table-column>
+              <el-table-column
+                prop="franchiseeProportion"
+                label="加盟商比例">
+              </el-table-column>
+              <el-table-column
+                fixed="right"
+                label="操作"
+                width="120">
+                <template slot-scope="scope">
+                  <el-button type="text" size="small" @click="onDeleteDetailPrice(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
           </template>
         </el-table-column>
         <el-table-column
@@ -192,7 +229,11 @@
             </el-table-column>
             <el-table-column
               prop="saleProportion"
-              label="提成比例">
+              label="销售比例">
+            </el-table-column>
+            <el-table-column
+              prop="franchiseeProportion"
+              label="加盟商比例">
             </el-table-column>
             <el-table-column
               fixed="right"
@@ -393,7 +434,11 @@
             </el-table-column>
             <el-table-column
               prop="saleProportion"
-              label="提成比例">
+              label="销售比例">
+            </el-table-column>
+            <el-table-column
+              prop="franchiseeProportion"
+              label="加盟商比例">
             </el-table-column>
             <el-table-column
               fixed="right"
@@ -418,7 +463,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, updateBatchRouterPrice } from '@/api/price'
+  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, deleteRouterCustomerPrice, updateBatchRouterPrice } from '@/api/price'
   import { getAllPrv, getAllCity, getAllCityArea, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -595,6 +640,19 @@
           console.log(err)
         })
       },
+      _deleteRouterCustomerPrice (params, index) {
+        deleteRouterCustomerPrice(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            // this.tableData.splice(index, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _updateBatchRouterPrice (params) {
         updateBatchRouterPrice(params).then(res => {
           if (res.code === 0) {
@@ -728,6 +786,20 @@
         }
         this.priceSetAddList.splice(index, 1)
         this.priceSetAddList.splice(idx, 1)
+      },
+      onDeleteDetailPrice (index, row) {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this._deleteRouterCustomerPrice({
+            customerNumId: this.customerNumId,
+            routerPriceId: row.routerPriceId
+          }, index)
+        }).catch(() => {
+          console.log('取消删除')
+        })
       },
       onAddPriceConfirm () {
         this.innerAddVisible = false
