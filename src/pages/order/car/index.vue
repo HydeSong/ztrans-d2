@@ -460,11 +460,16 @@
         this.onSearchPop()
       },
       onAssignConfirm (row) {
-        this._confirmDriver({
-          customerNumId: this.customerNumId,
-          driverSeries: row.series,
-          orderSeries: this.searchItemPop.series
-        })
+        if (this.orderDetail.carRealMoney <= this.orderDetail.carMoney) {
+          this._confirmDriver({
+            carRealMoney: this.orderDetail.carRealMoney,
+            customerNumId: this.customerNumId,
+            driverSeries: this.driverSeries,
+            orderSeries: this.searchItemPop.series
+          })
+        } else {
+          this.$message.error('接单价必须不高于车辆报价！')
+        }
       },
       onCheckOrderDetail (index, row) {
         this.orderDetailDialog = true
