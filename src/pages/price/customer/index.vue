@@ -27,13 +27,16 @@
         highlight-current-row
         style="width: 100%"
         stripe>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+
+          </template>
+        </el-table-column>
         <el-table-column
-          fixed
           type="index"
           width="50">
         </el-table-column>
         <el-table-column
-          fixed
           prop="routerDetailSeries"
           label="线路报价ID">
         </el-table-column>
@@ -51,7 +54,6 @@
           width="160">
           <template slot-scope="scope">
             <el-button @click="onEditCustomerPrice(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <!--<el-button type="text" size="small">查看</el-button>-->
             <el-button @click="onDeleteCustomerPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -620,6 +622,7 @@
         getAllRouterCustomerPrice(params).then(res => {
           if (res.code === 0) {
             this.tableData = res.allRouterPriceGetModels
+            console.log(this.tableData)
           }
         }).catch(err => {
           console.log(err)

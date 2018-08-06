@@ -379,6 +379,9 @@
               type: 'success',
               message: '指派成功!'
             })
+            this.addDialog = false
+            this.orderDetailDialog = false
+            this.onSearch()
           }
         }).catch(err => {
           console.log(err)
@@ -510,6 +513,17 @@
     .block {
       padding: 10px 0;
       text-align: right;
+    }
+    .order-price {
+      margin: 0
+    }
+    .i-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      & li{
+        padding: 5px 15px;
+      }
     }
   }
 </style>
