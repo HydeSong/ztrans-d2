@@ -647,7 +647,7 @@
               type: 'success',
               message: '删除成功!'
             })
-            // this.tableData.splice(index, 1)
+            this.onSearch()
           }
         }).catch(err => {
           console.log(err)
@@ -680,7 +680,6 @@
         getAllRouterCustomerPrice(params).then(res => {
           if (res.code === 0) {
             this.tableData = res.allRouterPriceGetModels
-            console.log(this.tableData)
           }
         }).catch(err => {
           console.log(err)
@@ -818,7 +817,7 @@
         }).then(() => {
           this._deleteRouterByRouterId({
             customerNumId: this.customerNumId,
-            routerPriceId: row.routerDetailSeries
+            routerDetailSeries: row.routerDetailSeries
           }, index)
         }).catch(() => {
           console.log('取消删除')

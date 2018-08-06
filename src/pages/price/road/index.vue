@@ -22,13 +22,53 @@
         highlight-current-row
         style="width: 100%"
         stripe>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-table
+              :data="props.row.routerPriceList"
+              highlight-current-row
+              style="width: 100%">
+              <el-table-column
+                prop="carTypeRealName"
+                label="车型">
+              </el-table-column>
+              <el-table-column
+                prop="routerCustomerType"
+                label="报价类型"
+                :formatter="routerCustomerTypeFormat">
+              </el-table-column>
+              <el-table-column
+                prop="initPrice"
+                label="起步价格(元)">
+              </el-table-column>
+              <el-table-column
+                prop="overstepPrice"
+                label="超出价格(元/公里)">
+              </el-table-column>
+              <el-table-column
+                prop="saleProportion"
+                label="销售比例">
+              </el-table-column>
+              <el-table-column
+                prop="franchiseeProportion"
+                label="加盟商比例">
+              </el-table-column>
+              <el-table-column
+                fixed="right"
+                label="操作"
+                width="120">
+                <template slot-scope="scope">
+                  <el-button type="text" size="small" @click="onDeleteLocalDetail(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
         <el-table-column
-          fixed
           type="index"
           width="50">
         </el-table-column>
         <el-table-column
-          fixed
           prop="routerDetailSeries"
           label="线路报价ID">
         </el-table-column>
@@ -46,7 +86,7 @@
           width="160">
           <template slot-scope="scope">
             <el-button @click="onEditRoadPrice(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onViewRoadPrice(scope.$index, scope.row)" type="text" size="small">查看</el-button>
+            <!--<el-button @click="onViewRoadPrice(scope.$index, scope.row)" type="text" size="small">查看</el-button>-->
             <el-button @click="onDeleteRoadPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -544,6 +584,9 @@
       this.onSearch()
     },
     methods: {
+      routerCustomerTypeFormat (val) {
+        return val.routerCustomerType === 0 ? '客户报价' : '司机报价'
+      },
       objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
           if (rowIndex % 2 === 0) {
