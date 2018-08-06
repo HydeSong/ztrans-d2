@@ -744,7 +744,6 @@
         })
       },
       onEditCustomerPrice (index, row) {
-        console.log(row)
         this._getAllPrv({
           current: 1,
           customerNumId: this.customerNumId,
