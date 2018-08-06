@@ -43,6 +43,10 @@ axios.interceptors.response.use(res => {
         console.log(code)
         Message.error(res.data.message)
         break
+      case -5005:
+        console.log(code)
+        Message.error(res.data.message)
+        break
       default:
         console.log(code)
         Message.error(res.data.message)
