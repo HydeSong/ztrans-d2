@@ -188,7 +188,7 @@
             label="操作"
             width="120">
             <template slot-scope="scope">
-              <el-button @click="onAssignConfirm(scope.row)" type="text" size="small">确定此人接单</el-button>
+              <el-button @click="onCheckOrderDetail(scope.$index, scope.row)" type="text" size="small">查看已接单明细</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -204,13 +204,68 @@
           </el-pagination>
         </div>
       </el-dialog>
+      <el-dialog title="已接单明细" :visible.sync="orderDetailDialog">
+        <div class="block" style="text-align: left">
+          <el-row>
+            <el-col :span="24">
+              <ul class="i-list">
+                <li>车牌号：{{orderDetail.carPlateNumber}}</li>
+                <li>车辆报价：{{orderDetail.carMoney}}元</li>
+                <li>
+                  <el-form :inline="true" :model="orderDetail">
+                    <el-form-item label="接单价" class="order-price">
+                      <el-input v-model="orderDetail.carRealMoney" placeholder="请输入"></el-input>
+                    </el-form-item>
+                  </el-form>
+                </li>
+              </ul>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="block" style="text-align: left; padding: 15px">
+          已接单任务
+        </div>
+        <div class="block" style="text-align: left; padding: 15px">
+          <el-table
+            :data="orderDetail.orderTask"
+            highlight-current-row
+            style="width: 100%">
+            <el-table-column
+              fixed
+              type="index"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              prop="series"
+              label="订单号">
+            </el-table-column>
+            <el-table-column
+              prop="routerAlia"
+              label="线路别名">
+            </el-table-column>
+            <el-table-column
+              prop="customerName"
+              label="客户名字">
+            </el-table-column>
+            <el-table-column
+              prop="appointmentDate"
+              label="用车时间"
+              width="160">
+            </el-table-column>
+          </el-table>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="orderDetailDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onAssignConfirm">确认车辆</el-button>
+        </div>
+      </el-dialog>
     </template>
   </d2-container>
 </template>
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver } from '@/api/order'
+  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver, getDriverOrderDetail } from '@/api/order'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -241,9 +296,9 @@
         tableData: [],
         searching: false,
         addDialog: false,
+        orderDetailDialog: false,
+        orderDetail: {},
         driverModel: [],
-        dialogTableVisible: false,
-        innerVisible: false,
         pickerOptions: {
           disabledDate (time) {
             return time.getTime() > Date.now()
@@ -308,6 +363,15 @@
       })
     },
     methods: {
+      _getDriverOrderDetail (params) {
+        getDriverOrderDetail(params).then(res => {
+          if (res.code === 0) {
+            this.orderDetail = res
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _confirmDriver (params) {
         confirmDriver(params).then(res => {
           if (res.code === 0) {
@@ -394,6 +458,15 @@
       },
       onAssignConfirm (row) {
         this._confirmDriver({
+          customerNumId: this.customerNumId,
+          driverSeries: row.series,
+          orderSeries: this.searchItemPop.series
+        })
+      },
+      onCheckOrderDetail (index, row) {
+        this.orderDetailDialog = true
+        this.driverSeries = row.series
+        this._getDriverOrderDetail({
           customerNumId: this.customerNumId,
           driverSeries: row.series,
           orderSeries: this.searchItemPop.series
