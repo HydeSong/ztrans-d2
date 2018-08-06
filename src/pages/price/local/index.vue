@@ -277,7 +277,7 @@
               <el-input v-model="addItem.routerNumber" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="线路别名">
-              <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
+              <el-input v-model="addItem.routerAlia" placeholder="请输入" disabled></el-input>
             </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
@@ -380,7 +380,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, addRouterPrice, deleteRouterPrice } from '@/api/price'
+  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, addRouterPrice, deleteRouterPrice, updateBatchRouterPrice } from '@/api/price'
   import { getAllPrv, getAllCity, getAllCityArea, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -618,6 +618,20 @@
           console.log(err)
         })
       },
+      _updateBatchRouterPrice (params) {
+        updateBatchRouterPrice(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '编辑成功!'
+            })
+            this.editDialog = false
+            this.onSearch()
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       onAdd () {
         this.addDialog = true
         this._getAllPrv({
@@ -654,6 +668,10 @@
       },
       onEditConfirm () {
         this.addItem.customerNumId = this.customerNumId
+        this.addItem.destinationCity = this.addItem.sourceCity
+        this.addItem.destinationCityArea = this.addItem.sourceCityArea
+        this.addItem.destinationPrv = this.addItem.sourcePrv
+        this.addItem.destinationTown = this.addItem.sourceTown
         this._updateBatchRouterPrice(this.addItem)
       },
       onAddPrice () {
