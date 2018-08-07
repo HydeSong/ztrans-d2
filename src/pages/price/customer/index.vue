@@ -579,7 +579,6 @@
         getAllPrv(params).then(res => {
           if (res.code === 0) {
             this.allPrv = res.prvNameAndPrvIds
-            console.log(this.allPrv)
           }
         }).catch(err => {
           console.log(err)
@@ -739,7 +738,6 @@
       },
       onEditConfirm () {
         this.addItem.customerNumId = this.customerNumId
-        console.log(this.addItem)
         this._updateBatchRouterPrice(this.addItem)
       },
       onAddPrice () {
@@ -830,11 +828,20 @@
         })
 
         this.addItem.children = []
-        this.addItem.children.push({
-          carTypeName: row.routerPriceList[0].carTypeName,
-          routerType: 0,
-          routerPriceList: row.routerPriceList
-        })
+
+        if (row.routerPriceList && row.routerPriceList[0] && row.routerPriceList[0].carTypeName) {
+          this.addItem.children.push({
+            carTypeName: row.routerPriceList[0].carTypeName,
+            routerType: 0,
+            routerPriceList: row.routerPriceList
+          })
+        } else {
+          this.addItem.children.push({
+            carTypeName: '',
+            routerType: 0,
+            routerPriceList: []
+          })
+        }
 
         this.addItem.customerNumId = row.customerNumId
         this.addItem.customerSeries = row.customerSeries

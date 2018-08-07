@@ -449,7 +449,6 @@
         addDialog: false,
         editDialog: false,
         innerAddVisible: false,
-        innerEditVisible: false,
         allPrv: [],
         allCity: [],
         allCityArea: [],
@@ -488,7 +487,6 @@
         getAllPrv(params).then(res => {
           if (res.code === 0) {
             this.allPrv = res.prvNameAndPrvIds
-            console.log(this.allPrv)
           }
         }).catch(err => {
           console.log(err)
@@ -736,9 +734,9 @@
         this.childrenItem.carTypeName = this.priceSetAddItem0.carTypeName
         this.priceSetAddList.push(this.priceSetAddItem0)
         this.priceSetAddList.push(this.priceSetAddItem1)
-        this.childrenItem.routerPriceList.push(this.priceSetAddItem0)
-        this.childrenItem.routerPriceList.push(this.priceSetAddItem1)
-        this.addItem.children.push(this.childrenItem)
+        this.childrenItem.routerPriceList = this.priceSetAddList
+        this.addItem.children = this.childrenItem
+        console.log(this.addItem.children)
       },
       onDeleteCustomerPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
@@ -762,11 +760,20 @@
         })
 
         this.addItem.children = []
-        this.addItem.children.push({
-          carTypeName: row.routerPriceList[0].carTypeName,
-          routerType: 1,
-          routerPriceList: row.routerPriceList
-        })
+
+        if (row.routerPriceList && row.routerPriceList[0] && row.routerPriceList[0].carTypeName) {
+          this.addItem.children.push({
+            carTypeName: row.routerPriceList[0].carTypeName,
+            routerType: 0,
+            routerPriceList: row.routerPriceList
+          })
+        } else {
+          this.addItem.children.push({
+            carTypeName: '',
+            routerType: 0,
+            routerPriceList: []
+          })
+        }
 
         this.addItem.customerNumId = row.customerNumId
         this.addItem.destinationCity = row.destinationCity
@@ -782,7 +789,8 @@
         this.addItem.sourcePrv = row.sourcePrv
         this.addItem.sourceTown = row.sourceTown
 
-        this.priceSetAddList = row.routerPriceList
+        // 深拷贝
+        this.priceSetAddList = row.routerPriceList.slice(0)
         this.editDialog = true
       },
       onSourcePrvChange () {
