@@ -671,7 +671,6 @@
         this.addItem.destinationCityArea = this.addItem.sourceCityArea
         this.addItem.destinationPrv = this.addItem.sourcePrv
         this.addItem.destinationTown = this.addItem.sourceTown
-        console.log(this.addItem)
         this._updateBatchRouterPrice(this.addItem)
       },
       onAddPrice () {
