@@ -1,0 +1,69 @@
+{
+    "children": [{
+     "carTypeName": "1803170005001",
+     "routerType": 0,
+     "routerPriceList": [ {
+      "carTypeName": "1803170005001",
+      "carTypeRealName": "坦克车",
+      "franchiseeProportion": "2",
+      "initDistance": "1",
+      "initPrice": "2",
+      "overstepPrice": "1",
+      "routerCustomerType": 0,
+      "routerPriceId": "",
+      "routerType": "",
+      "saleProportion": "2"
+     }, {
+      "carTypeName": "1803170005001",
+      "carTypeRealName": "坦克车",
+      "franchiseeProportion": "2",
+      "initDistance": "2",
+      "initPrice": "2",
+      "overstepPrice": "2",
+      "routerCustomerType": 1,
+      "routerPriceId": "",
+      "routerType": "",
+      "saleProportion": "2"
+     }]
+    }, {
+     "carTypeName": "1803170006001",
+     "routerType": 0,
+     "routerPriceList": [{
+      "carTypeName": "1803170006001",
+      "carTypeRealName": "货车",
+      "franchiseeProportion": "1",
+      "initDistance": "12",
+      "initPrice": "12",
+      "overstepPrice": "1",
+      "routerCustomerType": 0,
+      "routerPriceId": "",
+      "routerType": "",
+      "saleProportion": "1"
+     }, {
+      "carTypeName": "1803170006001",
+      "carTypeRealName": "货车",
+      "franchiseeProportion": "1",
+      "initDistance": "1",
+      "initPrice": "1",
+      "overstepPrice": "1",
+      "routerCustomerType": 1,
+      "routerPriceId": "",
+      "routerType": "",
+      "saleProportion": "1"
+     }]
+    }],
+    "customerNumId": "881803170010002",
+    "customerSeries": 1805030017002,
+    "destinationCity": 152200,
+    "destinationCityArea": 152221,
+    "destinationPrv": 150000,
+    "destinationTown": 152221102,
+    "remark": "1212",
+    "routerAlia": "12",
+    "routerNumber": "12",
+    "routerType": 0,
+    "sourceCity": 310100,
+    "sourceCityArea": 310101,
+    "sourcePrv": 310000,
+    "sourceTown": 31010102
+   }
