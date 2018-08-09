@@ -414,11 +414,6 @@
           sourcePrv: '',
           sourceTown: ''
         },
-        childrenItem: {
-          carTypeName: '',
-          routerType: 0,
-          routerPriceList: []
-        },
         priceSetAddList: [],
         priceSetAddItem0: {
           carTypeName: '',
@@ -738,14 +733,14 @@
         this.priceSetAddItem0.carTypeRealName = item[1]
         this.priceSetAddItem1.carTypeName = item[0]
         this.priceSetAddItem1.carTypeRealName = item[1]
-
         this.priceSetAddList.push(this.priceSetAddItem0)
         this.priceSetAddList.push(this.priceSetAddItem1)
-        this.childrenItem.carTypeName = item[0]
-        this.childrenItem.routerPriceList = []
-        this.childrenItem.routerPriceList.push(this.priceSetAddItem0)
-        this.childrenItem.routerPriceList.push(this.priceSetAddItem1)
-        this.addItem.children.push(this.childrenItem)
+
+        this.addItem.children.push({
+          carTypeName: item[0],
+          routerType: 0,
+          routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
+        })
       },
       onDeleteCustomerPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {

@@ -255,9 +255,9 @@
         title="新增报价"
         :visible.sync="innerAddVisible"
         append-to-body>
-        <el-form :inline="true" :model="childrenItem">
+        <el-form :inline="true">
           <el-form-item label="车型">
-            <el-select v-model="childrenItem.carTypeName" placeholder="请选择" clearable @change="onCarTypeNameChange">
+            <el-select v-model="carTypeName" placeholder="请选择" clearable>
               <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
             </el-select>
           </el-form-item>
@@ -500,11 +500,6 @@
           sourcePrv: '',
           sourceTown: ''
         },
-        childrenItem: {
-          carTypeName: '',
-          routerType: 0,
-          routerPriceList: []
-        },
         priceSetAddList: [],
         priceSetAddItem0: {
           carTypeName: '',
@@ -515,7 +510,7 @@
           overstepPrice: '',
           routerCustomerType: 0,
           routerPriceId: '',
-          routerType: '',
+          routerType: 0,
           saleProportion: ''
         },
         priceSetAddItem1: {
@@ -527,7 +522,7 @@
           overstepPrice: '',
           routerCustomerType: 1,
           routerPriceId: '',
-          routerType: '',
+          routerType: 0,
           saleProportion: ''
         },
         tableData: [],
@@ -541,7 +536,8 @@
         allCity: [],
         allCityArea: [],
         allTown: [],
-        carTypes: []
+        carTypes: [],
+        carTypeName: ''
       }
     },
     computed: {
@@ -747,7 +743,7 @@
         })
 
         // 清空数据
-        this.childrenItem.carTypeName = ''
+        this.carTypeName = ''
         this.priceSetAddItem0 = {
           carTypeName: '',
           carTypeRealName: '',
@@ -799,12 +795,20 @@
       },
       onAddPriceConfirm () {
         this.innerAddVisible = false
-        this.childrenItem.carTypeName = this.priceSetAddItem0.carTypeName
+
+        const item = this.carTypeName.split('-')
+        this.priceSetAddItem0.carTypeName = item[0]
+        this.priceSetAddItem0.carTypeRealName = item[1]
+        this.priceSetAddItem1.carTypeName = item[0]
+        this.priceSetAddItem1.carTypeRealName = item[1]
         this.priceSetAddList.push(this.priceSetAddItem0)
         this.priceSetAddList.push(this.priceSetAddItem1)
-        this.childrenItem.routerPriceList.push(this.priceSetAddItem0)
-        this.childrenItem.routerPriceList.push(this.priceSetAddItem1)
-        this.addItem.children.push(this.childrenItem)
+
+        this.addItem.children.push({
+          carTypeName: item[0],
+          routerType: 0,
+          routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
+        })
       },
       onDeleteCustomerPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
@@ -922,13 +926,6 @@
           customerNumId: this.customerNumId,
           cityAreaId: this.addItem.destinationCityArea
         })
-      },
-      onCarTypeNameChange () {
-        const item = this.childrenItem.carTypeName.split('-')
-        this.priceSetAddItem0.carTypeName = item[0]
-        this.priceSetAddItem0.carTypeRealName = item[1]
-        this.priceSetAddItem1.carTypeName = item[0]
-        this.priceSetAddItem1.carTypeRealName = item[1]
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
