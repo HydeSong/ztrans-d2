@@ -124,7 +124,7 @@
               <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="起始点">
-              <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
+              <el-select v-model="addItem.sourcePrv" placeholder="请选择省">
                 <el-option
                   v-for="item in allPrv"
                   :key="item.prvId"
@@ -132,7 +132,7 @@
                   :value="item.prvId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.sourceCity" placeholder="请选择市" @change="onSourceCityChange">
+              <el-select v-model="addItem.sourceCity" placeholder="请选择市">
                 <el-option
                   v-for="item in allCity"
                   :key="item.cityId"
@@ -140,7 +140,7 @@
                   :value="item.cityId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.sourceCityArea" placeholder="请选择区" @change="onSourceCityAreaChange">
+              <el-select v-model="addItem.sourceCityArea" placeholder="请选择区">
                 <el-option
                   v-for="item in allCityArea"
                   :key="item.cityAreaId"
@@ -158,7 +158,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="目的地">
-              <el-select v-model="addItem.destinationPrv" placeholder="请选择省" @change="onDestinationPrvChange">
+              <el-select v-model="addItem.destinationPrv" placeholder="请选择省" >
                 <el-option
                   v-for="item in allPrv"
                   :key="item.prvId"
@@ -166,7 +166,7 @@
                   :value="item.prvId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.destinationCity" placeholder="请选择市" @change="onDestinationCityChange">
+              <el-select v-model="addItem.destinationCity" placeholder="请选择市">
                 <el-option
                   v-for="item in allCity"
                   :key="item.cityId"
@@ -174,7 +174,7 @@
                   :value="item.cityId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.destinationCityArea" placeholder="请选择区" @change="onDestinationCityAreaChange">
+              <el-select v-model="addItem.destinationCityArea" placeholder="请选择区">
                 <el-option
                   v-for="item in allCityArea"
                   :key="item.cityAreaId"
@@ -330,7 +330,7 @@
               <el-input v-model="addItem.routerAlia" placeholder="请输入" disabled></el-input>
             </el-form-item>
             <el-form-item label="起始点">
-              <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
+              <el-select v-model="addItem.sourcePrv" placeholder="请选择省">
                 <el-option
                   v-for="item in allPrv"
                   :key="item.prvId"
@@ -338,7 +338,7 @@
                   :value="item.prvId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.sourceCity" placeholder="请选择市" @change="onSourceCityChange">
+              <el-select v-model="addItem.sourceCity" placeholder="请选择市">
                 <el-option
                   v-for="item in allCity"
                   :key="item.cityId"
@@ -346,7 +346,7 @@
                   :value="item.cityId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.sourceCityArea" placeholder="请选择区" @change="onSourceCityAreaChange">
+              <el-select v-model="addItem.sourceCityArea" placeholder="请选择区">
                 <el-option
                   v-for="item in allCityArea"
                   :key="item.cityAreaId"
@@ -364,7 +364,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="目的地">
-              <el-select v-model="addItem.destinationPrv" placeholder="请选择省" @change="onDestinationPrvChange">
+              <el-select v-model="addItem.destinationPrv" placeholder="请选择省">
                 <el-option
                   v-for="item in allPrv"
                   :key="item.prvId"
@@ -372,7 +372,7 @@
                   :value="item.prvId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.destinationCity" placeholder="请选择市" @change="onDestinationCityChange">
+              <el-select v-model="addItem.destinationCity" placeholder="请选择市">
                 <el-option
                   v-for="item in allCity"
                   :key="item.cityId"
@@ -380,7 +380,7 @@
                   :value="item.cityId">
                 </el-option>
               </el-select>
-              <el-select v-model="addItem.destinationCityArea" placeholder="请选择区" @change="onDestinationCityAreaChange">
+              <el-select v-model="addItem.destinationCityArea" placeholder="请选择区">
                 <el-option
                   v-for="item in allCityArea"
                   :key="item.cityAreaId"
@@ -559,6 +559,70 @@
         saleId: ''
       })
       this.onSearch()
+    },
+    watch: {
+      'addItem.sourcePrv' () {
+        // this.addItem.sourceCity = ''
+        // this.addItem.sourceCityArea = ''
+        // this.addItem.sourceTown = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.sourcePrv
+        })
+      },
+      'addItem.destinationPrv' () {
+        // this.addItem.destinationCity = ''
+        // this.addItem.destinationCityArea = ''
+        // this.addItem.destinationTown = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.destinationPrv
+        })
+      },
+      'addItem.sourceCity' () {
+        // this.addItem.sourceCityArea = ''
+        // this.addItem.sourceTown = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.sourcePrv,
+          cityId: this.addItem.sourceCity
+        })
+      },
+      'addItem.destinationCity' () {
+        // this.addItem.destinationCityArea = ''
+        // this.addItem.destinationTown = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addItem.destinationPrv,
+          cityId: this.addItem.destinationCity
+        })
+      },
+      'addItem.sourceCityArea' () {
+        // this.addItem.sourceTown = ''
+        this._getAllTown({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          cityAreaId: this.addItem.sourceCityArea
+        })
+      },
+      'addItem.destinationCityArea' () {
+        // this.addItem.destinationTown = ''
+        this._getAllTown({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          cityAreaId: this.addItem.destinationCityArea
+        })
+      }
     },
     methods: {
       routerCustomerTypeFormat (val) {
@@ -849,19 +913,19 @@
 
         this.addItem.children = []
 
-        if (row.routerPriceList && row.routerPriceList[0] && row.routerPriceList[0].carTypeName) {
-          this.addItem.children.push({
-            carTypeName: row.routerPriceList[0].carTypeName,
-            routerType: 0,
-            routerPriceList: row.routerPriceList
-          })
-        } else {
-          this.addItem.children.push({
-            carTypeName: '',
-            routerType: 0,
-            routerPriceList: []
-          })
-        }
+        // if (row.routerPriceList && row.routerPriceList[0] && row.routerPriceList[0].carTypeName) {
+        //   this.addItem.children.push({
+        //     carTypeName: row.routerPriceList[0].carTypeName,
+        //     routerType: 0,
+        //     routerPriceList: row.routerPriceList
+        //   })
+        // } else {
+        //   this.addItem.children.push({
+        //     carTypeName: '',
+        //     routerType: 0,
+        //     routerPriceList: []
+        //   })
+        // }
         console.log(row)
         this.addItem.customerNumId = row.customerNumId
         this.addItem.customerSeries = row.customerSeries
@@ -880,68 +944,6 @@
 
         this.priceSetAddList = row.routerPriceList
         this.editDialog = true
-      },
-      onSourcePrvChange () {
-        this.addItem.sourceCity = ''
-        this.addItem.sourceCityArea = ''
-        this.addItem.sourceTown = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.sourcePrv
-        })
-      },
-      onSourceCityChange () {
-        this.addItem.sourceCityArea = ''
-        this.addItem.sourceTown = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.sourcePrv,
-          cityId: this.addItem.sourceCity
-        })
-      },
-      onSourceCityAreaChange () {
-        this.addItem.sourceTown = ''
-        this._getAllTown({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          cityAreaId: this.addItem.sourceCityArea
-        })
-      },
-      onDestinationPrvChange () {
-        this.addItem.destinationCity = ''
-        this.addItem.destinationCityArea = ''
-        this.addItem.destinationTown = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.destinationPrv
-        })
-      },
-      onDestinationCityChange () {
-        this.addItem.destinationCityArea = ''
-        this.addItem.destinationTown = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.destinationPrv,
-          cityId: this.addItem.destinationCity
-        })
-      },
-      onDestinationCityAreaChange () {
-        this.addItem.destinationTown = ''
-        this._getAllTown({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          cityAreaId: this.addItem.destinationCityArea
-        })
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)

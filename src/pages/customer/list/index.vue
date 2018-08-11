@@ -183,7 +183,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="省/市/区">
-            <el-select v-model="editCustomerItem.prvName" placeholder="请选择省" @change="onPrvChange">
+            <el-select v-model="editCustomerItem.prvName" placeholder="请选择省">
               <el-option
                 v-for="item in allPrv"
                 :key="item.prvId"
@@ -191,7 +191,7 @@
                 :value="item.prvId">
               </el-option>
             </el-select>
-            <el-select v-model="editCustomerItem.cityName" placeholder="请选择市" @change="onCityChange">
+            <el-select v-model="editCustomerItem.cityName" placeholder="请选择市">
               <el-option
                 v-for="item in allCity"
                 :key="item.cityId"
@@ -279,7 +279,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="省/市/区">
-            <el-select v-model="addCustomerItem.prvName" placeholder="请选择省" @change="onPrvChange">
+            <el-select v-model="addCustomerItem.prvName" placeholder="请选择省">
               <el-option
                 v-for="item in allPrv"
                 :key="item.prvId"
@@ -287,7 +287,7 @@
                 :value="item.prvId">
               </el-option>
             </el-select>
-            <el-select v-model="addCustomerItem.cityName" placeholder="请选择市" @change="onCityChange">
+            <el-select v-model="addCustomerItem.cityName" placeholder="请选择市">
               <el-option
                 v-for="item in allCity"
                 :key="item.cityId"
@@ -630,6 +630,48 @@
         pageSize: 200
       })
     },
+    watch: {
+      'editCustomerItem.prvName' () {
+        // this.editCustomerItem.cityName = ''
+        // this.editCustomerItem.cityAreaName = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCustomerItem.prvName
+        })
+      },
+      'addCustomerItem.prvName' () {
+        // this.addCustomerItem.cityName = ''
+        // this.addCustomerItem.cityAreaName = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addCustomerItem.prvName
+        })
+      },
+      'editCustomerItem.cityName' () {
+        // this.editCustomerItem.cityAreaName = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCustomerItem.prvName,
+          cityId: this.editCustomerItem.cityName
+        })
+      },
+      'addCustomerItem.cityName' () {
+        // this.addCustomerItem.cityAreaName = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addCustomerItem.prvName,
+          cityId: this.addCustomerItem.cityName
+        })
+      }
+    },
     methods: {
       _getServiceType (params) {
         getServiceType(params).then(res => {
@@ -882,29 +924,6 @@
           }
         }).catch(err => {
           console.log(err)
-        })
-      },
-      onPrvChange () {
-        this.editCustomerItem.cityName = ''
-        this.addCustomerItem.cityName = ''
-        this.editCustomerItem.cityAreaName = ''
-        this.addCustomerItem.cityAreaName = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCustomerItem.prvName || this.addCustomerItem.prvName
-        })
-      },
-      onCityChange () {
-        this.editCustomerItem.cityAreaName = ''
-        this.addCustomerItem.cityAreaName = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCustomerItem.prvName || this.addCustomerItem.prvName,
-          cityId: this.editCustomerItem.cityName || this.addCustomerItem.cityName
         })
       },
       onSearch () {
