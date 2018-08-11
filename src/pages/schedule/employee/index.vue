@@ -191,6 +191,8 @@
               type: 'success',
               message: '添加成功!'
             })
+            this.addDialog = false
+            this.onSearch()
           }
         }).catch(err => {
           console.log(err)

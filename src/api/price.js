@@ -122,3 +122,16 @@ export function addRouterCustomerPrice (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function updateRouterCustomerPrice (params) {
+  const url = `${CONFIG.HOST}/updateRouterCustomerPrice`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}

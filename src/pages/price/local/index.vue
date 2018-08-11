@@ -196,6 +196,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
+                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
                 <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
               </template>
             </el-table-column>
@@ -362,6 +363,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
+                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
                 <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
               </template>
             </el-table-column>

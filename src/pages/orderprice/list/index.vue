@@ -80,10 +80,10 @@
           prop="driverMoney"
           label="司机应收">
         </el-table-column>
-        <el-table-column
-          prop="platformMoney"
-          label="平台利润">
-        </el-table-column>
+        <!--<el-table-column-->
+          <!--prop="platformMoney"-->
+          <!--label="平台利润">-->
+        <!--</el-table-column>-->
       </el-table>
       <div class="pagination-wrapper">
         <el-pagination

@@ -183,10 +183,30 @@
             </el-select>
           </el-form-item>
           <el-form-item label="省/市/区">
-            <el-select v-model="editCustomerItem.prvName" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            <el-select v-model="editCustomerItem.prvName" placeholder="请选择省" @change="onPrvChange">
+              <el-option
+                v-for="item in allPrv"
+                :key="item.prvId"
+                :label="item.prvName"
+                :value="item.prvId">
+              </el-option>
             </el-select>
-            <!-- editCustomerItem.cityName editCustomerItem.cityAreaName-->
+            <el-select v-model="editCustomerItem.cityName" placeholder="请选择市" @change="onCityChange">
+              <el-option
+                v-for="item in allCity"
+                :key="item.cityId"
+                :label="item.cityName"
+                :value="item.cityId">
+              </el-option>
+            </el-select>
+            <el-select v-model="editCustomerItem.cityAreaName" placeholder="请选择区">
+              <el-option
+                v-for="item in allCityArea"
+                :key="item.cityAreaId"
+                :label="item.cityAreaName"
+                :value="item.cityAreaId">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="客户级别">
             <el-select v-model="editCustomerItem.customerLevel" clearable>
@@ -259,10 +279,30 @@
             </el-select>
           </el-form-item>
           <el-form-item label="省/市/区">
-            <el-select v-model="addCustomerItem.prvName" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            <el-select v-model="addCustomerItem.prvName" placeholder="请选择省" @change="onPrvChange">
+              <el-option
+                v-for="item in allPrv"
+                :key="item.prvId"
+                :label="item.prvName"
+                :value="item.prvId">
+              </el-option>
             </el-select>
-            <!-- addCustomerItem.cityName addCustomerItem.cityAreaName -->
+            <el-select v-model="addCustomerItem.cityName" placeholder="请选择市" @change="onCityChange">
+              <el-option
+                v-for="item in allCity"
+                :key="item.cityId"
+                :label="item.cityName"
+                :value="item.cityId">
+              </el-option>
+            </el-select>
+            <el-select v-model="addCustomerItem.cityAreaName" placeholder="请选择区">
+              <el-option
+                v-for="item in allCityArea"
+                :key="item.cityAreaId"
+                :label="item.cityAreaName"
+                :value="item.cityAreaId">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="客户级别">
             <el-select v-model="addCustomerItem.customerLevel" clearable>
@@ -319,12 +359,13 @@
       </el-dialog>
       <el-dialog title="编辑联系人" :visible.sync="editContactPopDialog">
         <el-form :inline="true" :model="editContactItem" label-position="left">
-          <el-form-item label="推荐加盟商">
-            <el-input v-model="editContactItem.commendFranchisee"></el-input>
-          </el-form-item>
-          <el-form-item label="推荐销售">
-            <el-input v-model="editContactItem.commendSale"></el-input>
-          </el-form-item>
+          <!--<el-form-item label="推荐加盟商">-->
+            <!--<el-input v-model="
+            .commendFranchisee"></el-input>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="推荐销售">-->
+            <!--<el-input v-model="editContactItem.commendSale"></el-input>-->
+          <!--</el-form-item>-->
           <el-form-item label="联系人姓名">
             <el-input v-model="editContactItem.contactName"></el-input>
           </el-form-item>
@@ -354,12 +395,12 @@
       </el-dialog>
       <el-dialog title="添加联系人" :visible.sync="addContactPopDialog">
         <el-form :inline="true" :model="addContactItem" label-position="left">
-          <el-form-item label="推荐加盟商">
-            <el-input v-model="addContactItem.commendFranchisee"></el-input>
-          </el-form-item>
-          <el-form-item label="推荐销售">
-            <el-input v-model="addContactItem.commendSale"></el-input>
-          </el-form-item>
+          <!--<el-form-item label="推荐加盟商">-->
+            <!--<el-input v-model="addContactItem.commendFranchisee"></el-input>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="推荐销售">-->
+            <!--<el-input v-model="addContactItem.commendSale"></el-input>-->
+          <!--</el-form-item>-->
           <el-form-item label="客户联系人姓名">
             <el-input v-model="addContactItem.contactName"></el-input>
           </el-form-item>
@@ -494,8 +535,6 @@
         editContactItem: {
           activeDtme: '',
           activeStatus: '',
-          commendFranchisee: '',
-          commendSale: '',
           contactName: '',
           contactOpenId: '',
           contactPhone: '',
@@ -524,11 +563,11 @@
         customerSourceModels: [],
         customerTypeModels: [],
         operateIdAndoperateStatus: [],
-        townNameAndTownIdModel: [],
-        prvNameAndPrvIds: [],
-        cityAreaNameAndCityAreaIdModel: [],
-        cityeNameAndCityeIds: [],
-        serviceTypeModels: []
+        serviceTypeModels: [],
+        allPrv: [],
+        allCity: [],
+        allCityArea: [],
+        allTown: []
       }
     },
     computed: {
@@ -585,6 +624,11 @@
         customerNumId: this.customerNumId
       })
       // 省市区联动数据
+      this._getAllPrv({
+        current: 1,
+        customerNumId: this.customerNumId,
+        pageSize: 200
+      })
     },
     methods: {
       _getServiceType (params) {
@@ -596,28 +640,10 @@
           console.log(err)
         })
       },
-      _getAllTown (params) {
-        getAllTown(params).then(res => {
-          if (res.code === 0) {
-            this.townNameAndTownIdModel = res.townNameAndTownIdModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
       _getAllPrv (params) {
         getAllPrv(params).then(res => {
           if (res.code === 0) {
-            this.prvNameAndPrvIds = res.prvNameAndPrvIds
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getAllCityArea (params) {
-        getAllCityArea(params).then(res => {
-          if (res.code === 0) {
-            this.cityAreaNameAndCityAreaIdModel = res.cityAreaNameAndCityAreaIdModel
+            this.allPrv = res.prvNameAndPrvIds
           }
         }).catch(err => {
           console.log(err)
@@ -626,7 +652,25 @@
       _getAllCity (params) {
         getAllCity(params).then(res => {
           if (res.code === 0) {
-            this.cityeNameAndCityeIds = res.cityeNameAndCityeIds
+            this.allCity = res.cityeNameAndCityeIds
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCityArea (params) {
+        getAllCityArea(params).then(res => {
+          if (res.code === 0) {
+            this.allCityArea = res.cityAreaNameAndCityAreaIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllTown (params) {
+        getAllTown(params).then(res => {
+          if (res.code === 0) {
+            this.allTown = res.townNameAndTownIdModel
           }
         }).catch(err => {
           console.log(err)
@@ -732,6 +776,7 @@
         })
       },
       _getMasterCustomerDetail (params) {
+        console.log(params)
         getMasterCustomerDetail(params).then(res => {
           if (res.code === 0) {
             this.constantDetail = res.constantDetailModel
@@ -837,6 +882,29 @@
           }
         }).catch(err => {
           console.log(err)
+        })
+      },
+      onPrvChange () {
+        this.editCustomerItem.cityName = ''
+        this.addCustomerItem.cityName = ''
+        this.editCustomerItem.cityAreaName = ''
+        this.addCustomerItem.cityAreaName = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCustomerItem.prvName || this.addCustomerItem.prvName
+        })
+      },
+      onCityChange () {
+        this.editCustomerItem.cityAreaName = ''
+        this.addCustomerItem.cityAreaName = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCustomerItem.prvName || this.addCustomerItem.prvName,
+          cityId: this.editCustomerItem.cityName || this.addCustomerItem.cityName
         })
       },
       onSearch () {

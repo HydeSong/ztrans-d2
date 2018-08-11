@@ -240,6 +240,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
+                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
                 <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
               </template>
             </el-table-column>
@@ -326,7 +327,7 @@
               <el-input v-model="addItem.routerNumber" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="线路别名">
-              <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
+              <el-input v-model="addItem.routerAlia" placeholder="请输入" disabled></el-input>
             </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省" @change="onSourcePrvChange">
@@ -445,6 +446,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
+                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
                 <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
               </template>
             </el-table-column>
@@ -463,7 +465,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, deleteRouterCustomerPrice, updateBatchRouterPrice } from '@/api/price'
+  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, deleteRouterCustomerPrice, updateBatchRouterPrice, updateRouterCustomerPrice } from '@/api/price'
   import { getAllPrv, getAllCity, getAllCityArea, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -661,6 +663,20 @@
           console.log(err)
         })
       },
+      _updateRouterCustomerPrice (params) {
+        updateRouterCustomerPrice(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '编辑成功!'
+            })
+            this.editDialog = false
+            this.onSearch()
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getMasterCustomerList (params) {
         getMasterCustomerList(params).then(res => {
           if (res.code === 0) {
@@ -734,7 +750,7 @@
       },
       onEditConfirm () {
         this.addItem.customerNumId = this.customerNumId
-        this._updateBatchRouterPrice(this.addItem)
+        this._updateRouterCustomerPrice(this.addItem)
       },
       onAddPrice () {
         this.innerAddVisible = true
@@ -846,7 +862,7 @@
             routerPriceList: []
           })
         }
-
+        console.log(row)
         this.addItem.customerNumId = row.customerNumId
         this.addItem.customerSeries = row.customerSeries
         this.addItem.destinationCity = row.destinationCity
