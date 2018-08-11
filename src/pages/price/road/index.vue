@@ -224,19 +224,19 @@
         <div class="block" style="padding: 0 15px">
           <el-form :inline="true" :model="priceSetAddItem0">
             <el-form-item label="起步距离(公里)">
-              <el-input v-model="priceSetAddItem0.initDistance" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem0.initDistance" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="起步价格(元)">
-              <el-input v-model="priceSetAddItem0.initPrice" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem0.initPrice" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="超出价格(元/公里)">
-              <el-input v-model="priceSetAddItem0.overstepPrice" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem0.overstepPrice" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="销售比例">
-              <el-input v-model="priceSetAddItem0.saleProportion" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem0.saleProportion" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="加盟商比例">
-              <el-input v-model="priceSetAddItem0.franchiseeProportion" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem0.franchiseeProportion" placeholder="" type="tel"></el-input>
             </el-form-item>
           </el-form>
         </div>
@@ -246,19 +246,19 @@
         <div class="block" style="padding: 0 15px">
           <el-form :inline="true" :model="priceSetAddItem1">
             <el-form-item label="起步距离(公里)">
-              <el-input v-model="priceSetAddItem1.initDistance" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem1.initDistance" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="起步价格(元)">
-              <el-input v-model="priceSetAddItem1.initPrice" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem1.initPrice" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="超出价格(元/公里)">
-              <el-input v-model="priceSetAddItem1.overstepPrice" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem1.overstepPrice" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="销售比例">
-              <el-input v-model="priceSetAddItem1.saleProportion" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem1.saleProportion" placeholder="" type="tel"></el-input>
             </el-form-item>
             <el-form-item label="加盟商比例">
-              <el-input v-model="priceSetAddItem1.franchiseeProportion" placeholder=""></el-input>
+              <el-input v-model="priceSetAddItem1.franchiseeProportion" placeholder="" type="tel"></el-input>
             </el-form-item>
           </el-form>
         </div>

@@ -481,7 +481,7 @@
           routerDetailAliaSearchKey: '',
           routerDetailSeries: '',
           routerNumberSearchKey: '',
-          routerType: ''
+          routerType: 0
         },
         addItem: {
           children: [],
@@ -753,7 +753,7 @@
           overstepPrice: '',
           routerCustomerType: 0,
           routerPriceId: '',
-          routerType: '',
+          routerType: 0,
           saleProportion: ''
         }
         this.priceSetAddItem1 = {
@@ -765,7 +765,7 @@
           overstepPrice: '',
           routerCustomerType: 1,
           routerPriceId: '',
-          routerType: '',
+          routerType: 0,
           saleProportion: ''
         }
       },
