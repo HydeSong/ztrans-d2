@@ -3,7 +3,7 @@
     <template>
       <el-form :inline="true" :model="searchItem">
         <el-form-item>
-          <el-select v-model="searchItem.motorcadeId" placeholder="车队ID" clearable>
+          <el-select v-model="searchItem.motorcadeId" placeholder="车队名字" clearable>
             <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
           </el-select>
         </el-form-item>
@@ -151,34 +151,54 @@
       <el-dialog title="添加车辆" :visible.sync="addCarPopDialog">
         <el-form :inline="true" :model="addCarItem" label-position="left">
           <el-form-item label="车队名字">
-            <el-select v-model="addCarItem.serviceType" clearable>
-              <el-option v-for="(item, index) in serviceTypeModels" :key="index" :label="item.serviceTypeName" :value="item.serviceTypeId"></el-option>
+            <el-select v-model="searchItem.motorcadeId" clearable>
+              <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆颜色">
-            <el-select v-model="addCarItem.caculateType" clearable>
-              <el-option v-for="(item, index) in customerCaclulateTypeModels" :key="index" :label="item.customerCaclulateTypeName" :value="item.customerCaclulateTypeId"></el-option>
+            <el-select v-model="addCarItem.carColour" clearable>
+              <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车型">
-            <el-select v-model="addCarItem.checkStatus" clearable>
-              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
+            <el-select v-model="addCarItem.carType" clearable>
+              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆品牌">
-            <el-select v-model="addCarItem.checkStatus" clearable>
-              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
+            <el-select v-model="addCarItem.carBrand" clearable>
+              <el-option v-for="(item, index) in carBrands" :key="index" :label="item.brandName" :value="item.brandId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="省/市/区">
-            <el-select v-model="addCarItem.prvName" clearable>
-              <el-option v-for="(item, index) in customerSales" :key="index" :label="item.salePersonName" :value="item.salePersonId"></el-option>
+            <el-select v-model="addCarItem.prvName" placeholder="请选择省">
+              <el-option
+                v-for="item in allPrv"
+                :key="item.prvId"
+                :label="item.prvName"
+                :value="item.prvId">
+              </el-option>
             </el-select>
-            <!-- addCustomerItem.cityName addCustomerItem.cityAreaName -->
+            <el-select v-model="addCarItem.cityName" placeholder="请选择市">
+              <el-option
+                v-for="item in allCity"
+                :key="item.cityId"
+                :label="item.cityName"
+                :value="item.cityId">
+              </el-option>
+            </el-select>
+            <el-select v-model="addCarItem.cityAreaName" placeholder="请选择区">
+              <el-option
+                v-for="item in allCityArea"
+                :key="item.cityAreaId"
+                :label="item.cityAreaName"
+                :value="item.cityAreaId">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="申请时间">
             <el-date-picker
-              v-model="addCarItem.finalDate"
+              v-model="addCarItem.applyDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -190,10 +210,7 @@
             <el-col :span="6">
               <el-upload
                 list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :file-list="fileList2">
+                action="https://jsonplaceholder.typicode.com/posts/">
                 <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
               </el-upload>
@@ -201,10 +218,7 @@
             <el-col :span="6">
               <el-upload
                 list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :file-list="fileList2">
+                action="https://jsonplaceholder.typicode.com/posts/">
                 <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
               </el-upload>
@@ -212,10 +226,7 @@
             <el-col :span="6">
               <el-upload
                 list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :file-list="fileList2">
+                action="https://jsonplaceholder.typicode.com/posts/">
                 <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
               </el-upload>
@@ -223,10 +234,7 @@
             <el-col :span="6">
               <el-upload
                 list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :file-list="fileList2">
+                action="https://jsonplaceholder.typicode.com/posts/">
                 <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
               </el-upload>
@@ -245,8 +253,8 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllCar, deleteCar, getMotorcadeList } from '@/api/truck'
-  import { getCheckStatus } from '@/api/dictionary'
+  import { getAllCar, deleteCar, getMotorcadeList, addCar, getAllCarBand, getAllCarColour } from '@/api/truck'
+  import { getCheckStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -257,7 +265,6 @@
         curPage: 1,
         pgSize: 100,
         routerDetail: [],
-        carTypes: [],
         searchItem: {
           checkStatus: '',
           carPlateNumberSearchKey: '',
@@ -266,23 +273,29 @@
           motorcadeId: ''
         },
         addCarItem: {
-          caculateType: '',
+          activeDtme: '',
+          activeStatus: '',
+          applyDtme: '',
+          carBrand: '',
+          carColour: '',
+          carPlateNumber: '',
+          carType: '',
+          checkDtme: '',
+          checkPerson: '',
           checkRemark: '',
           checkStatus: '',
           cityAreaName: '',
           cityName: '',
-          customerLevel: '',
-          customerName: '',
           customerNumId: '',
-          customerSimpleCode: '',
-          customerSource: '',
-          customerType: '',
-          detailAddress: '',
-          finalDate: '',
-          orderLevel: '',
-          prvName: '',
-          saleId: '',
-          serviceType: ''
+          driverIdentityId: '',
+          driverName: '',
+          driverPhone: '',
+          drivingLicense: '',
+          drivingPicture: '',
+          identityCard: '',
+          motorcadeId: '',
+          persomCarPicture: '',
+          prvName: ''
         },
         tableData: [],
         searching: false,
@@ -315,7 +328,14 @@
           }]
         },
         motorcadeNameList: [],
-        checkIdAndCheckStatus: []
+        checkIdAndCheckStatus: [],
+        allPrv: [],
+        allCity: [],
+        allCityArea: [],
+        allTown: [],
+        carBrands: [],
+        carColours: [],
+        carTypes: []
       }
     },
     computed: {
@@ -353,8 +373,105 @@
       this._getMotorcadeList({
         franchiseeid: ''
       })
+      // this._getAllCarType({
+      //   customerNumId: this.customerNumId
+      // })
+      this._getAllCarBand({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId
+      })
+      this._getAllCarColour({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId
+      })
+      // 省市区联动数据
+      this._getAllPrv({
+        current: 1,
+        customerNumId: this.customerNumId,
+        pageSize: 200
+      })
+    },
+    watch: {
+      'editCarItem.prvName' () {
+        // this.editCustomerItem.cityName = ''
+        // this.editCustomerItem.cityAreaName = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCarItem.prvName
+        })
+      },
+      'addCarItem.prvName' () {
+        // this.addCustomerItem.cityName = ''
+        // this.addCustomerItem.cityAreaName = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addCarItem.prvName
+        })
+      },
+      'editCarItem.cityName' () {
+        // this.editCustomerItem.cityAreaName = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCarItem.prvName,
+          cityId: this.editCarItem.cityName
+        })
+      },
+      'addCarItem.cityName' () {
+        // this.addCustomerItem.cityAreaName = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.addCarItem.prvName,
+          cityId: this.addCarItem.cityName
+        })
+      }
     },
     methods: {
+      _getAllPrv (params) {
+        getAllPrv(params).then(res => {
+          if (res.code === 0) {
+            this.allPrv = res.prvNameAndPrvIds
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCity (params) {
+        getAllCity(params).then(res => {
+          if (res.code === 0) {
+            this.allCity = res.cityeNameAndCityeIds
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCityArea (params) {
+        getAllCityArea(params).then(res => {
+          if (res.code === 0) {
+            this.allCityArea = res.cityAreaNameAndCityAreaIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllTown (params) {
+        getAllTown(params).then(res => {
+          if (res.code === 0) {
+            this.allTown = res.townNameAndTownIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getCheckStatus (params) {
         getCheckStatus(params).then(res => {
           if (res.code === 0) {
@@ -368,6 +485,47 @@
         getMotorcadeList(params).then(res => {
           if (res.code === 0) {
             this.motorcadeNameList = res.motorcadeNameList
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCarType (params) {
+        getAllCarType(params).then(res => {
+          if (res.code === 0) {
+            this.carTypes = res.carTypes
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCarBand (params) {
+        getAllCarBand(params).then(res => {
+          if (res.code === 0) {
+            this.carBrands = res.carBrands
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllCarColour (params) {
+        getAllCarColour(params).then(res => {
+          if (res.code === 0) {
+            this.carColours = res.carColours
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _addCar (params) {
+        console.log(params)
+        addCar(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            })
+            this.onSearch()
           }
         }).catch(err => {
           console.log(err)
@@ -429,7 +587,7 @@
         this.addCarPopDialog = true
       },
       onAddCarConfirm () {
-
+        this._addCar(this.addCarItem)
       },
       onEditCar () {
       },
