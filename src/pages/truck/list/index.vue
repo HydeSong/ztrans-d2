@@ -82,7 +82,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="block">
+      <div class="pagination-wrapper">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -93,59 +93,26 @@
           :total="totalPage">
         </el-pagination>
       </div>
-      <el-dialog title="查看车辆" :visible.sync="detailCarDialog">
-        <el-table
-          :data="tablePopData"
-          highlight-current-row
-          style="width: 100%"
-          height="400">
-          <el-table-column
-            fixed
-            type="index"
-            width="50">
-          </el-table-column>
-          <el-table-column
-            prop="carPlateNumber"
-            label="车牌号"
-            width="120">
-          </el-table-column>
-          <el-table-column
-            prop="driverName"
-            label="司机姓名">
-          </el-table-column>
-          <el-table-column
-            prop="driverPhone"
-            label="手机号"
-            width="160">
-          </el-table-column>
-          <el-table-column
-            prop="driverIdentityId"
-            label="身份证"
-            width="160">
-          </el-table-column>
-          <el-table-column
-            prop="cityName"
-            label="起始地->目的地">
-          </el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="120">
-            <template slot-scope="scope">
-              <el-button @click="onAssignConfirm(scope.row)" type="text" size="small">确定此人接单</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+      <el-dialog title="车辆详情" :visible.sync="detailCarDialog">
         <div class="block">
-          <el-pagination
-            @size-change="handleSzChange"
-            @current-change="handleCurChange"
-            :current-page="curPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pgSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="addTotalPage">
-          </el-pagination>
+          <el-row>
+            <el-col :span="12">
+              <ul class="i-list">
+                <li>汽车牌照：{{carDetail.carPlateNumber}}</li>
+                <li>所在地区：{{carDetail.prvRealName}}{{carDetail.cityRealName}}{{carDetail.cityAreaRealName}}</li>
+                <li>车型：{{carDetail.carTypeRealName}}</li>
+                <li>驾驶员名字：{{carDetail.driverName}}</li>
+              </ul>
+            </el-col>
+            <el-col :span="12">
+              <ul class="i-list">
+                <li>驾驶员手机：{{carDetail.customerSimpleCode}}</li>
+                <li>驾驶员身份证：{{carDetail.driverIdentityId}}</li>
+                <li>审核状态：{{carDetail.checkStatusName}}</li>
+                <li>激活状态：{{carDetail.activeStatusName}}</li>
+              </ul>
+            </el-col>
+          </el-row>
         </div>
       </el-dialog>
       <el-dialog title="添加车辆" :visible.sync="addCarPopDialog">
@@ -253,7 +220,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllCar, deleteCar, getMotorcadeList, addCar, getAllCarBand, getAllCarColour, getAllCarType } from '@/api/truck'
+  import { getAllCar, deleteCar, getMotorcadeList, addCar, getAllCarBand, getAllCarColour, getAllCarType, getCarDetail } from '@/api/truck'
   import { getCheckStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -300,7 +267,6 @@
         tableData: [],
         searching: false,
         detailCarDialog: false,
-        driverModel: [],
         addCarPopDialog: false,
         pickerOptions: {
           disabledDate (time) {
@@ -335,27 +301,19 @@
         allTown: [],
         carBrands: [],
         carColours: [],
-        carTypes: []
+        carTypes: [],
+        carDetail: {}
       }
     },
     computed: {
       totalPage () {
         return this.tableData.length
       },
-      addTotalPage () {
-        return this.driverModel.length
-      },
       tableInlineData () {
         this.tableData.forEach((item) => {
           item.district = `${item.prvRealName}/${item.cityRealName}/${item.cityAreaRealName}`
         })
         return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
-      },
-      tablePopData () {
-        this.driverModel.forEach((item) => {
-          item.district = `${item.prvRealName}/${item.cityRealName}/${item.cityAreaRealName}`
-        })
-        return this.driverModel.slice((this.curPage - 1) * this.pgSize, this.curPage * this.pgSize)
       }
     },
     created () {
@@ -438,6 +396,15 @@
       }
     },
     methods: {
+      _getCarDetail (params) {
+        getCarDetail(params).then(res => {
+          if (res.code === 0) {
+            this.carDetail = res.car[0]
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getAllPrv (params) {
         getAllPrv(params).then(res => {
           if (res.code === 0) {
@@ -593,7 +560,12 @@
       },
       onEditCar () {
       },
-      onDetailCar () {
+      onDetailCar (index, row) {
+        this.detailCarDialog = true
+        this._getCarDetail({
+          carId: row.carId,
+          customerNumId: this.customerNumId
+        })
       },
       onDeleteCar (index, row) {
         console.log(row)
@@ -645,12 +617,24 @@
 
 <style lang="scss" scoped>
 .page {
-    .block {
-      padding: 10px 0;
-      text-align: right;
-    }
-    .el-dialog__body {
-      text-align: center;
+  .block {
+    padding: 10px 30px;
+    text-align: left;
+  }
+  .pagination-wrapper {
+    padding: 10px 0;
+    text-align: right;
+  }
+  .i-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    & li{
+      padding: 5px 15px;
     }
   }
+  .el-dialog__body {
+    text-align: center;
+  }
+}
 </style>
