@@ -206,40 +206,40 @@
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
-          <el-row :gutter="20">
-            <el-col :span="6">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
-              </el-upload>
-            </el-col>
-          </el-row>
+          <!--<el-row :gutter="20">-->
+            <!--<el-col :span="6">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+          <!--</el-row>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addCarPopDialog = false">取 消</el-button>
@@ -253,7 +253,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllCar, deleteCar, getMotorcadeList, addCar, getAllCarBand, getAllCarColour } from '@/api/truck'
+  import { getAllCar, deleteCar, getMotorcadeList, addCar, getAllCarBand, getAllCarColour, getAllCarType } from '@/api/truck'
   import { getCheckStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -374,6 +374,8 @@
         franchiseeid: ''
       })
       // this._getAllCarType({
+      //   current: 1,
+      //   pageSize: 200,
       //   customerNumId: this.customerNumId
       // })
       this._getAllCarBand({
