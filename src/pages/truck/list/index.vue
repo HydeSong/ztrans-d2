@@ -120,26 +120,26 @@
                 <li>备注：{{carDetail.checkRemark}}</li>
               </ul>
             </el-col>
-            <el-col :span="24">
-              <el-row :gutter="20">
-                <el-col :span="6" class="tx-center">
-                  <img v-lazy="carDetail.drivingPicture" alt="驾驶证" class="cert-pic">
-                  <p>驾驶证</p>
-                </el-col>
-                <el-col :span="6" class="tx-center">
-                  <img v-lazy="carDetail.drivingLicense" alt="行驶证" class="cert-pic">
-                  <p>行驶证</p>
-                </el-col>
-                <el-col :span="6" class="tx-center">
-                  <img v-lazy="carDetail.identityCard" alt="身份证" class="cert-pic">
-                  <p>身份证</p>
-                </el-col>
-                <el-col :span="6" class="tx-center">
-                  <img v-lazy="carDetail.persomCarPicture" alt="人车合照" class="cert-pic">
-                  <p>人车合照</p>
-                </el-col>
-              </el-row>
-            </el-col>
+            <!--<el-col :span="24">-->
+              <!--<el-row :gutter="20">-->
+                <!--<el-col :span="6" class="tx-center">-->
+                  <!--<img v-lazy="carDetail.drivingPicture" alt="驾驶证" class="cert-pic">-->
+                  <!--<p>驾驶证</p>-->
+                <!--</el-col>-->
+                <!--<el-col :span="6" class="tx-center">-->
+                  <!--<img v-lazy="carDetail.drivingLicense" alt="行驶证" class="cert-pic">-->
+                  <!--<p>行驶证</p>-->
+                <!--</el-col>-->
+                <!--<el-col :span="6" class="tx-center">-->
+                  <!--<img v-lazy="carDetail.identityCard" alt="身份证" class="cert-pic">-->
+                  <!--<p>身份证</p>-->
+                <!--</el-col>-->
+                <!--<el-col :span="6" class="tx-center">-->
+                  <!--<img v-lazy="carDetail.persomCarPicture" alt="人车合照" class="cert-pic">-->
+                  <!--<p>人车合照</p>-->
+                <!--</el-col>-->
+              <!--</el-row>-->
+            <!--</el-col>-->
           </el-row>
         </div>
       </el-dialog>
@@ -249,40 +249,40 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-row :gutter="20">
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
-              </el-upload>
-            </el-col>
-          </el-row>
+          <!--<el-row :gutter="20">-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+          <!--</el-row>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addCarPopDialog = false">取 消</el-button>
@@ -290,42 +290,42 @@
         </div>
       </el-dialog>
       <el-dialog title="编辑车辆" :visible.sync="editCarPopDialog">
-        <el-form :inline="true" :model="addCarItem" label-position="left">
+        <el-form :inline="true" :model="editCarItem" label-position="left">
           <el-form-item label="驾驶员姓名">
-            <el-input v-model="addCarItem.driverName" placeholder=""></el-input>
+            <el-input v-model="editCarItem.driverName" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="驾驶员电话">
-            <el-input v-model="addCarItem.driverPhone" placeholder=""></el-input>
+            <el-input v-model="editCarItem.driverPhone" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="驾驶员身份证">
-            <el-input v-model="addCarItem.driverIdentityId" placeholder=""></el-input>
+            <el-input v-model="editCarItem.driverIdentityId" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="车牌号">
-            <el-input v-model="addCarItem.carPlateNumber" placeholder=""></el-input>
+            <el-input v-model="editCarItem.carPlateNumber" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="车型">
-            <el-select v-model="addCarItem.carType" clearable>
+            <el-select v-model="editCarItem.carType" clearable>
               <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆品牌">
-            <el-select v-model="addCarItem.carBrand" clearable>
+            <el-select v-model="editCarItem.carBrand" clearable>
               <el-option v-for="(item, index) in carBrands" :key="index" :label="item.brandName" :value="item.brandId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆颜色">
-            <el-select v-model="addCarItem.carColour" clearable>
+            <el-select v-model="editCarItem.carColour" clearable>
               <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="所属车队">
-            <el-select v-model="addCarItem.motorcadeId" clearable>
+            <el-select v-model="editCarItem.motorcadeId" clearable>
               <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="申请时间">
             <el-date-picker
-              v-model="addCarItem.applyDtme"
+              v-model="editCarItem.applyDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -340,7 +340,7 @@
           </el-form-item>
           <el-form-item label="激活时间">
             <el-date-picker
-              v-model="addCarItem.activeDtme"
+              v-model="editCarItem.activeDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -355,7 +355,7 @@
           </el-form-item>
           <el-form-item label="审核时间">
             <el-date-picker
-              v-model="addCarItem.checkDtme"
+              v-model="editCarItem.checkDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -364,13 +364,13 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="审核人">
-            <el-input v-model="addCarItem.checkPerson" placeholder=""></el-input>
+            <el-input v-model="editCarItem.checkPerson" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input v-model="addCarItem.checkRemark" placeholder=""></el-input>
+            <el-input v-model="editCarItem.checkRemark" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="接单区域">
-            <el-select v-model="addCarItem.prvName" placeholder="请选择省">
+            <el-select v-model="editCarItem.prvName" placeholder="请选择省">
               <el-option
                 v-for="item in allPrv"
                 :key="item.prvId"
@@ -378,7 +378,7 @@
                 :value="item.prvId">
               </el-option>
             </el-select>
-            <el-select v-model="addCarItem.cityName" placeholder="请选择市">
+            <el-select v-model="editCarItem.cityName" placeholder="请选择市">
               <el-option
                 v-for="item in allCity"
                 :key="item.cityId"
@@ -386,7 +386,7 @@
                 :value="item.cityId">
               </el-option>
             </el-select>
-            <el-select v-model="addCarItem.cityAreaName" placeholder="请选择区">
+            <el-select v-model="editCarItem.cityAreaName" placeholder="请选择区">
               <el-option
                 v-for="item in allCityArea"
                 :key="item.cityAreaId"
@@ -395,40 +395,40 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-row :gutter="20">
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
-              </el-upload>
-            </el-col>
-            <el-col :span="6" class="tx-center">
-              <el-upload
-                list-type="picture-card"
-                action="https://jsonplaceholder.typicode.com/posts/">
-                <i class="el-icon-plus"></i>
-                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
-              </el-upload>
-            </el-col>
-          </el-row>
+          <!--<el-row :gutter="20">-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+            <!--<el-col :span="6" class="tx-center">-->
+              <!--<el-upload-->
+                <!--list-type="picture-card"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<i class="el-icon-plus"></i>-->
+                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>-->
+              <!--</el-upload>-->
+            <!--</el-col>-->
+          <!--</el-row>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editCarPopDialog = false">取 消</el-button>
@@ -462,6 +462,31 @@
           motorcadeId: ''
         },
         addCarItem: {
+          activeDtme: '',
+          activeStatus: '',
+          applyDtme: '',
+          carBrand: '',
+          carColour: '',
+          carPlateNumber: '',
+          carType: '',
+          checkDtme: '',
+          checkPerson: '',
+          checkRemark: '',
+          checkStatus: '',
+          cityAreaName: '',
+          cityName: '',
+          customerNumId: '',
+          driverIdentityId: '',
+          driverName: '',
+          driverPhone: '',
+          drivingLicense: '',
+          drivingPicture: '',
+          identityCard: '',
+          motorcadeId: '',
+          persomCarPicture: '',
+          prvName: ''
+        },
+        editCarItem: {
           activeDtme: '',
           activeStatus: '',
           applyDtme: '',
@@ -576,16 +601,16 @@
       })
     },
     watch: {
-      // 'editCarItem.prvName' () {
-      //   // this.editCustomerItem.cityName = ''
-      //   // this.editCustomerItem.cityAreaName = ''
-      //   this._getAllCity({
-      //     current: 1,
-      //     pageSize: 200,
-      //     customerNumId: this.customerNumId,
-      //     prvId: this.editCarItem.prvName
-      //   })
-      // },
+      'editCarItem.prvName' () {
+        // this.editCustomerItem.cityName = ''
+        // this.editCustomerItem.cityAreaName = ''
+        this._getAllCity({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCarItem.prvName
+        })
+      },
       'addCarItem.prvName' () {
         // this.addCustomerItem.cityName = ''
         // this.addCustomerItem.cityAreaName = ''
@@ -596,16 +621,16 @@
           prvId: this.addCarItem.prvName
         })
       },
-      // 'editCarItem.cityName' () {
-      //   // this.editCustomerItem.cityAreaName = ''
-      //   this._getAllCityArea({
-      //     current: 1,
-      //     pageSize: 200,
-      //     customerNumId: this.customerNumId,
-      //     prvId: this.editCarItem.prvName,
-      //     cityId: this.editCarItem.cityName
-      //   })
-      // },
+      'editCarItem.cityName' () {
+        // this.editCustomerItem.cityAreaName = ''
+        this._getAllCityArea({
+          current: 1,
+          pageSize: 200,
+          customerNumId: this.customerNumId,
+          prvId: this.editCarItem.prvName,
+          cityId: this.editCarItem.cityName
+        })
+      },
       'addCarItem.cityName' () {
         // this.addCustomerItem.cityAreaName = ''
         this._getAllCityArea({
@@ -622,6 +647,7 @@
         getCarDetail(params).then(res => {
           if (res.code === 0) {
             this.carDetail = res.car
+            this.editCarItem = this.carDetail
           }
         }).catch(err => {
           console.log(err)
@@ -814,8 +840,8 @@
         this.editCarPopDialog = true
       },
       onEditCarConfirm () {
-        this.addCarItem.customerNumId = this.customerNumId
-        this._updateCar(this.addCarItem)
+        this.editCarItem.customerNumId = this.customerNumId
+        this._updateCar(this.editCarItem)
       },
       onDetailCar (index, row) {
         this.detailCarDialog = true
