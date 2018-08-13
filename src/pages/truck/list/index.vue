@@ -3,7 +3,7 @@
     <template>
       <el-form :inline="true" :model="searchItem">
         <el-form-item>
-          <el-select v-model="searchItem.motorcadeId" placeholder="车队名字" clearable>
+          <el-select v-model="searchItem.motorcadeId" placeholder="所属车队" clearable>
             <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
           </el-select>
         </el-form-item>
@@ -53,7 +53,7 @@
         </el-table-column>
         <el-table-column
           prop="district"
-          label="省/市/区">
+          label="接单区域">
         </el-table-column>
         <el-table-column
           prop="driverIdentityId"
@@ -98,34 +98,64 @@
           <el-row>
             <el-col :span="12">
               <ul class="i-list">
-                <li>汽车牌照：{{carDetail.carPlateNumber}}</li>
-                <li>所在地区：{{carDetail.prvRealName}}{{carDetail.cityRealName}}{{carDetail.cityAreaRealName}}</li>
+                <li>驾驶员姓名：{{carDetail.driverName}}</li>
+                <li>驾驶员电话：{{carDetail.driverPhone}}</li>
+                <li>驾驶员身份证：{{carDetail.driverIdentityId}}</li>
+                <li>车牌号：{{carDetail.carPlateNumber}}</li>
                 <li>车型：{{carDetail.carTypeRealName}}</li>
-                <li>驾驶员名字：{{carDetail.driverName}}</li>
+                <li>品牌：{{carDetail.carBrandRealName}}</li>
+                <li>颜色：{{carDetail.carColourRealName}}</li>
+                <li>接单区域：{{carDetail.prvRealName}}{{carDetail.cityRealName}}{{carDetail.cityAreaRealName}}</li>
               </ul>
             </el-col>
             <el-col :span="12">
               <ul class="i-list">
-                <li>驾驶员手机：{{carDetail.customerSimpleCode}}</li>
-                <li>驾驶员身份证：{{carDetail.driverIdentityId}}</li>
-                <li>审核状态：{{carDetail.checkStatusName}}</li>
+                <li>所属车队：{{carDetail.motorcadeCar}}</li>
+                <li>申请时间：{{carDetail.applyDtme}}</li>
                 <li>激活状态：{{carDetail.activeStatusName}}</li>
+                <li>激活时间：{{carDetail.activeDtme}}</li>
+                <li>审核状态：{{carDetail.checkStatusName}}</li>
+                <li>审核时间：{{carDetail.checkDtme}}</li>
+                <li>审核人：{{carDetail.checkPerson}}</li>
+                <li>备注：{{carDetail.checkRemark}}</li>
               </ul>
+            </el-col>
+            <el-col :span="24">
+              <el-row :gutter="20">
+                <el-col :span="6" class="tx-center">
+                  <img v-lazy="carDetail.drivingPicture" alt="驾驶证" class="cert-pic">
+                  <p>驾驶证</p>
+                </el-col>
+                <el-col :span="6" class="tx-center">
+                  <img v-lazy="carDetail.drivingLicense" alt="行驶证" class="cert-pic">
+                  <p>行驶证</p>
+                </el-col>
+                <el-col :span="6" class="tx-center">
+                  <img v-lazy="carDetail.identityCard" alt="身份证" class="cert-pic">
+                  <p>身份证</p>
+                </el-col>
+                <el-col :span="6" class="tx-center">
+                  <img v-lazy="carDetail.persomCarPicture" alt="人车合照" class="cert-pic">
+                  <p>人车合照</p>
+                </el-col>
+              </el-row>
             </el-col>
           </el-row>
         </div>
       </el-dialog>
       <el-dialog title="添加车辆" :visible.sync="addCarPopDialog">
         <el-form :inline="true" :model="addCarItem" label-position="left">
-          <el-form-item label="车队名字">
-            <el-select v-model="searchItem.motorcadeId" clearable>
-              <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
-            </el-select>
+          <el-form-item label="驾驶员姓名">
+            <el-input v-model="addCarItem.driverName" placeholder=""></el-input>
           </el-form-item>
-          <el-form-item label="车辆颜色">
-            <el-select v-model="addCarItem.carColour" clearable>
-              <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
-            </el-select>
+          <el-form-item label="驾驶员电话">
+            <el-input v-model="addCarItem.driverPhone" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="驾驶员身份证">
+            <el-input v-model="addCarItem.driverIdentityId" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="车牌号">
+            <el-input v-model="addCarItem.carPlateNumber" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="车型">
             <el-select v-model="addCarItem.carType" clearable>
@@ -137,7 +167,63 @@
               <el-option v-for="(item, index) in carBrands" :key="index" :label="item.brandName" :value="item.brandId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="省/市/区">
+          <el-form-item label="车辆颜色">
+            <el-select v-model="addCarItem.carColour" clearable>
+              <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属车队">
+            <el-select v-model="addCarItem.motorcadeId" clearable>
+              <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="申请时间">
+            <el-date-picker
+              v-model="addCarItem.applyDtme"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="激活状态">
+            <el-select v-model="addCarItem.activeStatus" clearable>
+              <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="激活时间">
+            <el-date-picker
+              v-model="addCarItem.activeDtme"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="审核状态">
+            <el-select v-model="addCarItem.checkStatus" clearable>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="审核时间">
+            <el-date-picker
+              v-model="addCarItem.checkDtme"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="审核人">
+            <el-input v-model="addCarItem.checkPerson" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="addCarItem.checkRemark" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="接单区域">
             <el-select v-model="addCarItem.prvName" placeholder="请选择省">
               <el-option
                 v-for="item in allPrv"
@@ -163,6 +249,80 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
+              </el-upload>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addCarPopDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onAddCarConfirm">确 定</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog title="编辑车辆" :visible.sync="editCarPopDialog">
+        <el-form :inline="true" :model="addCarItem" label-position="left">
+          <el-form-item label="驾驶员姓名">
+            <el-input v-model="addCarItem.driverName" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="驾驶员电话">
+            <el-input v-model="addCarItem.driverPhone" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="驾驶员身份证">
+            <el-input v-model="addCarItem.driverIdentityId" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="车牌号">
+            <el-input v-model="addCarItem.carPlateNumber" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="车型">
+            <el-select v-model="addCarItem.carType" clearable>
+              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车辆品牌">
+            <el-select v-model="addCarItem.carBrand" clearable>
+              <el-option v-for="(item, index) in carBrands" :key="index" :label="item.brandName" :value="item.brandId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车辆颜色">
+            <el-select v-model="addCarItem.carColour" clearable>
+              <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属车队">
+            <el-select v-model="addCarItem.motorcadeId" clearable>
+              <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="申请时间">
             <el-date-picker
               v-model="addCarItem.applyDtme"
@@ -173,44 +333,106 @@
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
-          <!--<el-row :gutter="20">-->
-            <!--<el-col :span="6">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-          <!--</el-row>-->
+          <el-form-item label="激活状态">
+            <el-select v-model="addCarItem.activeStatus" clearable>
+              <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="激活时间">
+            <el-date-picker
+              v-model="addCarItem.activeDtme"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="审核状态">
+            <el-select v-model="addCarItem.checkStatus" clearable>
+              <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="审核时间">
+            <el-date-picker
+              v-model="addCarItem.checkDtme"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="审核人">
+            <el-input v-model="addCarItem.checkPerson" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="addCarItem.checkRemark" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="接单区域">
+            <el-select v-model="addCarItem.prvName" placeholder="请选择省">
+              <el-option
+                v-for="item in allPrv"
+                :key="item.prvId"
+                :label="item.prvName"
+                :value="item.prvId">
+              </el-option>
+            </el-select>
+            <el-select v-model="addCarItem.cityName" placeholder="请选择市">
+              <el-option
+                v-for="item in allCity"
+                :key="item.cityId"
+                :label="item.cityName"
+                :value="item.cityId">
+              </el-option>
+            </el-select>
+            <el-select v-model="addCarItem.cityAreaName" placeholder="请选择区">
+              <el-option
+                v-for="item in allCityArea"
+                :key="item.cityAreaId"
+                :label="item.cityAreaName"
+                :value="item.cityAreaId">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                list-type="picture-card"
+                action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
+              </el-upload>
+            </el-col>
+          </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="addCarPopDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onAddCarConfirm">确 定</el-button>
+          <el-button @click="editCarPopDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onEditCarConfirm">确 定</el-button>
         </div>
       </el-dialog>
     </template>
@@ -220,8 +442,8 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllCar, deleteCar, getMotorcadeList, addCar, getAllCarBand, getAllCarColour, getAllCarType, getCarDetail } from '@/api/truck'
-  import { getCheckStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
+  import { getAllCar, deleteCar, getMotorcadeList, addCar, updateCar, getAllCarBand, getAllCarColour, getAllCarType, getCarDetail } from '@/api/truck'
+  import { getCheckStatus, getActiveStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -268,6 +490,7 @@
         searching: false,
         detailCarDialog: false,
         addCarPopDialog: false,
+        editCarPopDialog: false,
         pickerOptions: {
           disabledDate (time) {
             return time.getTime() > Date.now()
@@ -295,6 +518,7 @@
         },
         motorcadeNameList: [],
         checkIdAndCheckStatus: [],
+        activeStatusModels: [],
         allPrv: [],
         allCity: [],
         allCityArea: [],
@@ -317,25 +541,23 @@
       }
     },
     created () {
+      this.onSearch()
       this._getRouterAliaList({
         customerNumId: this.customerNumId
       })
       this._getCarTypeList({
         customerNumId: this.customerNumId
       })
-      this.onSearch()
       // 获取字典接口数据
       this._getCheckStatus({
+        customerNumId: this.customerNumId
+      })
+      this._getActiveStatus({
         customerNumId: this.customerNumId
       })
       this._getMotorcadeList({
         franchiseeid: ''
       })
-      // this._getAllCarType({
-      //   current: 1,
-      //   pageSize: 200,
-      //   customerNumId: this.customerNumId
-      // })
       this._getAllCarBand({
         current: 1,
         pageSize: 200,
@@ -354,16 +576,16 @@
       })
     },
     watch: {
-      'editCarItem.prvName' () {
-        // this.editCustomerItem.cityName = ''
-        // this.editCustomerItem.cityAreaName = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCarItem.prvName
-        })
-      },
+      // 'editCarItem.prvName' () {
+      //   // this.editCustomerItem.cityName = ''
+      //   // this.editCustomerItem.cityAreaName = ''
+      //   this._getAllCity({
+      //     current: 1,
+      //     pageSize: 200,
+      //     customerNumId: this.customerNumId,
+      //     prvId: this.editCarItem.prvName
+      //   })
+      // },
       'addCarItem.prvName' () {
         // this.addCustomerItem.cityName = ''
         // this.addCustomerItem.cityAreaName = ''
@@ -374,16 +596,16 @@
           prvId: this.addCarItem.prvName
         })
       },
-      'editCarItem.cityName' () {
-        // this.editCustomerItem.cityAreaName = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCarItem.prvName,
-          cityId: this.editCarItem.cityName
-        })
-      },
+      // 'editCarItem.cityName' () {
+      //   // this.editCustomerItem.cityAreaName = ''
+      //   this._getAllCityArea({
+      //     current: 1,
+      //     pageSize: 200,
+      //     customerNumId: this.customerNumId,
+      //     prvId: this.editCarItem.prvName,
+      //     cityId: this.editCarItem.cityName
+      //   })
+      // },
       'addCarItem.cityName' () {
         // this.addCustomerItem.cityAreaName = ''
         this._getAllCityArea({
@@ -399,7 +621,7 @@
       _getCarDetail (params) {
         getCarDetail(params).then(res => {
           if (res.code === 0) {
-            this.carDetail = res.car[0]
+            this.carDetail = res.car
           }
         }).catch(err => {
           console.log(err)
@@ -436,6 +658,15 @@
         getAllTown(params).then(res => {
           if (res.code === 0) {
             this.allTown = res.townNameAndTownIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getActiveStatus (params) {
+        getActiveStatus(params).then(res => {
+          if (res.code === 0) {
+            this.activeStatusModels = res.activeStatusModels
           }
         }).catch(err => {
           console.log(err)
@@ -487,13 +718,13 @@
         })
       },
       _addCar (params) {
-        console.log(params)
         addCar(params).then(res => {
           if (res.code === 0) {
             this.$message({
               type: 'success',
               message: '添加成功!'
             })
+            this.addCarPopDialog = false
             this.onSearch()
           }
         }).catch(err => {
@@ -508,6 +739,21 @@
               message: '删除成功!'
             })
             this.tableData.splice(index, 1)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _updateCar (params) {
+        console.log(params)
+        updateCar(params).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '编辑成功!'
+            })
+            this.editCarPopDialog = false
+            this.onSearch()
           }
         }).catch(err => {
           console.log(err)
@@ -556,9 +802,20 @@
         this.addCarPopDialog = true
       },
       onAddCarConfirm () {
+        this.addCarItem.customerNumId = this.customerNumId
         this._addCar(this.addCarItem)
       },
-      onEditCar () {
+      onEditCar (index, row) {
+        console.log(index, row)
+        this._getCarDetail({
+          carId: row.carId,
+          customerNumId: this.customerNumId
+        })
+        this.editCarPopDialog = true
+      },
+      onEditCarConfirm () {
+        this.addCarItem.customerNumId = this.customerNumId
+        this._updateCar(this.addCarItem)
       },
       onDetailCar (index, row) {
         this.detailCarDialog = true
@@ -635,6 +892,16 @@
   }
   .el-dialog__body {
     text-align: center;
+  }
+  .tx-center {
+    padding: 20px 0;
+    text-align: center;
+  }
+  .cert-pic {
+    width: 148px;
+    height: 104px;
+    min-width: 148px;
+    min-height: 104px;
   }
 }
 </style>

@@ -8,6 +8,9 @@ import App from './App'
 // 工具
 // import util from '@/libs/util'
 
+// 图片懒加载
+import VueLazyLoad from 'vue-lazyload'
+
 // vuex
 import store from '@/store/index'
 
@@ -39,6 +42,11 @@ Vue.config.productionTip = false
 Vue.prototype.$env = process.env.NODE_ENV
 
 Vue.prototype.$assetsPublicPath = process.env.NODE_ENV === 'development' ? buildConfig.dev.assetsPublicPath : buildConfig.build.assetsPublicPath
+
+Vue.use(VueLazyLoad, {
+  loading: require('./assets/no-pic.png'),
+  error: require('./assets/no-pic.png')
+})
 
 /* eslint-disable no-new */
 new Vue({

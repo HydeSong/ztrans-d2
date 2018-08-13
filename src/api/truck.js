@@ -58,6 +58,19 @@ export function addCar (params) {
   return axios.get(url, {params: data})
 }
 
+export function updateCar (params) {
+  const url = `${CONFIG.HOST}/updateCar`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
 export function getAllCarBand (params) {
   const url = `${CONFIG.HOST}/getAllCarBand`
   const ts = timestamp()
