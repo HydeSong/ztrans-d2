@@ -94,54 +94,52 @@
         </el-pagination>
       </div>
       <el-dialog title="车辆详情" :visible.sync="detailCarDialog">
-        <div class="block">
-          <el-row>
-            <el-col :span="12">
-              <ul class="i-list">
-                <li>驾驶员姓名：{{carDetail.driverName}}</li>
-                <li>驾驶员电话：{{carDetail.driverPhone}}</li>
-                <li>驾驶员身份证：{{carDetail.driverIdentityId}}</li>
-                <li>车牌号：{{carDetail.carPlateNumber}}</li>
-                <li>车型：{{carDetail.carTypeRealName}}</li>
-                <li>品牌：{{carDetail.carBrandRealName}}</li>
-                <li>颜色：{{carDetail.carColourRealName}}</li>
-                <li>接单区域：{{carDetail.prvRealName}}{{carDetail.cityRealName}}{{carDetail.cityAreaRealName}}</li>
-              </ul>
-            </el-col>
-            <el-col :span="12">
-              <ul class="i-list">
-                <li>所属车队：{{carDetail.motorcadeCar}}</li>
-                <li>申请时间：{{carDetail.applyDtme}}</li>
-                <li>激活状态：{{carDetail.activeStatusName}}</li>
-                <li>激活时间：{{carDetail.activeDtme}}</li>
-                <li>审核状态：{{carDetail.checkStatusName}}</li>
-                <li>审核时间：{{carDetail.checkDtme}}</li>
-                <li>审核人：{{carDetail.checkPerson}}</li>
-                <li>备注：{{carDetail.checkRemark}}</li>
-              </ul>
-            </el-col>
-            <!--<el-col :span="24">-->
-              <!--<el-row :gutter="20">-->
-                <!--<el-col :span="6" class="tx-center">-->
-                  <!--<img v-lazy="carDetail.drivingPicture" alt="驾驶证" class="cert-pic">-->
-                  <!--<p>驾驶证</p>-->
-                <!--</el-col>-->
-                <!--<el-col :span="6" class="tx-center">-->
-                  <!--<img v-lazy="carDetail.drivingLicense" alt="行驶证" class="cert-pic">-->
-                  <!--<p>行驶证</p>-->
-                <!--</el-col>-->
-                <!--<el-col :span="6" class="tx-center">-->
-                  <!--<img v-lazy="carDetail.identityCard" alt="身份证" class="cert-pic">-->
-                  <!--<p>身份证</p>-->
-                <!--</el-col>-->
-                <!--<el-col :span="6" class="tx-center">-->
-                  <!--<img v-lazy="carDetail.persomCarPicture" alt="人车合照" class="cert-pic">-->
-                  <!--<p>人车合照</p>-->
-                <!--</el-col>-->
-              <!--</el-row>-->
-            <!--</el-col>-->
-          </el-row>
-        </div>
+        <el-row>
+          <el-col :span="12">
+            <ul class="i-list">
+              <li>驾驶员姓名：{{carDetail.driverName}}</li>
+              <li>驾驶员电话：{{carDetail.driverPhone}}</li>
+              <li>驾驶员身份证：{{carDetail.driverIdentityId}}</li>
+              <li>车牌号：{{carDetail.carPlateNumber}}</li>
+              <li>车型：{{carDetail.carTypeRealName}}</li>
+              <li>品牌：{{carDetail.carBrandRealName}}</li>
+              <li>颜色：{{carDetail.carColourRealName}}</li>
+              <li>接单区域：{{carDetail.prvRealName}}{{carDetail.cityRealName}}{{carDetail.cityAreaRealName}}</li>
+            </ul>
+          </el-col>
+          <el-col :span="12">
+            <ul class="i-list">
+              <li>所属车队：{{carDetail.motorcadeCar}}</li>
+              <li>申请时间：{{carDetail.applyDtme}}</li>
+              <li>激活状态：{{carDetail.activeStatusName}}</li>
+              <li>激活时间：{{carDetail.activeDtme}}</li>
+              <li>审核状态：{{carDetail.checkStatusName}}</li>
+              <li>审核时间：{{carDetail.checkDtme}}</li>
+              <li>审核人：{{carDetail.checkPerson}}</li>
+              <li>备注：{{carDetail.checkRemark}}</li>
+            </ul>
+          </el-col>
+          <el-col :span="24">
+            <el-row>
+              <el-col :span="6" class="tx-center">
+                <img v-lazy="carDetail.drivingPicture" alt="驾驶证" class="cert-pic">
+                <p>驾驶证</p>
+              </el-col>
+              <el-col :span="6" class="tx-center">
+                <img v-lazy="carDetail.drivingLicense" alt="行驶证" class="cert-pic">
+                <p>行驶证</p>
+              </el-col>
+              <el-col :span="6" class="tx-center">
+                <img v-lazy="carDetail.identityCard" alt="身份证" class="cert-pic">
+                <p>身份证</p>
+              </el-col>
+              <el-col :span="6" class="tx-center">
+                <img v-lazy="carDetail.persomCarPicture" alt="人车合照" class="cert-pic">
+                <p>人车合照</p>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
       </el-dialog>
       <el-dialog title="添加车辆" :visible.sync="addCarPopDialog">
         <el-form :inline="true" :model="addCarItem" label-position="left">
@@ -249,40 +247,64 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!--<el-row :gutter="20">-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-          <!--</el-row>-->
+          <el-row>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                action=""
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="addCarItem.drivingPicture" :src="addCarItem.drivingPicture">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                :show-file-list="false"
+                action=""
+                :auto-upload="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="addCarItem.drivingLicense" :src="addCarItem.drivingLicense">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                action=""
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="addCarItem.identityCard" :src="addCarItem.identityCard">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                action=""
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="addCarItem.persomCarPicture" :src="addCarItem.persomCarPicture">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
+              </el-upload>
+            </el-col>
+          </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addCarPopDialog = false">取 消</el-button>
@@ -334,7 +356,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="激活状态">
-            <el-select v-model="addCarItem.activeStatus" clearable>
+            <el-select v-model="editCarItem.activeStatus" clearable>
               <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
             </el-select>
           </el-form-item>
@@ -349,7 +371,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="审核状态">
-            <el-select v-model="addCarItem.checkStatus" clearable>
+            <el-select v-model="editCarItem.checkStatus" clearable>
               <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
@@ -395,40 +417,64 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!--<el-row :gutter="20">-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-            <!--<el-col :span="6" class="tx-center">-->
-              <!--<el-upload-->
-                <!--list-type="picture-card"-->
-                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                <!--<i class="el-icon-plus"></i>-->
-                <!--<div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>-->
-              <!--</el-upload>-->
-            <!--</el-col>-->
-          <!--</el-row>-->
+          <el-row>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                action=""
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="editCarItem.drivingPicture" v-lazy="editCarItem.drivingPicture">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                action=""
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="editCarItem.drivingLicense" v-lazy="editCarItem.drivingLicense">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                action=""
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="editCarItem.identityCard" v-lazy="editCarItem.identityCard">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" class="tx-center">
+              <el-upload
+                :limit="1"
+                action=""
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                list-type="picture-card">
+                <img v-if="editCarItem.persomCarPicture" v-lazy="editCarItem.persomCarPicture">
+                <i v-else class="el-icon-plus"></i>
+                <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
+              </el-upload>
+            </el-col>
+          </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editCarPopDialog = false">取 消</el-button>
@@ -479,11 +525,11 @@
           driverIdentityId: '',
           driverName: '',
           driverPhone: '',
-          drivingLicense: '',
-          drivingPicture: '',
-          identityCard: '',
+          drivingLicense: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+          drivingPicture: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+          identityCard: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
           motorcadeId: '',
-          persomCarPicture: '',
+          persomCarPicture: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
           prvName: ''
         },
         editCarItem: {
@@ -501,6 +547,7 @@
           cityAreaName: '',
           cityName: '',
           customerNumId: '',
+          driverId: '',
           driverIdentityId: '',
           driverName: '',
           driverPhone: '',
@@ -646,8 +693,10 @@
       _getCarDetail (params) {
         getCarDetail(params).then(res => {
           if (res.code === 0) {
+            // 清空数据
             this.carDetail = res.car
             this.editCarItem = this.carDetail
+            // console.log(this.editCarItem)
           }
         }).catch(err => {
           console.log(err)
@@ -833,6 +882,10 @@
       },
       onEditCar (index, row) {
         console.log(index, row)
+        this.editCarItem.drivingLicense = ''
+        this.editCarItem.drivingPicture = ''
+        this.editCarItem.identityCard = ''
+        this.editCarItem.persomCarPicture = ''
         this._getCarDetail({
           carId: row.carId,
           customerNumId: this.customerNumId
@@ -893,6 +946,21 @@
         //   jobId: 0,
         //   pageSize: this.pgSize
         // })
+      },
+      handleAvatarSuccess (res, file) {
+        this.addCarItem.persomCarPicture = URL.createObjectURL(file.raw)
+      },
+      beforeAvatarUpload (file) {
+        const isJPG = file.type === 'image/jpeg'
+        const isLt2M = file.size / 1024 / 1024 < 2
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!')
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!')
+        }
+        return isJPG && isLt2M
       }
     }
   }
@@ -925,9 +993,10 @@
   }
   .cert-pic {
     width: 148px;
-    height: 104px;
-    min-width: 148px;
-    min-height: 104px;
+    outline: 1px #ccc dashed;
+  }
+  .el-upload.el-upload--picture-card > img {
+    width: 100%;
   }
 }
 </style>

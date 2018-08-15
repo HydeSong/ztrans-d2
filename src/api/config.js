@@ -1,4 +1,4 @@
 export const CONFIG = {
-  HOST: 'http://47.97.168.223:8080/cx/webManage',
+  HOST: 'http://47.98.191.141:8888/cx/webManage',
   appsecret: 'ChuangXun@!!!'
 }
