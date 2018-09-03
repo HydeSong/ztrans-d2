@@ -771,9 +771,10 @@
         })
       },
       _getConsumerRouterPriceByRouterId (params) {
+        // console.log(params)
         getConsumerRouterPriceByRouterId(params).then(res => {
           if (res.code === 0) {
-            // console.log(JSON.stringify(res))
+            // console.log(res)
             this.addItem.customerNumId = this.customerNumId
             this.addItem.customerSeries = res.allRouterPriceGetModel.customerSeries
             this.addItem.destinationCity = res.allRouterPriceGetModel.destinationCity
@@ -856,6 +857,7 @@
         })
       },
       _updateRouterCustomerPrice (params) {
+        // console.log(params)
         updateRouterCustomerPrice(params).then(res => {
           if (res.code === 0) {
             this.$message({
@@ -1029,6 +1031,7 @@
 
         this.addItem.children.push({
           carTypeName: item[0],
+          carSizeName: item1[0],
           routerType: 0,
           routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
         })
@@ -1053,7 +1056,7 @@
           customerNumId: this.customerNumId,
           pageSize: 200
         })
-
+        console.log(row)
         this._getConsumerRouterPriceByRouterId({
           consumerSeries: row.customerSeries,
           customerNumId: this.customerNumId,
