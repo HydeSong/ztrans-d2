@@ -38,6 +38,10 @@
                 label="车型">
               </el-table-column>
               <el-table-column
+                prop="carSizeRealName"
+                label="车长">
+              </el-table-column>
+              <el-table-column
                 prop="routerCustomerType"
                 label="报价类型"
                 :formatter="routerCustomerTypeFormat">
@@ -122,6 +126,34 @@
             </el-form-item>
             <el-form-item label="线路别名">
               <el-input v-model="addItem.routerAlia" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="发货人名字">
+              <el-input v-model="addItem.sendGoodsPersonName" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="发货人电话">
+              <el-input v-model="addItem.sendGoodsPersonMobile" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="发件人详细地址">
+              <el-input v-model="addItem.sendAddressDetail" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="收货人名字">
+              <el-input v-model="addItem.receiveGoodsPersonName" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="收货人电话">
+              <el-input v-model="addItem.receiveGoodsPersonMobile" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="收件人详细地址">
+              <el-input v-model="addItem.receiveAddressDetail" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="经停站点">
+              <el-select
+                v-model="addItem.routerStations"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                placeholder="请输入经停站点">
+              </el-select>
             </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省">
@@ -208,6 +240,11 @@
               width="120">
             </el-table-column>
             <el-table-column
+              prop="carSizeRealName"
+              label="车长"
+              width="120">
+            </el-table-column>
+            <el-table-column
               prop="routerCustomerType"
               label="报价类型"
               :formatter="routerCustomerTypeFormat">
@@ -260,6 +297,11 @@
           <el-form-item label="车型">
             <el-select v-model="carTypeName" placeholder="请选择" clearable>
               <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车长">
+            <el-select v-model="carSizeName" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="`${item.sizeId}-${item.sizeName}`"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -328,6 +370,34 @@
             </el-form-item>
             <el-form-item label="线路别名">
               <el-input v-model="addItem.routerAlia" placeholder="请输入" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="发货人名字">
+              <el-input v-model="addItem.sendGoodsPersonName" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="发货人电话">
+              <el-input v-model="addItem.sendGoodsPersonMobile" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="发件人详细地址">
+              <el-input v-model="addItem.sendAddressDetail" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="收货人名字">
+              <el-input v-model="addItem.receiveGoodsPersonName" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="收货人电话">
+              <el-input v-model="addItem.receiveGoodsPersonMobile" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="收件人详细地址">
+              <el-input v-model="addItem.receiveAddressDetail" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="经停站点">
+              <el-select
+                v-model="addItem.routerStations"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                placeholder="请输入经停站点">
+              </el-select>
             </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省">
@@ -414,6 +484,11 @@
               width="120">
             </el-table-column>
             <el-table-column
+              prop="carSizeRealName"
+              label="车长"
+              width="120">
+            </el-table-column>
+            <el-table-column
               prop="routerCustomerType"
               label="报价类型"
               :formatter="routerCustomerTypeFormat">
@@ -465,8 +540,8 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, deleteRouterCustomerPrice, updateBatchRouterPrice, updateRouterCustomerPrice } from '@/api/price'
-  import { getAllPrv, getAllCity, getAllCityArea, getAllTown } from '@/api/dictionary'
+  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, deleteRouterCustomerPrice, updateBatchRouterPrice, updateRouterCustomerPrice, getConsumerRouterPriceByRouterId } from '@/api/price'
+  import { getAllPrv, getAllCity, getAllCityArea, getAllTown, getCarSizeList } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -500,12 +575,21 @@
           sourceCity: '',
           sourceCityArea: '',
           sourcePrv: '',
-          sourceTown: ''
+          sourceTown: '',
+          sendGoodsPersonName: '',
+          sendGoodsPersonMobile: '',
+          sendAddressDetail: '',
+          receiveGoodsPersonName: '',
+          receiveGoodsPersonMobile: '',
+          receiveAddressDetail: '',
+          routerStations: []
         },
         priceSetAddList: [],
         priceSetAddItem0: {
           carTypeName: '',
           carTypeRealName: '',
+          carSizeName: '',
+          carSizeRealName: '',
           franchiseeProportion: '',
           initDistance: '',
           initPrice: '',
@@ -518,6 +602,8 @@
         priceSetAddItem1: {
           carTypeName: '',
           carTypeRealName: '',
+          carSizeName: '',
+          carSizeRealName: '',
           franchiseeProportion: '',
           initDistance: '',
           initPrice: '',
@@ -539,7 +625,9 @@
         allCityArea: [],
         allTown: [],
         carTypes: [],
-        carTypeName: ''
+        carSizes: [],
+        carTypeName: '',
+        carSizeName: ''
       }
     },
     computed: {
@@ -628,6 +716,15 @@
       routerCustomerTypeFormat (val) {
         return val.routerCustomerType === 0 ? '客户报价' : '司机报价'
       },
+      _getCarSizeList (params) {
+        getCarSizeList(params).then(res => {
+          if (res.code === 0) {
+            this.carSizes = res.carSizes
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getCarTypeList (params) {
         getCarTypeList(params).then(res => {
           if (res.code === 0) {
@@ -668,6 +765,37 @@
         getAllTown(params).then(res => {
           if (res.code === 0) {
             this.allTown = res.townNameAndTownIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getConsumerRouterPriceByRouterId (params) {
+        getConsumerRouterPriceByRouterId(params).then(res => {
+          if (res.code === 0) {
+            // console.log(JSON.stringify(res))
+            this.addItem.customerNumId = this.customerNumId
+            this.addItem.customerSeries = res.allRouterPriceGetModel.customerSeries
+            this.addItem.destinationCity = res.allRouterPriceGetModel.destinationCity
+            this.addItem.destinationCityArea = res.allRouterPriceGetModel.destinationCityArea
+            this.addItem.destinationPrv = res.allRouterPriceGetModel.destinationPrv
+            this.addItem.destinationTown = res.allRouterPriceGetModel.destinationTown
+            this.addItem.remark = res.allRouterPriceGetModel.remark
+            this.addItem.routerAlia = res.allRouterPriceGetModel.routerAlia
+            this.addItem.routerDetailSeries = res.allRouterPriceGetModel.routerDetailSeries
+            this.addItem.routerNumber = res.allRouterPriceGetModel.routerNumber
+            this.addItem.sourceCity = res.allRouterPriceGetModel.sourceCity
+            this.addItem.sourceCityArea = res.allRouterPriceGetModel.sourceCityArea
+            this.addItem.sourcePrv = res.allRouterPriceGetModel.sourcePrv
+            this.addItem.sourceTown = res.allRouterPriceGetModel.sourceTown
+            this.priceSetAddList = res.allRouterPriceGetModel.routerPriceList
+            this.addItem.sendGoodsPersonName = res.allRouterPriceGetModel.sendGoodsPersonName
+            this.addItem.sendGoodsPersonMobile = res.allRouterPriceGetModel.sendGoodsPersonMobile
+            this.addItem.sendAddressDetail = res.allRouterPriceGetModel.sendAddressDetail
+            this.addItem.receiveGoodsPersonName = res.allRouterPriceGetModel.receiveGoodsPersonName
+            this.addItem.receiveGoodsPersonMobile = res.allRouterPriceGetModel.receiveGoodsPersonMobile
+            this.addItem.receiveAddressDetail = res.allRouterPriceGetModel.receiveAddressDetail
+            this.addItem.routerStations = res.allRouterPriceGetModel.routerStations
           }
         }).catch(err => {
           console.log(err)
@@ -821,12 +949,18 @@
         this._getCarTypeList({
           customerNumId: this.customerNumId
         })
+        this._getCarSizeList({
+          customerNumId: this.customerNumId
+        })
 
         // 清空数据
         this.carTypeName = ''
+        this.carSizeName = ''
         this.priceSetAddItem0 = {
           carTypeName: '',
           carTypeRealName: '',
+          carSizeName: '',
+          carSizeRealName: '',
           franchiseeProportion: '',
           initDistance: '',
           initPrice: '',
@@ -839,6 +973,8 @@
         this.priceSetAddItem1 = {
           carTypeName: '',
           carTypeRealName: '',
+          carSizeName: '',
+          carSizeRealName: '',
           franchiseeProportion: '',
           initDistance: '',
           initPrice: '',
@@ -881,6 +1017,13 @@
         this.priceSetAddItem0.carTypeRealName = item[1]
         this.priceSetAddItem1.carTypeName = item[0]
         this.priceSetAddItem1.carTypeRealName = item[1]
+
+        const item1 = this.carSizeName.split('-')
+        this.priceSetAddItem0.carSizeName = item1[0]
+        this.priceSetAddItem0.carSizeRealName = item1[1]
+        this.priceSetAddItem1.carSizeName = item1[0]
+        this.priceSetAddItem1.carSizeRealName = item1[1]
+
         this.priceSetAddList.push(this.priceSetAddItem0)
         this.priceSetAddList.push(this.priceSetAddItem1)
 
@@ -911,38 +1054,13 @@
           pageSize: 200
         })
 
+        this._getConsumerRouterPriceByRouterId({
+          consumerSeries: row.customerSeries,
+          customerNumId: this.customerNumId,
+          routerDetailSeries: row.routerDetailSeries,
+          routerType: 0
+        })
         this.addItem.children = []
-
-        // if (row.routerPriceList && row.routerPriceList[0] && row.routerPriceList[0].carTypeName) {
-        //   this.addItem.children.push({
-        //     carTypeName: row.routerPriceList[0].carTypeName,
-        //     routerType: 0,
-        //     routerPriceList: row.routerPriceList
-        //   })
-        // } else {
-        //   this.addItem.children.push({
-        //     carTypeName: '',
-        //     routerType: 0,
-        //     routerPriceList: []
-        //   })
-        // }
-        console.log(row)
-        this.addItem.customerNumId = row.customerNumId
-        this.addItem.customerSeries = row.customerSeries
-        this.addItem.destinationCity = row.destinationCity
-        this.addItem.destinationCityArea = row.destinationCityArea
-        this.addItem.destinationPrv = row.destinationPrv
-        this.addItem.destinationTown = row.destinationTown
-        this.addItem.remark = row.remark
-        this.addItem.routerAlia = row.routerAlia
-        this.addItem.routerDetailSeries = row.routerDetailSeries
-        this.addItem.routerNumber = row.routerNumber
-        this.addItem.sourceCity = row.sourceCity
-        this.addItem.sourceCityArea = row.sourceCityArea
-        this.addItem.sourcePrv = row.sourcePrv
-        this.addItem.sourceTown = row.sourceTown
-
-        this.priceSetAddList = row.routerPriceList
         this.editDialog = true
       },
       handleSizeChange (val) {
