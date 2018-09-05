@@ -55,6 +55,10 @@
           label="车型">
         </el-table-column>
         <el-table-column
+          prop="carSizeName"
+          label="尺寸">
+        </el-table-column>
+        <el-table-column
           prop="wetherTakeover"
           label="需要搬卸">
         </el-table-column>
@@ -145,6 +149,16 @@
           </el-form-item>
           <el-form-item>
             <el-input v-model="searchItemPop.driverNameSearchKey" placeholder="司机姓名"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="searchItemPop.carTypeSeries" placeholder="车型" clearable>
+              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="searchItemPop.carSizeSeries" placeholder="尺寸" clearable>
+              <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="item.sizeId"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
@@ -265,7 +279,7 @@
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver, getDriverOrderDetail } from '@/api/order'
+  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver, getDriverOrderDetail, getCarSizeList } from '@/api/order'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -277,6 +291,7 @@
         pgSize: 100,
         routerDetail: [],
         carTypes: [],
+        carSizes: [],
         searchItem: {
           carType: '',
           appointmentDate: '',
@@ -289,6 +304,7 @@
           appointmentDate: '',
           carPlateNumberSearchKey: '',
           carTypeSeries: '',
+          carSizeSeries: '',
           driverNameSearchKey: '',
           routerDetailSeries: '',
           series: ''
@@ -349,6 +365,9 @@
         customerNumId: this.customerNumId
       })
       this._getCarTypeList({
+        customerNumId: this.customerNumId
+      })
+      this._getCarSizeList({
         customerNumId: this.customerNumId
       })
       this._getOrderByCustomerNumId({
@@ -416,6 +435,15 @@
           console.log(err)
         })
       },
+      _getCarSizeList (params) {
+        getCarSizeList(params).then(res => {
+          if (res.code === 0) {
+            this.carSizes = res.carSizes
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getRouterAliaList (params) {
         getRouterAliaList(params).then(res => {
           if (res.code === 0) {
@@ -447,6 +475,7 @@
           appointmentDate: this.searchItemPop.appointmentDate,
           carPlateNumberSearchKey: this.searchItemPop.carPlateNumberSearchKey,
           carTypeSeries: this.searchItemPop.carTypeSeries,
+          carSizeSeries: this.searchItemPop.carSizeSeries,
           driverNameSearchKey: this.searchItemPop.driverNameSearchKey,
           routerDetailSeries: this.searchItemPop.routerDetailSeries
         })
@@ -455,6 +484,7 @@
         this.addDialog = true
         this.searchItemPop.appointmentDate = row.appointmentDate
         this.searchItemPop.carTypeSeries = row.carType
+        this.searchItemPop.carSizeSeries = row.carSize
         this.searchItemPop.routerDetailSeries = row.routerDetailSeries
         this.searchItemPop.series = row.series
         // 加载全部数据
