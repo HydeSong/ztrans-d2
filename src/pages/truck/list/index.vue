@@ -48,6 +48,10 @@
           label="车型">
         </el-table-column>
         <el-table-column
+          prop="carSizeRealName"
+          label="尺寸">
+        </el-table-column>
+        <el-table-column
           prop="driverName"
           label="司机姓名">
         </el-table-column>
@@ -104,6 +108,8 @@
               <li>车型：{{carDetail.carTypeRealName}}</li>
               <li>品牌：{{carDetail.carBrandRealName}}</li>
               <li>颜色：{{carDetail.carColourRealName}}</li>
+              <li>尺寸：{{carDetail.carSizeRealName}}</li>
+              <li>重量：{{carDetail.carWeightRealName}}</li>
               <li>接单区域：{{carDetail.prvRealName}}{{carDetail.cityRealName}}{{carDetail.cityAreaRealName}}</li>
             </ul>
           </el-col>
@@ -170,6 +176,16 @@
               <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="车辆重量">
+            <el-select v-model="addCarItem.carWeight" clearable>
+              <el-option v-for="(item, index) in carWeight" :key="index" :label="item.weightName" :value="item.weightId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车辆尺寸">
+            <el-select v-model="addCarItem.carSize" clearable>
+              <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="item.sizeId"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="所属车队">
             <el-select v-model="addCarItem.motorcadeId" clearable>
               <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
@@ -178,21 +194,6 @@
           <el-form-item label="申请时间">
             <el-date-picker
               v-model="addCarItem.applyDtme"
-              type="datetime"
-              placeholder="选择日期时间"
-              align="right"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :picker-options="pickerOptions">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="激活状态">
-            <el-select v-model="addCarItem.activeStatus" clearable>
-              <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="激活时间">
-            <el-date-picker
-              v-model="addCarItem.activeDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -340,6 +341,16 @@
               <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="车辆重量">
+            <el-select v-model="editCarItem.carWeight" clearable>
+              <el-option v-for="(item, index) in carWeight" :key="index" :label="item.weightName" :value="item.weightId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车辆尺寸">
+            <el-select v-model="editCarItem.carSize" clearable>
+              <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="item.sizeId"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="所属车队">
             <el-select v-model="editCarItem.motorcadeId" clearable>
               <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
@@ -348,21 +359,6 @@
           <el-form-item label="申请时间">
             <el-date-picker
               v-model="editCarItem.applyDtme"
-              type="datetime"
-              placeholder="选择日期时间"
-              align="right"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :picker-options="pickerOptions">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="激活状态">
-            <el-select v-model="editCarItem.activeStatus" clearable>
-              <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="激活时间">
-            <el-date-picker
-              v-model="editCarItem.activeDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -488,7 +484,7 @@
 <script>
   import { getRouterAliaList } from '@/api/schedule'
   import { getCarTypeList } from '@/api/order'
-  import { getAllCar, deleteCar, getMotorcadeList, addCar, updateCar, getAllCarBand, getAllCarColour, getAllCarType, getCarDetail } from '@/api/truck'
+  import { getAllCar, deleteCar, getMotorcadeList, addCar, updateCar, getAllCarBand, getAllCarColour, getAllCarType, getCarDetail, getCarWeightList, getCarSizeList } from '@/api/truck'
   import { getCheckStatus, getActiveStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
   import Cookies from 'js-cookie'
   export default {
@@ -515,6 +511,8 @@
           carColour: '',
           carPlateNumber: '',
           carType: '',
+          carWeight: '',
+          carSize: '',
           checkDtme: '',
           checkPerson: '',
           checkRemark: '',
@@ -538,6 +536,8 @@
           applyDtme: '',
           carBrand: '',
           carColour: '',
+          carWeight: '',
+          carSize: '',
           carPlateNumber: '',
           carType: '',
           checkDtme: '',
@@ -598,6 +598,8 @@
         carBrands: [],
         carColours: [],
         carTypes: [],
+        carWeight: [],
+        carSizes: [],
         carDetail: {}
       }
     },
@@ -635,9 +637,15 @@
         pageSize: 200,
         customerNumId: this.customerNumId
       })
+      this._getCarWeightList({
+        customerNumId: this.customerNumId
+      })
       this._getAllCarColour({
         current: 1,
         pageSize: 200,
+        customerNumId: this.customerNumId
+      })
+      this._getCarSizeList({
         customerNumId: this.customerNumId
       })
       // 省市区联动数据
@@ -778,6 +786,24 @@
         getAllCarBand(params).then(res => {
           if (res.code === 0) {
             this.carBrands = res.carBrands
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCarWeightList (params) {
+        getCarWeightList(params).then(res => {
+          if (res.code === 0) {
+            this.carWeight = res.carWeights
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCarSizeList (params) {
+        getCarSizeList(params).then(res => {
+          if (res.code === 0) {
+            this.carSizes = res.carSizes
           }
         }).catch(err => {
           console.log(err)
