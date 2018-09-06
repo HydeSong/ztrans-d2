@@ -354,6 +354,71 @@
           <el-button type="primary" @click="onAddPriceConfirm">提 交</el-button>
         </span>
       </el-dialog>
+      <el-dialog
+        title="编辑报价"
+        :visible.sync="innerEditVisible"
+        append-to-body>
+        <el-form :inline="true">
+          <el-form-item label="车型">
+            <el-select v-model="carTypeName" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="车长">
+            <el-select v-model="carSizeName" placeholder="请选择" clearable>
+              <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="`${item.sizeId}-${item.sizeName}`"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div class="block" style="padding: 15px 0">
+          客户报价
+        </div>
+        <div class="block" style="padding: 0 15px">
+          <el-form :inline="true" :model="priceSetAddItem0">
+            <el-form-item label="起步距离(公里)">
+              <el-input v-model="priceSetAddItem0.initDistance" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="起步价格(元)">
+              <el-input v-model="priceSetAddItem0.initPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="超出价格(元/公里)">
+              <el-input v-model="priceSetAddItem0.overstepPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="销售比例">
+              <el-input v-model="priceSetAddItem0.saleProportion" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="加盟商比例">
+              <el-input v-model="priceSetAddItem0.franchiseeProportion" placeholder=""></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="block" style="padding: 15px 0">
+          司机报价
+        </div>
+        <div class="block" style="padding: 0 15px">
+          <el-form :inline="true" :model="priceSetAddItem1">
+            <el-form-item label="起步距离(公里)">
+              <el-input v-model="priceSetAddItem1.initDistance" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="起步价格(元)">
+              <el-input v-model="priceSetAddItem1.initPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="超出价格(元/公里)">
+              <el-input v-model="priceSetAddItem1.overstepPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="销售比例">
+              <el-input v-model="priceSetAddItem1.saleProportion" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="加盟商比例">
+              <el-input v-model="priceSetAddItem1.franchiseeProportion" placeholder=""></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="innerEditVisible = false">取 消</el-button>
+          <el-button type="primary" @click="onEditPriceConfirm">提 交</el-button>
+        </span>
+      </el-dialog>
       <el-dialog title="编辑客户报价" :visible.sync="editDialog">
         <div class="block" style="text-align: left">
           线路设置
@@ -521,7 +586,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
-                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
+                <el-button type="text" size="small" @click="onEditPrice(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">编辑</el-button>
                 <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
               </template>
             </el-table-column>
@@ -996,6 +1061,75 @@
         }
         this.priceSetAddList.splice(index, 1)
         this.priceSetAddList.splice(idx, 1)
+      },
+      onEditPrice (index, row) {
+        console.log(index)
+        console.log(row)
+        this.innerEditVisible = true
+
+        this._getCarTypeList({
+          customerNumId: this.customerNumId
+        })
+        this._getCarSizeList({
+          customerNumId: this.customerNumId
+        })
+
+        // 把待编辑数据写入以下字段
+        this.carTypeName = ''
+        this.carSizeName = ''
+        this.priceSetAddItem0 = {
+          carTypeName: '',
+          carTypeRealName: '',
+          carSizeName: '',
+          carSizeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 0,
+          routerPriceId: '',
+          routerType: 0,
+          saleProportion: ''
+        }
+        this.priceSetAddItem1 = {
+          carTypeName: '',
+          carTypeRealName: '',
+          carSizeName: '',
+          carSizeRealName: '',
+          franchiseeProportion: '',
+          initDistance: '',
+          initPrice: '',
+          overstepPrice: '',
+          routerCustomerType: 1,
+          routerPriceId: '',
+          routerType: 0,
+          saleProportion: ''
+        }
+      },
+      onEditPriceConfirm () {
+        this.innerEditVisible = false
+
+        const item = this.carTypeName.split('-')
+        this.priceSetAddItem0.carTypeName = item[0]
+        this.priceSetAddItem0.carTypeRealName = item[1]
+        this.priceSetAddItem1.carTypeName = item[0]
+        this.priceSetAddItem1.carTypeRealName = item[1]
+
+        const item1 = this.carSizeName.split('-')
+        this.priceSetAddItem0.carSizeName = item1[0]
+        this.priceSetAddItem0.carSizeRealName = item1[1]
+        this.priceSetAddItem1.carSizeName = item1[0]
+        this.priceSetAddItem1.carSizeRealName = item1[1]
+
+        this.priceSetAddList.push(this.priceSetAddItem0)
+        this.priceSetAddList.push(this.priceSetAddItem1)
+
+        this.addItem.children.push({
+          carTypeName: item[0],
+          carSizeName: item1[0],
+          routerType: 0,
+          routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
+        })
       },
       onDeleteDetailPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
