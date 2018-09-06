@@ -6,7 +6,7 @@
           <el-select v-model="searchItem.motorcadeId" placeholder="所属车队" clearable>
             <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
           </el-select>
-        </el-form-item>12
+        </el-form-item>
         <el-form-item>
           <el-select v-model="searchItem.checkStatus" placeholder="审核状态" clearable>
             <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
