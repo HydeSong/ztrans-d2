@@ -372,7 +372,7 @@
           <el-form-item label="联系人电话">
             <el-input v-model="editContactItem.contactPhone"></el-input>
           </el-form-item>
-          <el-form-item label="激活时间">
+          <!--<el-form-item label="激活时间">
             <el-date-picker
               v-model="editContactItem.activeDtme"
               type="datetime"
@@ -386,7 +386,7 @@
             <el-select v-model="editContactItem.activeStatus" clearable>
               <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editContactPopDialog = false">取 消</el-button>
@@ -407,7 +407,7 @@
           <el-form-item label="客户联系人电话">
             <el-input v-model="addContactItem.contactPhone"></el-input>
           </el-form-item>
-          <el-form-item label="激活状态">
+          <!--<el-form-item label="激活状态">
             <el-select v-model="addContactItem.activeStatus" clearable>
               <el-option v-for="(item, index) in activeStatusModels" :key="index" :label="item.activeStatusName" :value="item.activeStatus"></el-option>
             </el-select>
@@ -421,7 +421,7 @@
               value-format="yyyy-MM-dd HH:mm:ss"
               :picker-options="pickerOptions">
             </el-date-picker>
-          </el-form-item>
+          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addContactPopDialog = false">取 消</el-button>

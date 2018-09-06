@@ -18,6 +18,11 @@
             <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item>
+          <el-select v-model="searchItem.carType" placeholder="尺寸" clearable>
+            <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="item.sizeId"></el-option>
+          </el-select>
+        </el-form-item>
         <el-date-picker
           v-model="searchItem.appointmentDate"
           type="datetime"
@@ -61,6 +66,10 @@
         <el-table-column
           prop="carTypeName"
           label="车型">
+        </el-table-column>
+        <el-table-column
+          prop="carSizeName"
+          label="尺寸">
         </el-table-column>
         <el-table-column
           prop="wetherTakeover"
@@ -155,6 +164,16 @@
             <el-input v-model="searchItemPop.driverNameSearchKey" placeholder="司机姓名"></el-input>
           </el-form-item>
           <el-form-item>
+            <el-select v-model="searchItemPop.carTypeSeries" placeholder="车型" clearable>
+              <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="searchItemPop.carSizeSeries" placeholder="尺寸" clearable>
+              <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="item.sizeId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
             <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
           </el-form-item>
         </el-form>
@@ -234,7 +253,7 @@
           已接单任务
         </div>
         <div class="block" style="text-align: left; padding: 15px">
-          <el-table 
+          <el-table
           :data="orderDetail.orderTask"
           highlight-current-row
           style="width: 100%">
@@ -273,7 +292,7 @@
 
 <script>
   import { getRouterAliaList } from '@/api/schedule'
-  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver, getDriverOrderDetail } from '@/api/order'
+  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver, getDriverOrderDetail, getCarSizeList } from '@/api/order'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -285,6 +304,7 @@
         pgSize: 100,
         routerDetail: [],
         carTypes: [],
+        carSizes: [],
         searchItem: {
           carType: '',
           appointmentDate: '',
@@ -297,6 +317,7 @@
           appointmentDate: '',
           carPlateNumberSearchKey: '',
           carTypeSeries: '',
+          carSizeSeries: '',
           driverNameSearchKey: '',
           routerDetailSeries: '',
           series: ''
@@ -361,6 +382,9 @@
       this._getCarTypeList({
         customerNumId: this.customerNumId
       })
+      this._getCarSizeList({
+        customerNumId: this.customerNumId
+      })
       this._getOrderByCustomerNumId({
         current: this.currentPage,
         pageSize: 1000,
@@ -396,6 +420,15 @@
         getCarTypeList(params).then(res => {
           if (res.code === 0) {
             this.carTypes = res.carTypes
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getCarSizeList (params) {
+        getCarSizeList(params).then(res => {
+          if (res.code === 0) {
+            this.carSizes = res.carSizes
           }
         }).catch(err => {
           console.log(err)
