@@ -277,7 +277,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
-                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
+                <el-button type="text" size="small" @click="onEditPrice(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">编辑</el-button>
                 <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
               </template>
             </el-table-column>
@@ -416,7 +416,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="innerEditVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onEditPriceConfirm">提 交</el-button>
+          <el-button type="primary" @click="onEditPriceConfirm(editPriceIndex)">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog title="编辑客户报价" :visible.sync="editDialog">
@@ -692,7 +692,8 @@
         carTypes: [],
         carSizes: [],
         carTypeName: '',
-        carSizeName: ''
+        carSizeName: '',
+        editPriceIndex: ''
       }
     },
     computed: {
@@ -922,7 +923,7 @@
         })
       },
       _updateRouterCustomerPrice (params) {
-        // console.log(params)
+        console.log(params)
         updateRouterCustomerPrice(params).then(res => {
           if (res.code === 0) {
             this.$message({
@@ -1063,10 +1064,8 @@
         this.priceSetAddList.splice(idx, 1)
       },
       onEditPrice (index, row) {
-        console.log(index)
-        console.log(row)
         this.innerEditVisible = true
-
+        this.editPriceIndex = index
         this._getCarTypeList({
           customerNumId: this.customerNumId
         })
@@ -1075,40 +1074,14 @@
         })
 
         // 把待编辑数据写入以下字段
-        this.carTypeName = ''
-        this.carSizeName = ''
-        this.priceSetAddItem0 = {
-          carTypeName: '',
-          carTypeRealName: '',
-          carSizeName: '',
-          carSizeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 0,
-          routerPriceId: '',
-          routerType: 0,
-          saleProportion: ''
-        }
-        this.priceSetAddItem1 = {
-          carTypeName: '',
-          carTypeRealName: '',
-          carSizeName: '',
-          carSizeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 1,
-          routerPriceId: '',
-          routerType: 0,
-          saleProportion: ''
-        }
+        this.carTypeName = `${row.carTypeName}-${row.carTypeRealName}`
+        this.carSizeName = `${row.carSizeName}-${row.carSizeRealName}`
+        this.priceSetAddItem0 = this.priceSetAddList[index - 1]
+        this.priceSetAddItem1 = this.priceSetAddList[index]
       },
-      onEditPriceConfirm () {
+      onEditPriceConfirm (index) {
         this.innerEditVisible = false
-
+        // console.log(index)
         const item = this.carTypeName.split('-')
         this.priceSetAddItem0.carTypeName = item[0]
         this.priceSetAddItem0.carTypeRealName = item[1]
@@ -1121,15 +1094,15 @@
         this.priceSetAddItem1.carSizeName = item1[0]
         this.priceSetAddItem1.carSizeRealName = item1[1]
 
-        this.priceSetAddList.push(this.priceSetAddItem0)
-        this.priceSetAddList.push(this.priceSetAddItem1)
+        this.priceSetAddList[index - 1] = this.priceSetAddItem0
+        this.priceSetAddList[index] = this.priceSetAddItem1
 
-        this.addItem.children.push({
-          carTypeName: item[0],
-          carSizeName: item1[0],
-          routerType: 0,
-          routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
-        })
+        // this.addItem.children[index - 1] = {
+        //   carTypeName: item[0],
+        //   carSizeName: item1[0],
+        //   routerType: 0,
+        //   routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
+        // }
       },
       onDeleteDetailPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
@@ -1190,7 +1163,7 @@
           customerNumId: this.customerNumId,
           pageSize: 200
         })
-        console.log(row)
+        // console.log(row)
         this._getConsumerRouterPriceByRouterId({
           consumerSeries: row.customerSeries,
           customerNumId: this.customerNumId,
