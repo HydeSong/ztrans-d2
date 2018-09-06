@@ -4,3 +4,4 @@ dist
 package-lock.json
 *.tar
 .idea
+deploy.md
