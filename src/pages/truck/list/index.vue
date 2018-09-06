@@ -819,6 +819,90 @@
         })
       },
       _addCar (params) {
+        if (params.carPlateNumber === '') {
+          this.$message({
+            type: 'error',
+            message: '汽车牌照不可以为空！'
+          })
+          return
+        }
+        if (params.carType === '') {
+          this.$message({
+            type: 'error',
+            message: '车型不可以为空！'
+          })
+          return
+        }
+        if (params.carSize === '') {
+          this.$message({
+            type: 'error',
+            message: '车尺寸不可以为空！'
+          })
+          return
+        }
+        if (params.prvName === '') {
+          this.$message({
+            type: 'error',
+            message: '省不可以为空！'
+          })
+          return
+        }
+        if (params.cityName === '') {
+          this.$message({
+            type: 'error',
+            message: '市不可以为空！'
+          })
+          return
+        }
+        if (params.cityAreaName === '') {
+          this.$message({
+            type: 'error',
+            message: '区不可以为空！'
+          })
+          return
+        }
+        if (params.driverName === '') {
+          this.$message({
+            type: 'error',
+            message: '驾驶员名字不可以为空！'
+          })
+          return
+        }
+        if (params.driverIdentityId === '') {
+          this.$message({
+            type: 'error',
+            message: '驾驶员身份证不可以为空！'
+          })
+          return
+        }
+        if (params.driverPhone === '') {
+          this.$message({
+            type: 'error',
+            message: '驾驶员手机号不可以为空！'
+          })
+          return
+        }
+        if (params.checkStatus === '') {
+          this.$message({
+            type: 'error',
+            message: '审核状态不可以为空！'
+          })
+          return
+        }
+        if (params.checkPerson === '') {
+          this.$message({
+            type: 'error',
+            message: '审核人不可以为空！'
+          })
+          return
+        }
+        if (params.checkDtme === '') {
+          this.$message({
+            type: 'error',
+            message: '审核时间不可以为空！'
+          })
+          return
+        }
         addCar(params).then(res => {
           if (res.code === 0) {
             this.$message({

@@ -845,6 +845,90 @@
       },
       _addMasterCustomer (params) {
         console.log(params)
+        if (params.customerName === '') {
+          this.$message({
+            type: 'error',
+            message: '客户名字不可以为空！'
+          })
+          return
+        }
+        if (params.customerSimpleCode === '') {
+          this.$message({
+            type: 'error',
+            message: '客户简码不可以为空！'
+          })
+          return
+        }
+        if (params.prvName === '') {
+          this.$message({
+            type: 'error',
+            message: '省不可以为空！'
+          })
+          return
+        }
+        if (params.cityName === '') {
+          this.$message({
+            type: 'error',
+            message: '市不可以为空！'
+          })
+          return
+        }
+        if (params.cityAreaName === '') {
+          this.$message({
+            type: 'error',
+            message: '区不可以为空！'
+          })
+          return
+        }
+        if (params.customerSource === '') {
+          this.$message({
+            type: 'error',
+            message: '客户来源不可以为空！'
+          })
+          return
+        }
+        if (params.customerType === '') {
+          this.$message({
+            type: 'error',
+            message: '客户类型不可以为空！'
+          })
+          return
+        }
+        if (params.customerLevel === '') {
+          this.$message({
+            type: 'error',
+            message: '客户级别不可以为空！'
+          })
+          return
+        }
+        if (params.orderLevel === '') {
+          this.$message({
+            type: 'error',
+            message: '下单级别不可以为空！'
+          })
+          return
+        }
+        if (params.caculateType === '') {
+          this.$message({
+            type: 'error',
+            message: '结算方式不可以为空！'
+          })
+          return
+        }
+        if (params.checkStatus === '') {
+          this.$message({
+            type: 'error',
+            message: '审核状态不可以为空！'
+          })
+          return
+        }
+        if (params.serviceType === '') {
+          this.$message({
+            type: 'error',
+            message: '服务类型不可以为空！'
+          })
+          return
+        }
         addMasterCustomer(params).then(res => {
           if (res.code === 0) {
             this.$message({

@@ -803,6 +803,138 @@
         })
       },
       _addRouterCustomerPrice (params) {
+        if (params.customerSeries === '') {
+          this.$message({
+            type: 'error',
+            message: '大客户不可以为空！'
+          })
+          return
+        }
+        if (params.routerAlia === '') {
+          this.$message({
+            type: 'error',
+            message: '线路别名不可以为空！'
+          })
+          return
+        }
+        if (params.routerNumber === '') {
+          this.$message({
+            type: 'error',
+            message: '线路编号不可以为空！'
+          })
+          return
+        }
+        if (params.sourcePrv === '') {
+          this.$message({
+            type: 'error',
+            message: '起始省不可以为空！'
+          })
+          return
+        }
+        if (params.sourceCity === '') {
+          this.$message({
+            type: 'error',
+            message: '起始市不可以为空！'
+          })
+          return
+        }
+        if (params.sourceCityArea === '') {
+          this.$message({
+            type: 'error',
+            message: '起始区不可以为空！'
+          })
+          return
+        }
+        if (params.sourceTown === '') {
+          this.$message({
+            type: 'error',
+            message: '起始镇不可以为空！'
+          })
+          return
+        }
+        if (params.destinationPrv === '') {
+          this.$message({
+            type: 'error',
+            message: '目的省不可以为空！'
+          })
+          return
+        }
+        if (params.destinationCity === '') {
+          this.$message({
+            type: 'error',
+            message: '目的市不可以为空！'
+          })
+          return
+        }
+        if (params.destinationCityArea === '') {
+          this.$message({
+            type: 'error',
+            message: '目的区不可以为空！'
+          })
+          return
+        }
+        if (params.destinationTown === '') {
+          this.$message({
+            type: 'error',
+            message: '目的镇不可以为空！'
+          })
+          return
+        }
+        var x
+        for (x in params.children) {
+          if (params.children[x].carTypeName === '') {
+            this.$message({
+              type: 'error',
+              message: '车型不可以为空！'
+            })
+            return
+          }
+          if (params.children[x].carSizeName === '') {
+            this.$message({
+              type: 'error',
+              message: '尺寸不可以为空！'
+            })
+            return
+          }
+          var y
+          for (y in params.children[x].routerPriceList) {
+            if (params.children[x].routerPriceList[y].initPrice === '') {
+              this.$message({
+                type: 'error',
+                message: '起步价不可以为空！'
+              })
+              return
+            }
+            if (params.children[x].routerPriceList[y].initDistance === '') {
+              this.$message({
+                type: 'error',
+                message: '起步距离如果不清楚请写0！'
+              })
+              return
+            }
+            if (params.children[x].routerPriceList[y].overstepPrice === '') {
+              this.$message({
+                type: 'error',
+                message: '超过指定范围价如果不清楚请写0！'
+              })
+              return
+            }
+            if (params.children[x].routerPriceList[y].franchiseeProportion === '') {
+              this.$message({
+                type: 'error',
+                message: '加盟商提成比例如果不清楚请写0！'
+              })
+              return
+            }
+            if (params.children[x].routerPriceList[y].saleProportion === '') {
+              this.$message({
+                type: 'error',
+                message: '销售提成比例如果不清楚请写0！'
+              })
+              return
+            }
+          }
+        }
         addRouterCustomerPrice(params).then(res => {
           if (res.code === 0) {
             this.$message({
