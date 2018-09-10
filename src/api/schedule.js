@@ -108,3 +108,16 @@ export function addRouterToCar (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function getRouterAliaSearchList (params) {
+  const url = `${CONFIG.HOST}/getRouterAliaSearchList`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}

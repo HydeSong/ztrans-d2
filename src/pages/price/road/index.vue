@@ -196,7 +196,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
+                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -362,7 +362,7 @@
               label="操作"
               width="120">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="onDeletePrice(scope.$index)" v-if="scope.$index % 2 === 1">删除</el-button>
+                <el-button type="text" size="small" v-if="scope.$index % 2 === 1">编辑</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -733,16 +733,6 @@
           routerType: 0,
           saleProportion: ''
         }
-      },
-      onDeletePrice (index) {
-        let idx = ''
-        if (index % 2 === 0) {
-          idx = index + 1
-        } else {
-          idx = index - 1
-        }
-        this.priceSetAddList.splice(index, 1)
-        this.priceSetAddList.splice(idx, 1)
       },
       onDeleteDetailPrice (index, row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
