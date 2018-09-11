@@ -253,27 +253,27 @@
               <el-upload
                 :limit="1"
                 action=""
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="addCarItem.drivingPicture" :src="addCarItem.drivingPicture">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="drivingPicture"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
               </el-upload>
             </el-col>
             <el-col :span="6" class="tx-center">
               <el-upload
                 :limit="1"
-                :show-file-list="false"
                 action=""
-                :auto-upload="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="addCarItem.drivingLicense" :src="addCarItem.drivingLicense">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="drivingLicense"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
               </el-upload>
             </el-col>
@@ -281,13 +281,13 @@
               <el-upload
                 :limit="1"
                 action=""
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="addCarItem.identityCard" :src="addCarItem.identityCard">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="identityCard"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
               </el-upload>
             </el-col>
@@ -295,13 +295,13 @@
               <el-upload
                 :limit="1"
                 action=""
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="addCarItem.persomCarPicture" :src="addCarItem.persomCarPicture">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="persomCarPicture"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
               </el-upload>
             </el-col>
@@ -313,52 +313,52 @@
         </div>
       </el-dialog>
       <el-dialog title="编辑车辆" :visible.sync="editCarPopDialog">
-        <el-form :inline="true" :model="editCarItem" label-position="left">
+        <el-form :inline="true" :model="addCarItem" label-position="left">
           <el-form-item label="驾驶员姓名">
-            <el-input v-model="editCarItem.driverName" placeholder=""></el-input>
+            <el-input v-model="addCarItem.driverName" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="驾驶员电话">
-            <el-input v-model="editCarItem.driverPhone" placeholder=""></el-input>
+            <el-input v-model="addCarItem.driverPhone" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="驾驶员身份证">
-            <el-input v-model="editCarItem.driverIdentityId" placeholder=""></el-input>
+            <el-input v-model="addCarItem.driverIdentityId" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="车牌号">
-            <el-input v-model="editCarItem.carPlateNumber" placeholder=""></el-input>
+            <el-input v-model="addCarItem.carPlateNumber" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="车型">
-            <el-select v-model="editCarItem.carType" clearable>
+            <el-select v-model="addCarItem.carType" clearable>
               <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆品牌">
-            <el-select v-model="editCarItem.carBrand" clearable>
+            <el-select v-model="addCarItem.carBrand" clearable>
               <el-option v-for="(item, index) in carBrands" :key="index" :label="item.brandName" :value="item.brandId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆颜色">
-            <el-select v-model="editCarItem.carColour" clearable>
+            <el-select v-model="addCarItem.carColour" clearable>
               <el-option v-for="(item, index) in carColours" :key="index" :label="item.colourName" :value="item.colourId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆重量">
-            <el-select v-model="editCarItem.carWeight" clearable>
+            <el-select v-model="addCarItem.carWeight" clearable>
               <el-option v-for="(item, index) in carWeight" :key="index" :label="item.weightName" :value="item.weightId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆尺寸">
-            <el-select v-model="editCarItem.carSize" clearable>
+            <el-select v-model="addCarItem.carSize" clearable>
               <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="item.sizeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="所属车队">
-            <el-select v-model="editCarItem.motorcadeId" clearable>
+            <el-select v-model="addCarItem.motorcadeId" clearable>
               <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="申请时间">
             <el-date-picker
-              v-model="editCarItem.applyDtme"
+              v-model="addCarItem.applyDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -367,13 +367,13 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="审核状态">
-            <el-select v-model="editCarItem.checkStatus" clearable>
+            <el-select v-model="addCarItem.checkStatus" clearable>
               <el-option v-for="(item, index) in checkIdAndCheckStatus" :key="index" :label="item.checkStatusName" :value="item.checkStatusId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="审核时间">
             <el-date-picker
-              v-model="editCarItem.checkDtme"
+              v-model="addCarItem.checkDtme"
               type="datetime"
               placeholder="选择日期时间"
               align="right"
@@ -382,13 +382,13 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="审核人">
-            <el-input v-model="editCarItem.checkPerson" placeholder=""></el-input>
+            <el-input v-model="addCarItem.checkPerson" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input v-model="editCarItem.checkRemark" placeholder=""></el-input>
+            <el-input v-model="addCarItem.checkRemark" placeholder=""></el-input>
           </el-form-item>
           <el-form-item label="接单区域">
-            <el-select v-model="editCarItem.prvName" placeholder="请选择省">
+            <el-select v-model="addCarItem.prvName" placeholder="请选择省">
               <el-option
                 v-for="item in allPrv"
                 :key="item.prvId"
@@ -396,7 +396,7 @@
                 :value="item.prvId">
               </el-option>
             </el-select>
-            <el-select v-model="editCarItem.cityName" placeholder="请选择市">
+            <el-select v-model="addCarItem.cityName" placeholder="请选择市">
               <el-option
                 v-for="item in allCity"
                 :key="item.cityId"
@@ -404,7 +404,7 @@
                 :value="item.cityId">
               </el-option>
             </el-select>
-            <el-select v-model="editCarItem.cityAreaName" placeholder="请选择区">
+            <el-select v-model="addCarItem.cityAreaName" placeholder="请选择区">
               <el-option
                 v-for="item in allCityArea"
                 :key="item.cityAreaId"
@@ -418,13 +418,14 @@
               <el-upload
                 :limit="1"
                 action=""
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="editCarItem.drivingPicture" v-lazy="editCarItem.drivingPicture">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="drivingPicture"
+                :file-list="addCarItem.drivingPicture?[{url: addCarItem.drivingPicture}]:[]"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">驾驶证</div>
               </el-upload>
             </el-col>
@@ -432,13 +433,14 @@
               <el-upload
                 :limit="1"
                 action=""
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="editCarItem.drivingLicense" v-lazy="editCarItem.drivingLicense">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="drivingLicense"
+                :file-list="addCarItem.drivingLicense?[{url: addCarItem.drivingLicense}]:[]"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">行驶证</div>
               </el-upload>
             </el-col>
@@ -446,13 +448,14 @@
               <el-upload
                 :limit="1"
                 action=""
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="editCarItem.identityCard" v-lazy="editCarItem.identityCard">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="identityCard"
+                :file-list="addCarItem.identityCard?[{url: addCarItem.identityCard}]:[]"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">身份证</div>
               </el-upload>
             </el-col>
@@ -460,13 +463,14 @@
               <el-upload
                 :limit="1"
                 action=""
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                list-type="picture-card">
-                <img v-if="editCarItem.persomCarPicture" v-lazy="editCarItem.persomCarPicture">
-                <i v-else class="el-icon-plus"></i>
+                list-type="picture-card"
+                name="persomCarPicture"
+                :file-list="addCarItem.persomCarPicture?[{url: addCarItem.persomCarPicture}]:[]"
+                :http-request="onReaderComplete"
+                :before-upload="onReaderSelect"
+                :on-preview="onReaderPreview"
+                :on-remove="onReaderRemove">
+                <i class="el-icon-plus"></i>
                 <div slot="tip" style="text-align: center" class="el-upload__tip">人车合照</div>
               </el-upload>
             </el-col>
@@ -477,6 +481,9 @@
           <el-button type="primary" @click="onEditCarConfirm">确 定</el-button>
         </div>
       </el-dialog>
+      <el-dialog :visible.sync="dialogVisible">
+        <img width="100%" :src="dialogImageUrl" alt="">
+      </el-dialog>
     </template>
   </d2-container>
 </template>
@@ -486,6 +493,7 @@
   import { getCarTypeList } from '@/api/order'
   import { getAllCar, deleteCar, getMotorcadeList, addCar, updateCar, getAllCarBand, getAllCarColour, getAllCarType, getCarDetail, getCarWeightList, getCarSizeList } from '@/api/truck'
   import { getCheckStatus, getActiveStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown } from '@/api/dictionary'
+  import { uploadPicture, deletePicture } from '@/api/picture'
   import Cookies from 'js-cookie'
   export default {
     data () {
@@ -520,34 +528,6 @@
           cityAreaName: '',
           cityName: '',
           customerNumId: '',
-          driverIdentityId: '',
-          driverName: '',
-          driverPhone: '',
-          drivingLicense: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-          drivingPicture: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-          identityCard: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-          motorcadeId: '',
-          persomCarPicture: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-          prvName: ''
-        },
-        editCarItem: {
-          activeDtme: '',
-          activeStatus: '',
-          applyDtme: '',
-          carBrand: '',
-          carColour: '',
-          carWeight: '',
-          carSize: '',
-          carPlateNumber: '',
-          carType: '',
-          checkDtme: '',
-          checkPerson: '',
-          checkRemark: '',
-          checkStatus: '',
-          cityAreaName: '',
-          cityName: '',
-          customerNumId: '',
-          driverId: '',
           driverIdentityId: '',
           driverName: '',
           driverPhone: '',
@@ -600,7 +580,9 @@
         carTypes: [],
         carWeight: [],
         carSizes: [],
-        carDetail: {}
+        carDetail: {},
+        dialogImageUrl: '',
+        dialogVisible: false
       }
     },
     computed: {
@@ -656,16 +638,6 @@
       })
     },
     watch: {
-      'editCarItem.prvName' () {
-        // this.editCustomerItem.cityName = ''
-        // this.editCustomerItem.cityAreaName = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCarItem.prvName
-        })
-      },
       'addCarItem.prvName' () {
         // this.addCustomerItem.cityName = ''
         // this.addCustomerItem.cityAreaName = ''
@@ -674,16 +646,6 @@
           pageSize: 200,
           customerNumId: this.customerNumId,
           prvId: this.addCarItem.prvName
-        })
-      },
-      'editCarItem.cityName' () {
-        // this.editCustomerItem.cityAreaName = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCarItem.prvName,
-          cityId: this.editCarItem.cityName
         })
       },
       'addCarItem.cityName' () {
@@ -698,13 +660,84 @@
       }
     },
     methods: {
+      onReaderRemove (file, fileList) {
+        console.log(file, fileList)
+        this._deletePicture({customerNumId: this.customerNumId, url: this.addCarItem['']})
+      },
+      onReaderPreview (file) {
+        this.dialogImageUrl = file.url
+        this.dialogVisible = true
+      },
+      onReaderSelect (file) {
+        this.$message({
+          type: 'error',
+          message: '图片读取中...'
+        })
+        const larger = file.size > 5 * 1024 * 1024
+        if (larger) {
+          this.$message({
+            type: 'error',
+            message: '文件不能大于5M'
+          })
+        }
+        return !larger
+      },
+      onReaderComplete ({file, filename}) {
+        let pictureCode = ''
+        switch (filename) {
+          case 'drivingLicense':
+            pictureCode = '0'
+            break
+          case 'drivingPicture':
+            pictureCode = '1'
+            break
+          case 'persomCarPicture':
+            pictureCode = '2'
+            break
+          case 'identityCard':
+            pictureCode = '3'
+            break
+          default:
+            pictureCode = ''
+            break
+        }
+        let customerNumId = this.customerNumId
+        // 把图片上传到服务器
+        const params = {customerNumId, pictureCode}
+        this._uploadPicture(params, file, filename)
+      },
+      _deletePicture (params) {
+        deletePicture(params).then(res => {
+          console.log(res)
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _uploadPicture (params, file, filename) {
+        uploadPicture(params, file).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '上传成功!'
+            })
+            this.addCarItem[filename] = res.url
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getCarDetail (params) {
         getCarDetail(params).then(res => {
           if (res.code === 0) {
             // 清空数据
             this.carDetail = res.car
-            this.editCarItem = this.carDetail
-            // console.log(this.editCarItem)
+            this.addCarItem = this.carDetail
           }
         }).catch(err => {
           console.log(err)
@@ -985,17 +1018,43 @@
       },
       onAddCar () {
         this.addCarPopDialog = true
+        this.addCarItem = {
+          activeDtme: '',
+          activeStatus: '',
+          applyDtme: '',
+          carBrand: '',
+          carColour: '',
+          carPlateNumber: '',
+          carType: '',
+          carWeight: '',
+          carSize: '',
+          checkDtme: '',
+          checkPerson: '',
+          checkRemark: '',
+          checkStatus: '',
+          cityAreaName: '',
+          cityName: '',
+          customerNumId: '',
+          driverIdentityId: '',
+          driverName: '',
+          driverPhone: '',
+          drivingLicense: '',
+          drivingPicture: '',
+          identityCard: '',
+          motorcadeId: '',
+          persomCarPicture: '',
+          prvName: ''
+        }
       },
       onAddCarConfirm () {
         this.addCarItem.customerNumId = this.customerNumId
         this._addCar(this.addCarItem)
       },
       onEditCar (index, row) {
-        console.log(index, row)
-        this.editCarItem.drivingLicense = ''
-        this.editCarItem.drivingPicture = ''
-        this.editCarItem.identityCard = ''
-        this.editCarItem.persomCarPicture = ''
+        this.addCarItem.drivingLicense = ''
+        this.addCarItem.drivingPicture = ''
+        this.addCarItem.identityCard = ''
+        this.addCarItem.persomCarPicture = ''
         this._getCarDetail({
           carId: row.carId,
           customerNumId: this.customerNumId
@@ -1003,8 +1062,8 @@
         this.editCarPopDialog = true
       },
       onEditCarConfirm () {
-        this.editCarItem.customerNumId = this.customerNumId
-        this._updateCar(this.editCarItem)
+        this.addCarItem.customerNumId = this.customerNumId
+        this._updateCar(this.addCarItem)
       },
       onDetailCar (index, row) {
         this.detailCarDialog = true
@@ -1056,21 +1115,6 @@
         //   jobId: 0,
         //   pageSize: this.pgSize
         // })
-      },
-      handleAvatarSuccess (res, file) {
-        this.addCarItem.persomCarPicture = URL.createObjectURL(file.raw)
-      },
-      beforeAvatarUpload (file) {
-        const isJPG = file.type === 'image/jpeg'
-        const isLt2M = file.size / 1024 / 1024 < 2
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!')
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!')
-        }
-        return isJPG && isLt2M
       }
     }
   }
