@@ -65,30 +65,36 @@ export default {
     ]),
     _loginSystem (params) {
       loginSystem(params).then(res => {
-        // cookie 60分钟的有效期
-        const expireTime = new Date(new Date().getTime() + 60 * 60 * 1000)
-        const setting = {
-          expires: expireTime
+        if (res.code === 0) {
+          // cookie 60分钟的有效期
+          const expireTime = new Date(new Date().getTime() + 60 * 60 * 1000)
+          const setting = {
+            expires: expireTime
+          }
+          // 设置 cookie
+          Cookies.set('token', res.sid, setting)
+          Cookies.set('uuid', res.customerNumId, setting)
+          Cookies.set('__user__customernumid', res.customerNumId, setting)
+          Cookies.set('__user__sid', res.sid, setting)
+          Cookies.set('__user__name', this.formLogin.username, setting)
+
+          // Cookies.set('token', res.sid)
+          // Cookies.set('uuid', res.customerNumId)
+          // Cookies.set('__user__customernumid', res.customerNumId)
+          // Cookies.set('__user__sid', res.sid)
+          // Cookies.set('__user__name', this.formLogin.username)
+
+          // 设置 vuex
+          this.d2adminUsernameSet(this.formLogin.username)
+          // 跳转路由
+          this.$router.push({
+            name: 'index'
+          })
+        } else {
+          this.$router.push({
+            name: 'login'
+          })
         }
-        // 设置 cookie
-        Cookies.set('token', res.sid, setting)
-        Cookies.set('uuid', res.customerNumId, setting)
-        Cookies.set('__user__customernumid', res.customerNumId, setting)
-        Cookies.set('__user__sid', res.sid, setting)
-        Cookies.set('__user__name', this.formLogin.username, setting)
-
-        // Cookies.set('token', res.sid)
-        // Cookies.set('uuid', res.customerNumId)
-        // Cookies.set('__user__customernumid', res.customerNumId)
-        // Cookies.set('__user__sid', res.sid)
-        // Cookies.set('__user__name', this.formLogin.username)
-
-        // 设置 vuex
-        this.d2adminUsernameSet(this.formLogin.username)
-        // 跳转路由
-        this.$router.push({
-          name: 'index'
-        })
       }).catch(err => {
         console.log(err)
       })
