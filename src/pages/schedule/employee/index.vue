@@ -1,7 +1,7 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem">
+      <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
           <el-select v-model="searchItem.routerDetailAliaSearchKey" placeholder="线路别名" clearable>
             <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.routerAlia"></el-option>
@@ -18,6 +18,7 @@
         </el-form-item>
       </el-form>
       <el-table
+        size="mini"
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
@@ -59,6 +60,7 @@
       </div>
       <el-dialog title="新增调度人" :visible.sync="addDialog">
         <el-table
+          size="mini"
           :data="tablePopData"
           highlight-current-row
           style="width: 100%"

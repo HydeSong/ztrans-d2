@@ -1,7 +1,7 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem">
+      <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
           <el-input v-model="searchItem.routerNumberSearchKey" placeholder="线路编号"></el-input>
         </el-form-item>
@@ -18,6 +18,7 @@
         </el-form-item>
       </el-form>
       <el-table
+        size="mini"
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
@@ -25,6 +26,7 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-table
+              size="mini"
               :data="props.row.routerPriceList"
               highlight-current-row
               style="width: 100%">
@@ -106,7 +108,7 @@
           线路设置
         </div>
         <div class="block" style="text-align: left; padding: 0 15px">
-          <el-form :inline="true" :model="addItem">
+          <el-form :inline="true" :model="addItem" size="mini">
             <el-form-item label="线路编号">
               <el-input v-model="addItem.routerNumber" placeholder="请输入"></el-input>
             </el-form-item>
@@ -155,6 +157,7 @@
         <div class="block" style="text-align: left">
           报价设置
           <el-table
+            size="mini"
             :data="priceSetAddList"
             highlight-current-row
             style="width: 100%">
@@ -202,16 +205,16 @@
           </el-table>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="addDialog = false">取 消</el-button>
-          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
-          <el-button type="primary" @click="onAddConfirm">提 交</el-button>
+          <el-button @click="addDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice" size="mini">新增报价</el-button>
+          <el-button type="primary" @click="onAddConfirm" size="mini">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog
         title="新增报价"
         :visible.sync="innerAddVisible"
         append-to-body>
-        <el-form :inline="true">
+        <el-form :inline="true" size="mini">
           <el-form-item label="车型">
             <el-select v-model="carTypeName" placeholder="请选择" clearable>
               <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
@@ -222,7 +225,7 @@
           客户报价
         </div>
         <div class="block" style="padding: 0 15px">
-          <el-form :inline="true" :model="priceSetAddItem0">
+          <el-form :inline="true" :model="priceSetAddItem0" size="mini">
             <el-form-item label="起步距离(公里)">
               <el-input v-model="priceSetAddItem0.initDistance" placeholder="" type="tel"></el-input>
             </el-form-item>
@@ -244,7 +247,7 @@
           司机报价
         </div>
         <div class="block" style="padding: 0 15px">
-          <el-form :inline="true" :model="priceSetAddItem1">
+          <el-form :inline="true" :model="priceSetAddItem1" size="mini">
             <el-form-item label="起步距离(公里)">
               <el-input v-model="priceSetAddItem1.initDistance" placeholder="" type="tel"></el-input>
             </el-form-item>
@@ -263,8 +266,8 @@
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="innerAddVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onAddPriceConfirm">提 交</el-button>
+          <el-button @click="innerAddVisible = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onAddPriceConfirm" size="mini">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog title="编辑同城报价" :visible.sync="editDialog">
@@ -272,7 +275,7 @@
           线路设置
         </div>
         <div class="block" style="text-align: left; padding: 0 15px">
-          <el-form :inline="true" :model="addItem">
+          <el-form :inline="true" :model="addItem" size="mini">
             <el-form-item label="线路编号">
               <el-input v-model="addItem.routertel" placeholder="请输入"></el-input>
             </el-form-item>
@@ -321,6 +324,7 @@
         <div class="block" style="text-align: left">
           报价设置
           <el-table
+            size="mini"
             :data="priceSetAddList"
             highlight-current-row
             style="width: 100%">
@@ -368,9 +372,9 @@
           </el-table>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="editDialog = false">取 消</el-button>
-          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
-          <el-button type="primary" @click="onEditConfirm">提 交</el-button>
+          <el-button @click="editDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice" size="mini">新增报价</el-button>
+          <el-button type="primary" @click="onEditConfirm" size="mini">提 交</el-button>
         </span>
       </el-dialog>
     </template>

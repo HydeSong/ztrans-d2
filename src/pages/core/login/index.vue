@@ -66,23 +66,23 @@ export default {
     _loginSystem (params) {
       loginSystem(params).then(res => {
         if (res.code === 0) {
-          // cookie 60分钟的有效期
-          const expireTime = new Date(new Date().getTime() + 60 * 60 * 1000)
-          const setting = {
-            expires: expireTime
-          }
+          // cookie 60 * 4分钟的有效期
+          // const expireTime = new Date(new Date().getTime() + 60 * 60 * 1000 * 4)
+          // const setting = {
+          //   expires: expireTime
+          // }
           // 设置 cookie
-          Cookies.set('token', res.sid, setting)
-          Cookies.set('uuid', res.customerNumId, setting)
-          Cookies.set('__user__customernumid', res.customerNumId, setting)
-          Cookies.set('__user__sid', res.sid, setting)
-          Cookies.set('__user__name', this.formLogin.username, setting)
+          // Cookies.set('token', res.sid, setting)
+          // Cookies.set('uuid', res.customerNumId, setting)
+          // Cookies.set('__user__customernumid', res.customerNumId, setting)
+          // Cookies.set('__user__sid', res.sid, setting)
+          // Cookies.set('__user__name', this.formLogin.username, setting)
 
-          // Cookies.set('token', res.sid)
-          // Cookies.set('uuid', res.customerNumId)
-          // Cookies.set('__user__customernumid', res.customerNumId)
-          // Cookies.set('__user__sid', res.sid)
-          // Cookies.set('__user__name', this.formLogin.username)
+          Cookies.set('token', res.sid)
+          Cookies.set('uuid', res.customerNumId)
+          Cookies.set('__user__customernumid', res.customerNumId)
+          Cookies.set('__user__sid', res.sid)
+          Cookies.set('__user__name', this.formLogin.username)
 
           // 设置 vuex
           this.d2adminUsernameSet(this.formLogin.username)

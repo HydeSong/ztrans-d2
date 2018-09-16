@@ -29,11 +29,16 @@ axios.interceptors.response.use(res => {
         console.log(code)
         Message.error(res.data.message)
         break
+      case -1001:
       case -5001:
         console.log(code)
-        Message.error(res.data.message)
         // 跳转首页
-        window.location.href = '/'
+        const host = window.location.host
+        // window.location.href = host + '/#/'
+        window.location.assign(host)
+        // alert(res.data.message)
+        // alert(window.location.host)
+        Message.error(res.data.message)
         break
       case -5003:
         console.log(code)

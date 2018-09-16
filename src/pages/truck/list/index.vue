@@ -1,7 +1,7 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem">
+      <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
           <el-select v-model="searchItem.motorcadeId" placeholder="所属车队" clearable>
             <el-option v-for="(item, index) in motorcadeNameList" :key="index" :label="item.motorcadeCar" :value="item.motorcadeId"></el-option>
@@ -29,6 +29,7 @@
         </el-form-item>
       </el-form>
       <el-table
+        size="mini"
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
@@ -148,7 +149,7 @@
         </el-row>
       </el-dialog>
       <el-dialog title="添加车辆" :visible.sync="addCarPopDialog">
-        <el-form :inline="true" :model="addCarItem" label-position="left">
+        <el-form :inline="true" :model="addCarItem" label-position="left" size="mini">
           <el-form-item label="驾驶员姓名">
             <el-input v-model="addCarItem.driverName" placeholder=""></el-input>
           </el-form-item>
@@ -308,12 +309,12 @@
           </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="addCarPopDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onAddCarConfirm">确 定</el-button>
+          <el-button @click="addCarPopDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onAddCarConfirm" size="mini">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="编辑车辆" :visible.sync="editCarPopDialog">
-        <el-form :inline="true" :model="addCarItem" label-position="left">
+        <el-form :inline="true" :model="addCarItem" label-position="left" size="mini">
           <el-form-item label="驾驶员姓名">
             <el-input v-model="addCarItem.driverName" placeholder=""></el-input>
           </el-form-item>
@@ -477,8 +478,8 @@
           </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="editCarPopDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onEditCarConfirm">确 定</el-button>
+          <el-button @click="editCarPopDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onEditCarConfirm" size="mini">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog :visible.sync="dialogVisible">

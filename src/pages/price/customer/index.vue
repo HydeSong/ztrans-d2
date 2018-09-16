@@ -1,7 +1,7 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem">
+      <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
           <el-select v-model="searchItem.customerSeries" placeholder="客户编号" clearable>
             <el-option v-for="(item, index) in customerMasterList" :key="index" :label="item.customerName" :value="item.customerMasterId"></el-option>
@@ -26,6 +26,7 @@
         </el-form-item>
       </el-form>
       <el-table
+        size="mini"
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
@@ -33,6 +34,7 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-table
+              size="mini"
               :data="props.row.routerPriceList"
               highlight-current-row
               style="width: 100%">
@@ -97,8 +99,8 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button @click="onEditCustomerPrice(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onDeleteCustomerPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="onEditCustomerPrice(scope.$index, scope.row)" type="text">编辑</el-button>
+            <el-button @click="onDeleteCustomerPrice(scope.$index, scope.row)" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -118,7 +120,7 @@
           线路设置
         </div>
         <div class="block" style="text-align: left; padding: 0 15px">
-          <el-form :inline="true" :model="addItem">
+          <el-form :inline="true" :model="addItem" size="mini">
             <el-form-item label="客户">
               <el-select v-model="addItem.customerSeries" placeholder="请选择" clearable>
                 <el-option v-for="(item, index) in customerMasterList" :key="index" :label="item.customerName" :value="item.customerMasterId"></el-option>
@@ -147,16 +149,6 @@
             </el-form-item>
             <el-form-item label="收件人详细地址">
               <el-input v-model="addItem.receiveAddressDetail" placeholder="请输入"></el-input>
-            </el-form-item>
-            <el-form-item label="经停站点">
-              <el-select
-                v-model="addItem.routerStations"
-                multiple
-                filterable
-                allow-create
-                default-first-option
-                placeholder="请输入经停站点">
-              </el-select>
             </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省">
@@ -226,6 +218,16 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="经停站点">
+              <el-select
+                v-model="addItem.routerStations"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                placeholder="请输入经停站点">
+              </el-select>
+            </el-form-item>
             <el-form-item label="线路备注">
               <el-input type="textarea" :rows="4" v-model="addItem.remark" placeholder="请输入"></el-input>
             </el-form-item>
@@ -234,6 +236,7 @@
         <div class="block" style="text-align: left">
           报价设置
           <el-table
+            size="mini"
             :data="priceSetAddList"
             highlight-current-row
             style="width: 100%">
@@ -286,16 +289,16 @@
           </el-table>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="addDialog = false">取 消</el-button>
-          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
-          <el-button type="primary" @click="onAddConfirm">提 交</el-button>
+          <el-button @click="addDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice" size="mini">新增报价</el-button>
+          <el-button type="primary" @click="onAddConfirm" size="mini">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog
         title="新增报价"
         :visible.sync="innerAddVisible"
         append-to-body>
-        <el-form :inline="true">
+        <el-form :inline="true" size="mini">
           <el-form-item label="车型">
             <el-select v-model="carTypeName" placeholder="请选择" clearable>
               <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
@@ -311,7 +314,7 @@
           客户报价
         </div>
         <div class="block" style="padding: 0 15px">
-          <el-form :inline="true" :model="priceSetAddItem0">
+          <el-form :inline="true" :model="priceSetAddItem0" size="mini">
             <el-form-item label="起步距离(公里)">
               <el-input v-model="priceSetAddItem0.initDistance" placeholder=""></el-input>
             </el-form-item>
@@ -333,7 +336,7 @@
           司机报价
         </div>
         <div class="block" style="padding: 0 15px">
-          <el-form :inline="true" :model="priceSetAddItem1">
+          <el-form :inline="true" :model="priceSetAddItem1" size="mini">
             <el-form-item label="起步距离(公里)">
               <el-input v-model="priceSetAddItem1.initDistance" placeholder=""></el-input>
             </el-form-item>
@@ -352,15 +355,15 @@
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="innerAddVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onAddPriceConfirm">提 交</el-button>
+          <el-button @click="innerAddVisible = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onAddPriceConfirm" size="mini">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog
         title="编辑报价"
         :visible.sync="innerEditVisible"
         append-to-body>
-        <el-form :inline="true">
+        <el-form :inline="true" size="mini">
           <el-form-item label="车型">
             <el-select v-model="carTypeName" placeholder="请选择" clearable>
               <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="`${item.typeId}-${item.typeName}`"></el-option>
@@ -376,7 +379,7 @@
           客户报价
         </div>
         <div class="block" style="padding: 0 15px">
-          <el-form :inline="true" :model="priceSetAddItem0">
+          <el-form :inline="true" :model="priceSetAddItem0" size="mini">
             <el-form-item label="起步距离(公里)">
               <el-input v-model="priceSetAddItem0.initDistance" placeholder=""></el-input>
             </el-form-item>
@@ -398,7 +401,7 @@
           司机报价
         </div>
         <div class="block" style="padding: 0 15px">
-          <el-form :inline="true" :model="priceSetAddItem1">
+          <el-form :inline="true" :model="priceSetAddItem1" size="mini">
             <el-form-item label="起步距离(公里)">
               <el-input v-model="priceSetAddItem1.initDistance" placeholder=""></el-input>
             </el-form-item>
@@ -417,8 +420,8 @@
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="innerEditVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onEditPriceConfirm(editPriceIndex)">提 交</el-button>
+          <el-button @click="innerEditVisible = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onEditPriceConfirm(editPriceIndex)" size="mini">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog title="编辑客户报价" :visible.sync="editDialog">
@@ -426,7 +429,7 @@
           线路设置
         </div>
         <div class="block" style="text-align: left; padding: 0 15px">
-          <el-form :inline="true" :model="addItem">
+          <el-form :inline="true" :model="addItem" size="mini">
             <el-form-item label="客户">
               <el-select v-model="addItem.customerSeries" placeholder="请选择" clearable>
                 <el-option v-for="(item, index) in customerMasterList" :key="index" :label="item.customerName" :value="item.customerMasterId"></el-option>
@@ -455,16 +458,6 @@
             </el-form-item>
             <el-form-item label="收件人详细地址">
               <el-input v-model="addItem.receiveAddressDetail" placeholder="请输入"></el-input>
-            </el-form-item>
-            <el-form-item label="经停站点">
-              <el-select
-                v-model="addItem.routerStations"
-                multiple
-                filterable
-                allow-create
-                default-first-option
-                placeholder="请输入经停站点">
-              </el-select>
             </el-form-item>
             <el-form-item label="起始点">
               <el-select v-model="addItem.sourcePrv" placeholder="请选择省">
@@ -511,7 +504,7 @@
               </el-select>
               <el-select v-model="addItem.destinationCity" placeholder="请选择市">
                 <el-option
-                  v-for="item in allCity"
+                  v-for="item in allCityDestination"
                   :key="item.cityId"
                   :label="item.cityName"
                   :value="item.cityId">
@@ -519,7 +512,7 @@
               </el-select>
               <el-select v-model="addItem.destinationCityArea" placeholder="请选择区">
                 <el-option
-                  v-for="item in allCityArea"
+                  v-for="item in allCityAreaDestination"
                   :key="item.cityAreaId"
                   :label="item.cityAreaName"
                   :value="item.cityAreaId">
@@ -527,11 +520,21 @@
               </el-select>
               <el-select v-model="addItem.destinationTown" placeholder="请选择镇">
                 <el-option
-                  v-for="item in allTown"
+                  v-for="item in allTownDestination"
                   :key="item.townId"
                   :label="item.townName"
                   :value="item.townId">
                 </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="经停站点">
+              <el-select
+                v-model="addItem.routerStations"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                placeholder="请输入经停站点">
               </el-select>
             </el-form-item>
             <el-form-item label="线路备注">
@@ -542,6 +545,7 @@
         <div class="block" style="text-align: left">
           报价设置
           <el-table
+            size="mini"
             :data="priceSetAddList"
             highlight-current-row
             style="width: 100%">
@@ -594,9 +598,9 @@
           </el-table>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="editDialog = false">取 消</el-button>
-          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice">新增报价</el-button>
-          <el-button type="primary" @click="onEditConfirm">提 交</el-button>
+          <el-button @click="editDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="onAddPrice" size="mini">新增报价</el-button>
+          <el-button type="primary" @click="onEditConfirm" size="mini">提 交</el-button>
         </span>
       </el-dialog>
     </template>
@@ -688,8 +692,11 @@
         customerMasterList: [],
         allPrv: [],
         allCity: [],
+        allCityDestination: [],
         allCityArea: [],
+        allCityAreaDestination: [],
         allTown: [],
+        allTownDestination: [],
         carTypes: [],
         carSizes: [],
         carTypeName: '',
@@ -733,7 +740,7 @@
         // this.addItem.destinationCity = ''
         // this.addItem.destinationCityArea = ''
         // this.addItem.destinationTown = ''
-        this._getAllCity({
+        this._getAllCityDestination({
           current: 1,
           pageSize: 200,
           customerNumId: this.customerNumId,
@@ -754,7 +761,7 @@
       'addItem.destinationCity' () {
         // this.addItem.destinationCityArea = ''
         // this.addItem.destinationTown = ''
-        this._getAllCityArea({
+        this._getAllCityAreaDestination({
           current: 1,
           pageSize: 200,
           customerNumId: this.customerNumId,
@@ -773,7 +780,7 @@
       },
       'addItem.destinationCityArea' () {
         // this.addItem.destinationTown = ''
-        this._getAllTown({
+        this._getAllTownDestination({
           current: 1,
           pageSize: 200,
           customerNumId: this.customerNumId,
@@ -851,6 +858,15 @@
           console.log(err)
         })
       },
+      _getAllCityDestination (params) {
+        getAllCity(params).then(res => {
+          if (res.code === 0) {
+            this.allCityDestination = res.cityeNameAndCityeIds
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getAllCityArea (params) {
         getAllCityArea(params).then(res => {
           if (res.code === 0) {
@@ -860,10 +876,28 @@
           console.log(err)
         })
       },
+      _getAllCityAreaDestination (params) {
+        getAllCityArea(params).then(res => {
+          if (res.code === 0) {
+            this.allCityAreaDestination = res.cityAreaNameAndCityAreaIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       _getAllTown (params) {
         getAllTown(params).then(res => {
           if (res.code === 0) {
             this.allTown = res.townNameAndTownIdModel
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      _getAllTownDestination (params) {
+        getAllTown(params).then(res => {
+          if (res.code === 0) {
+            this.allTownDestination = res.townNameAndTownIdModel
           }
         }).catch(err => {
           console.log(err)

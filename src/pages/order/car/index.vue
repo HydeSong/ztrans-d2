@@ -1,7 +1,7 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem">
+      <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
           <el-input v-model="searchItem.customerNameSearchKey" placeholder="客户姓名"></el-input>
         </el-form-item>
@@ -19,6 +19,7 @@
           </el-select>
         </el-form-item>
         <el-date-picker
+          size="mini"
           v-model="searchItem.appointmentDate"
           type="datetime"
           placeholder="约车时间"
@@ -31,6 +32,7 @@
         </el-form-item>
       </el-form>
       <el-table
+        size="mini"
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
@@ -143,7 +145,7 @@
         </el-pagination>
       </div>
       <el-dialog title="指派车辆" :visible.sync="addDialog">
-        <el-form :inline="true" :model="searchItemPop">
+        <el-form :inline="true" :model="searchItemPop" size="mini">
           <el-form-item>
             <el-input v-model="searchItemPop.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
           </el-form-item>
@@ -165,6 +167,7 @@
           </el-form-item>
         </el-form>
         <el-table
+          size="mini"
           :data="tablePopData"
           highlight-current-row
           style="width: 100%"
@@ -226,7 +229,7 @@
                 <li>车牌号：{{orderDetail.carPlateNumber}}</li>
                 <li>车辆报价：{{orderDetail.carMoney}}元</li>
                 <li>
-                  <el-form :inline="true" :model="orderDetail">
+                  <el-form :inline="true" :model="orderDetail" size="mini">
                     <el-form-item label="接单价" class="order-price">
                       <el-input v-model="orderDetail.carRealMoney" placeholder="请输入"></el-input>
                     </el-form-item>
@@ -241,6 +244,7 @@
         </div>
         <div class="block" style="text-align: left; padding: 15px">
           <el-table
+            size="mini"
             :data="orderDetail.orderTask"
             highlight-current-row
             style="width: 100%">
@@ -269,8 +273,8 @@
           </el-table>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="orderDetailDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onAssignConfirm">确认车辆</el-button>
+          <el-button @click="orderDetailDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onAssignConfirm" size="mini">确认车辆</el-button>
         </div>
       </el-dialog>
     </template>

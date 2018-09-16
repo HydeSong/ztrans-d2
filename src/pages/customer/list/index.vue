@@ -1,7 +1,7 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem">
+      <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
           <el-input v-model="searchItem.customerNameSearchKey" placeholder="客户名称"></el-input>
         </el-form-item>
@@ -17,6 +17,7 @@
           </el-select>
         </el-form-item>
         <el-date-picker
+          size="mini"
           v-model="searchItem.registerTime"
           @change="onRegisterTimeChange"
           type="datetimerange"
@@ -35,6 +36,7 @@
         </el-form-item>
       </el-form>
       <el-table
+        size="mini"
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
@@ -126,6 +128,7 @@
         </div>
         <div class="block">
           <el-table
+            size="mini"
             :data="constantDetail"
             highlight-current-row
             style="width: 100%"
@@ -166,7 +169,7 @@
         </div>
       </el-dialog>
       <el-dialog title="编辑客户" :visible.sync="editCustomerPopDialog">
-        <el-form :inline="true" :model="editCustomerItem" label-position="left">
+        <el-form :inline="true" :model="editCustomerItem" label-position="left" size="mini">
           <el-form-item label="服务类型">
             <el-select v-model="editCustomerItem.serviceType" clearable>
               <el-option v-for="(item, index) in serviceTypeModels" :key="index" :label="item.serviceTypeName" :value="item.serviceTypeId"></el-option>
@@ -257,12 +260,12 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="editCustomerPopDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onEditCustomerConfirm">确 定</el-button>
+          <el-button @click="editCustomerPopDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onEditCustomerConfirm" size="mini">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="添加客户" :visible.sync="addCustomerPopDialog">
-        <el-form :inline="true" :model="addCustomerItem" label-position="left">
+        <el-form :inline="true" :model="addCustomerItem" label-position="left" size="mini">
           <el-form-item label="服务类型">
             <el-select v-model="addCustomerItem.serviceType" clearable>
               <el-option v-for="(item, index) in serviceTypeModels" :key="index" :label="item.serviceTypeName" :value="item.serviceTypeId"></el-option>
@@ -353,12 +356,12 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="addCustomerPopDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onAddCustomerConfirm">确 定</el-button>
+          <el-button @click="addCustomerPopDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onAddCustomerConfirm" size="mini">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="编辑联系人" :visible.sync="editContactPopDialog">
-        <el-form :inline="true" :model="editContactItem" label-position="left">
+        <el-form :inline="true" :model="editContactItem" label-position="left" size="mini">
           <!--<el-form-item label="推荐加盟商">-->
             <!--<el-input v-model="
             .commendFranchisee"></el-input>-->
@@ -389,12 +392,12 @@
           </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="editContactPopDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onEditContactConfirm">确 定</el-button>
+          <el-button @click="editContactPopDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onEditContactConfirm" size="mini">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="添加联系人" :visible.sync="addContactPopDialog">
-        <el-form :inline="true" :model="addContactItem" label-position="left">
+        <el-form :inline="true" :model="addContactItem" label-position="left" size="mini">
           <!--<el-form-item label="推荐加盟商">-->
             <!--<el-input v-model="addContactItem.commendFranchisee"></el-input>-->
           <!--</el-form-item>-->
@@ -424,8 +427,8 @@
           </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="addContactPopDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onAddContactConfirm">确 定</el-button>
+          <el-button @click="addContactPopDialog = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="onAddContactConfirm" size="mini">确 定</el-button>
         </div>
       </el-dialog>
     </template>

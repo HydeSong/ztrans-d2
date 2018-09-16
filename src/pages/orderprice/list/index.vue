@@ -1,7 +1,7 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem">
+      <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
           <el-input v-model="searchItem.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
         </el-form-item>
@@ -14,6 +14,7 @@
           </el-select>
         </el-form-item>
         <el-date-picker
+          size="mini"
           v-model="searchItem.time"
           @change="onTimeChange"
           type="datetimerange"
@@ -29,6 +30,7 @@
         </el-form-item>
       </el-form>
       <el-table
+        size="mini"
         :data="tableInlineData"
         highlight-current-row
         style="width: 100%"
