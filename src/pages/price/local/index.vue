@@ -60,7 +60,7 @@
                 label="操作"
                 width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" size="small" @click="onDeleteLocalDetail(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">删除</el-button>
+                  <el-button type="text" @click="onDeleteLocalDetail(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -87,8 +87,8 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button @click="onEditLocalPrice(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onDeleteLocalPrice(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="onEditLocalPrice(scope.$index, scope.row)" type="text">编辑</el-button>
+            <el-button @click="onDeleteLocalPrice(scope.$index, scope.row)" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
