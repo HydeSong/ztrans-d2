@@ -195,7 +195,7 @@
               </el-select>
               <el-select v-model="addItem.destinationCity" placeholder="请选择市">
                 <el-option
-                  v-for="item in allCity"
+                  v-for="item in allCityDestination"
                   :key="item.cityId"
                   :label="item.cityName"
                   :value="item.cityId">
@@ -203,7 +203,7 @@
               </el-select>
               <el-select v-model="addItem.destinationCityArea" placeholder="请选择区">
                 <el-option
-                  v-for="item in allCityArea"
+                  v-for="item in allCityAreaDestination"
                   :key="item.cityAreaId"
                   :label="item.cityAreaName"
                   :value="item.cityAreaId">
@@ -211,7 +211,7 @@
               </el-select>
               <el-select v-model="addItem.destinationTown" placeholder="请选择镇">
                 <el-option
-                  v-for="item in allTown"
+                  v-for="item in allTownDestination"
                   :key="item.townId"
                   :label="item.townName"
                   :value="item.townId">
