@@ -22,6 +22,7 @@ import { frameInRoutes } from '@/router/routes'
 // ElementUI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import D2Crud from '@d2-projects/d2-crud'
 
 // font-awesome
 import '@/assets/library/font-awesome-4.7.0/css/font-awesome.min.css'
@@ -36,6 +37,7 @@ import '@/plugin/axios'
 import buildConfig from '../config/index'
 
 Vue.use(ElementUI)
+Vue.use(D2Crud, {size: 'mini'})
 
 Vue.config.productionTip = false
 

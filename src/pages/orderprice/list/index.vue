@@ -3,10 +3,10 @@
     <template>
       <el-form :inline="true" :model="searchItem" size="mini">
         <el-form-item>
-          <el-input v-model="searchItem.carPlateNumberSearchKey" placeholder="车牌号"></el-input>
+          <el-input v-model="searchItem.carPlateNumberSearchKey" placeholder="车牌号" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="searchItem.customerNameSearchKey" placeholder="客户名字"></el-input>
+          <el-input v-model="searchItem.customerNameSearchKey" placeholder="客户名字" clearable></el-input>
         </el-form-item>
         <el-form-item>
           <el-select v-model="searchItem.routerDetailSeries" placeholder="线路别名" clearable>
@@ -29,75 +29,11 @@
           <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
         </el-form-item>
       </el-form>
-      <el-table
-        size="mini"
-        :data="tableInlineData"
-        highlight-current-row
-        style="width: 100%"
-        stripe>
-        <el-table-column
-          fixed
-          type="index"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          fixed
-          prop="series"
-          label="订单号">
-        </el-table-column>
-        <el-table-column
-          width="140"
-          prop="carTypeName"
-          label="车型">
-        </el-table-column>
-        <el-table-column
-          prop="customerName"
-          label="客户名字">
-        </el-table-column>
-        <el-table-column
-          prop="carPlateNumber"
-          label="车牌号">
-        </el-table-column>
-        <el-table-column
-          prop="driverName"
-          label="司机名字">
-        </el-table-column>
-        <el-table-column
-          prop="routerAlia"
-          label="线路别名">
-        </el-table-column>
-        <el-table-column
-          prop="appointmentDate"
-          label="预约时间">
-        </el-table-column>
-        <el-table-column
-          prop="saleName"
-          label="销售员">
-        </el-table-column>
-        <el-table-column
-          prop="orderMoney"
-          label="客户应付">
-        </el-table-column>
-        <el-table-column
-          prop="driverMoney"
-          label="司机应收">
-        </el-table-column>
-        <!--<el-table-column-->
-          <!--prop="platformMoney"-->
-          <!--label="平台利润">-->
-        <!--</el-table-column>-->
-      </el-table>
-      <div class="pagination-wrapper">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalPage">
-        </el-pagination>
-      </div>
+      <d2-crud
+            :columns="columns"
+            :data="tableInlineData"
+            :pagination="pagination"
+            :loading="loading"/>
     </template>
   </d2-container>
 </template>
@@ -109,6 +45,44 @@
   export default {
     data () {
       return {
+        loading: false,
+        columns: [
+          {
+            title: '订单号',
+            key: 'series'
+          }, {
+            title: '车型',
+            key: 'carTypeName'
+          }, {
+            title: '客户名字',
+            key: 'customerName'
+          }, {
+            title: '车牌号',
+            key: 'carPlateNumber'
+          }, {
+            title: '司机名字',
+            key: 'driverName'
+          }, {
+            title: '线路别名',
+            key: 'routerAlia'
+          }, {
+            title: '预约时间',
+            key: 'appointmentDate'
+          }, {
+            title: '销售员',
+            key: 'saleName'
+          }, {
+            title: '客户应付',
+            key: 'orderMoney'
+          }, {
+            title: '司机应收',
+            key: 'driverMoney'
+          }
+        ],
+        pagination: {
+          pageSize: 10,
+          layout: 'sizes, prev, pager, next, jumper, ->, total'
+        },
         customerNumId: Cookies.get('__user__customernumid'),
         currentPage: 1,
         pageSize: 200,
@@ -183,7 +157,7 @@
       _getOrderPriceList (params) {
         getOrderPriceList(params).then(res => {
           if (res.code === 0) {
-            this.searching = false
+            this.loading = false
             this.tableData = res.orderPriceModels
           }
         }).catch(err => {
@@ -191,7 +165,7 @@
         })
       },
       onSearch () {
-        this.searching = true
+        this.loading = true
         this._getOrderPriceList({
           current: this.currentPage,
           pageSize: this.pageSize,

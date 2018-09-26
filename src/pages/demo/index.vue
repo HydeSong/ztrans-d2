@@ -1,78 +1,114 @@
 <template>
-  <d2-container>
-    <demo-page-header
-      slot="header"
-      @submit="handleSubmit"
-      ref="header"/>
-    <demo-page-main
-      :table-data="table"
-      :loading="loading"/>
-    <demo-page-footer
-      slot="footer"
-      :current="page.current"
-      :size="page.size"
-      :total="page.total"
-      @change="handlePaginationChange"/>
+  <d2-container type="full" class="page">
+    <template>
+        <d2-crud
+            :columns="columns"
+            :data="data"
+            :pagination="pagination"/>
+    </template>
   </d2-container>
 </template>
 
 <script>
-import { BusinessTable1List } from '@/api/demo/business/table/1'
 export default {
-  // name 值和本页的 $route.name 一致才可以缓存页面
-  name: 'demo-business-table-1',
-  components: {
-    'DemoPageHeader': () => import('./componnets/PageHeader/index'),
-    'DemoPageMain': () => import('./componnets/PageMain/index'),
-    'DemoPageFooter': () => import('./componnets/PageFooter/index')
-  },
   data () {
     return {
-      table: [],
-      loading: false,
-      page: {
-        current: 1,
-        size: 100,
-        total: 0
+      columns: [
+        {
+          title: '#',
+          key: 'id'
+        },
+        {
+          title: '日期',
+          key: 'date'
+        },
+        {
+          title: '姓名',
+          key: 'name'
+        },
+        {
+          title: '地址',
+          key: 'address'
+        }
+      ],
+      data: [
+        {
+          id: 1,
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          id: 2,
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        },
+        {
+          id: 3,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        },
+        {
+          id: 4,
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        },
+        {
+          id: 5,
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          id: 6,
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        },
+        {
+          id: 7,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        },
+        {
+          id: 8,
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        },
+        {
+          id: 9,
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          id: 10,
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        },
+        {
+          id: 11,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        },
+        {
+          id: 12,
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }
+      ],
+      pagination: {
+        pageSize: 10,
+        layout: 'sizes, prev, pager, next, jumper, ->, total'
       }
-    }
-  },
-  methods: {
-    handlePaginationChange (val) {
-      this.$notify({
-        title: '分页变化',
-        message: `当前第${val.current}页 共${val.total}条 每页${val.size}条`
-      })
-      this.page = val
-      // nextTick 只是为了优化示例中 notify 的显示
-      this.$nextTick(() => {
-        this.$refs.header.handleFormSubmit()
-      })
-    },
-    handleSubmit (form) {
-      this.loading = true
-      this.$notify({
-        title: '开始请求模拟表格数据'
-      })
-      BusinessTable1List({
-        ...form,
-        page: this.page
-      })
-        .then(res => {
-          this.loading = false
-          this.$notify({
-            title: '模拟表格数据请求完毕'
-          })
-          this.table = res.list
-          this.page = res.page
-        })
-        .catch(err => {
-          this.loading = false
-          this.$notify({
-            title: '模拟表格数据请求异常'
-          })
-          console.log('err', err)
-        })
     }
   }
 }
