@@ -436,715 +436,810 @@
 </template>
 
 <script>
-  import { getAllMasterCustomer, getMasterCustomerDetail, deleteMasterCustomer, addMasterCustomer, getAllSaleList, deleteCustomerContact, updateMasterCustomer, addCustomerContact, updateCustomerContact } from '@/api/customer'
-  import { getCheckStatus, getActiveStatus, getCustomerCaclulateType, getCustomerJob, getCustomerLevel, getCustomerOrderLevel, getCustomerSex, getCustomerSource, getCustomerType, getOperateStatus, getAllCity, getAllCityArea, getAllPrv, getAllTown, getServiceType } from '@/api/dictionary'
-  import Cookies from 'js-cookie'
-  export default {
-    data () {
-      return {
-        value5: '',
-        customerNumId: Cookies.get('__user__customernumid'),
-        franchiseeId: '',
-        currentPage: 1,
-        pageSize: 200,
-        searchItem: {
-          saleId: '',
-          contactNameSearchKey: '',
-          customerNameSearchKey: '',
-          mobilePhoneSearchKey: '',
-          registerEndTime: '',
-          registerStartTime: '',
-          registerTime: ''
+import {
+  getAllMasterCustomer,
+  getMasterCustomerDetail,
+  deleteMasterCustomer,
+  addMasterCustomer,
+  getAllSaleList,
+  deleteCustomerContact,
+  updateMasterCustomer,
+  addCustomerContact,
+  updateCustomerContact
+} from "@/api/customer";
+import {
+  getCheckStatus,
+  getActiveStatus,
+  getCustomerCaclulateType,
+  getCustomerJob,
+  getCustomerLevel,
+  getCustomerOrderLevel,
+  getCustomerSex,
+  getCustomerSource,
+  getCustomerType,
+  getOperateStatus,
+  getAllCity,
+  getAllCityArea,
+  getAllPrv,
+  getAllTown,
+  getServiceType
+} from "@/api/dictionary";
+import Cookies from "js-cookie";
+export default {
+  data() {
+    return {
+      value5: "",
+      customerNumId: Cookies.get("__user__customernumid"),
+      franchiseeId: "",
+      currentPage: 1,
+      pageSize: 200,
+      searchItem: {
+        saleId: "",
+        contactNameSearchKey: "",
+        customerNameSearchKey: "",
+        mobilePhoneSearchKey: "",
+        registerEndTime: "",
+        registerStartTime: "",
+        registerTime: ""
+      },
+      tableData: [],
+      customerSales: [],
+      customerDetail: {},
+      constantDetail: [],
+      searching: false,
+      popDialog: false,
+      editCustomerPopDialog: false,
+      addCustomerPopDialog: false,
+      editContactPopDialog: false,
+      addContactPopDialog: false,
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
         },
-        tableData: [],
-        customerSales: [],
-        customerDetail: {},
-        constantDetail: [],
-        searching: false,
-        popDialog: false,
-        editCustomerPopDialog: false,
-        addCustomerPopDialog: false,
-        editContactPopDialog: false,
-        addContactPopDialog: false,
-        pickerOptions: {
-          disabledDate (time) {
-            return time.getTime() > Date.now()
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            }
           },
-          shortcuts: [{
-            text: '最近一周',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', [start, end])
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
             }
-          }, {
-            text: '最近一个月',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', [start, end])
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
             }
-          }, {
-            text: '最近三个月',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-              picker.$emit('pick', [start, end])
-            }
-          }]
-        },
-        editCustomerItem: {
-          caculateType: '',
-          checkRemark: '',
-          checkStatus: '',
-          cityAreaName: '',
-          cityName: '',
-          customerLevel: '',
-          customerName: '',
-          customerNumId: '',
-          customerSimpleCode: '',
-          customerSource: '',
-          customerType: '',
-          detailAddress: '',
-          finalDate: '',
-          orderLevel: '',
-          prvName: '',
-          saleId: '',
-          series: '',
-          serviceType: ''
-        },
-        addCustomerItem: {
-          caculateType: '',
-          checkRemark: '',
-          checkStatus: '',
-          cityAreaName: '',
-          cityName: '',
-          customerLevel: '',
-          customerName: '',
-          customerNumId: '',
-          customerSimpleCode: '',
-          customerSource: '',
-          customerType: '',
-          detailAddress: '',
-          finalDate: '',
-          orderLevel: '',
-          prvName: '',
-          saleId: '',
-          serviceType: ''
-        },
-        editContactItem: {
-          activeDtme: '',
-          activeStatus: '',
-          contactName: '',
-          contactOpenId: '',
-          contactPhone: '',
-          customerContactId: '',
-          customerMasterId: '',
-          customerNumId: ''
-        },
-        addContactItem: {
-          activeDtme: '',
-          activeStatus: '',
-          commendFranchisee: '',
-          commendSale: '',
-          contactName: '',
-          contactPhone: '',
-          customerContactId: '',
-          customerMasterId: '',
-          customerNumId: ''
-        },
-        checkIdAndCheckStatus: [],
-        activeStatusModels: [],
-        customerCaclulateTypeModels: [],
-        customerJobModels: [],
-        customerLevelModels: [],
-        customerOrderLevelModels: [],
-        customerSexModels: [],
-        customerSourceModels: [],
-        customerTypeModels: [],
-        operateIdAndoperateStatus: [],
-        serviceTypeModels: [],
-        allPrv: [],
-        allCity: [],
-        allCityArea: [],
-        allTown: []
-      }
-    },
-    computed: {
-      totalPage () {
-        return this.tableData.length
+          }
+        ]
       },
-      tableInlineData () {
-        return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
-      }
+      editCustomerItem: {
+        caculateType: "",
+        checkRemark: "",
+        checkStatus: "",
+        cityAreaName: "",
+        cityName: "",
+        customerLevel: "",
+        customerName: "",
+        customerNumId: "",
+        customerSimpleCode: "",
+        customerSource: "",
+        customerType: "",
+        detailAddress: "",
+        finalDate: "",
+        orderLevel: "",
+        prvName: "",
+        saleId: "",
+        series: "",
+        serviceType: ""
+      },
+      addCustomerItem: {
+        caculateType: "",
+        checkRemark: "",
+        checkStatus: "",
+        cityAreaName: "",
+        cityName: "",
+        customerLevel: "",
+        customerName: "",
+        customerNumId: "",
+        customerSimpleCode: "",
+        customerSource: "",
+        customerType: "",
+        detailAddress: "",
+        finalDate: "",
+        orderLevel: "",
+        prvName: "",
+        saleId: "",
+        serviceType: ""
+      },
+      editContactItem: {
+        activeDtme: "",
+        activeStatus: "",
+        contactName: "",
+        contactOpenId: "",
+        contactPhone: "",
+        customerContactId: "",
+        customerMasterId: "",
+        customerNumId: ""
+      },
+      addContactItem: {
+        activeDtme: "",
+        activeStatus: "",
+        commendFranchisee: "",
+        commendSale: "",
+        contactName: "",
+        contactPhone: "",
+        customerContactId: "",
+        customerMasterId: "",
+        customerNumId: ""
+      },
+      checkIdAndCheckStatus: [],
+      activeStatusModels: [],
+      customerCaclulateTypeModels: [],
+      customerJobModels: [],
+      customerLevelModels: [],
+      customerOrderLevelModels: [],
+      customerSexModels: [],
+      customerSourceModels: [],
+      customerTypeModels: [],
+      operateIdAndoperateStatus: [],
+      serviceTypeModels: [],
+      allPrv: [],
+      allCity: [],
+      allCityArea: [],
+      allTown: []
+    };
+  },
+  computed: {
+    totalPage() {
+      return this.tableData.length;
     },
-    created () {
-      this._getAllSaleList({
-        customerNumId: this.customerNumId,
-        franchiseeId: this.franchiseeId
-      })
-      // 进入页面加载全部数据
-      this.onSearch()
+    tableInlineData() {
+      return this.tableData.slice(
+        (this.currentPage - 1) * this.pageSize,
+        this.currentPage * this.pageSize
+      );
+    }
+  },
+  created() {
+    this._getAllSaleList({
+      customerNumId: this.customerNumId,
+      franchiseeId: this.franchiseeId
+    });
+    // 进入页面加载全部数据
+    this.onSearch();
 
-      // 获取字典接口数据
-      this._getCheckStatus({
-        customerNumId: this.customerNumId
-      })
-      this._getActiveStatus({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerCaclulateType({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerSource({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerType({
-        customerNumId: this.customerNumId
-      })
-      this._getOperateStatus({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerSource({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerSex({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerOrderLevel({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerLevel({
-        customerNumId: this.customerNumId
-      })
-      this._getCustomerJob({
-        customerNumId: this.customerNumId
-      })
-      this._getServiceType({
-        customerNumId: this.customerNumId
-      })
-      // 省市区联动数据
-      this._getAllPrv({
+    // 获取字典接口数据
+    this._getCheckStatus({
+      customerNumId: this.customerNumId
+    });
+    this._getActiveStatus({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerCaclulateType({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerSource({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerType({
+      customerNumId: this.customerNumId
+    });
+    this._getOperateStatus({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerSource({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerSex({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerOrderLevel({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerLevel({
+      customerNumId: this.customerNumId
+    });
+    this._getCustomerJob({
+      customerNumId: this.customerNumId
+    });
+    this._getServiceType({
+      customerNumId: this.customerNumId
+    });
+    // 省市区联动数据
+    this._getAllPrv({
+      current: 1,
+      customerNumId: this.customerNumId,
+      pageSize: 200
+    });
+  },
+  watch: {
+    "editCustomerItem.prvName"() {
+      // this.editCustomerItem.cityName = ''
+      // this.editCustomerItem.cityAreaName = ''
+      this._getAllCity({
         current: 1,
+        pageSize: 200,
         customerNumId: this.customerNumId,
-        pageSize: 200
-      })
+        prvId: this.editCustomerItem.prvName
+      });
     },
-    watch: {
-      'editCustomerItem.prvName' () {
-        // this.editCustomerItem.cityName = ''
-        // this.editCustomerItem.cityAreaName = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCustomerItem.prvName
-        })
-      },
-      'addCustomerItem.prvName' () {
-        // this.addCustomerItem.cityName = ''
-        // this.addCustomerItem.cityAreaName = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addCustomerItem.prvName
-        })
-      },
-      'editCustomerItem.cityName' () {
-        // this.editCustomerItem.cityAreaName = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.editCustomerItem.prvName,
-          cityId: this.editCustomerItem.cityName
-        })
-      },
-      'addCustomerItem.cityName' () {
-        // this.addCustomerItem.cityAreaName = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addCustomerItem.prvName,
-          cityId: this.addCustomerItem.cityName
-        })
-      }
+    "addCustomerItem.prvName"() {
+      // this.addCustomerItem.cityName = ''
+      // this.addCustomerItem.cityAreaName = ''
+      this._getAllCity({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        prvId: this.addCustomerItem.prvName
+      });
     },
-    methods: {
-      _getServiceType (params) {
-        getServiceType(params).then(res => {
+    "editCustomerItem.cityName"() {
+      // this.editCustomerItem.cityAreaName = ''
+      this._getAllCityArea({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        prvId: this.editCustomerItem.prvName,
+        cityId: this.editCustomerItem.cityName
+      });
+    },
+    "addCustomerItem.cityName"() {
+      // this.addCustomerItem.cityAreaName = ''
+      this._getAllCityArea({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        prvId: this.addCustomerItem.prvName,
+        cityId: this.addCustomerItem.cityName
+      });
+    }
+  },
+  methods: {
+    _getServiceType(params) {
+      getServiceType(params)
+        .then(res => {
           if (res.code === 0) {
-            this.serviceTypeModels = res.serviceTypeModels
+            this.serviceTypeModels = res.serviceTypeModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllPrv (params) {
-        getAllPrv(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllPrv(params) {
+      getAllPrv(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allPrv = res.prvNameAndPrvIds
+            this.allPrv = res.prvNameAndPrvIds;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllCity (params) {
-        getAllCity(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCity(params) {
+      getAllCity(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allCity = res.cityeNameAndCityeIds
+            this.allCity = res.cityeNameAndCityeIds;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllCityArea (params) {
-        getAllCityArea(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCityArea(params) {
+      getAllCityArea(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allCityArea = res.cityAreaNameAndCityAreaIdModel
+            this.allCityArea = res.cityAreaNameAndCityAreaIdModel;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllTown (params) {
-        getAllTown(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllTown(params) {
+      getAllTown(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allTown = res.townNameAndTownIdModel
+            this.allTown = res.townNameAndTownIdModel;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCheckStatus (params) {
-        getCheckStatus(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCheckStatus(params) {
+      getCheckStatus(params)
+        .then(res => {
           if (res.code === 0) {
-            this.checkIdAndCheckStatus = res.checkIdAndCheckStatus
+            this.checkIdAndCheckStatus = res.checkIdAndCheckStatus;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getActiveStatus (params) {
-        getActiveStatus(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getActiveStatus(params) {
+      getActiveStatus(params)
+        .then(res => {
           if (res.code === 0) {
-            this.activeStatusModels = res.activeStatusModels
+            this.activeStatusModels = res.activeStatusModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCustomerCaclulateType (params) {
-        getCustomerCaclulateType(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCustomerCaclulateType(params) {
+      getCustomerCaclulateType(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerCaclulateTypeModels = res.customerCaclulateTypeModels
+            this.customerCaclulateTypeModels = res.customerCaclulateTypeModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCustomerJob (params) {
-        getCustomerJob(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCustomerJob(params) {
+      getCustomerJob(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerJobModels = res.customerJobModels
+            this.customerJobModels = res.customerJobModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCustomerLevel (params) {
-        getCustomerLevel(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCustomerLevel(params) {
+      getCustomerLevel(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerLevelModels = res.customerLevelModels
+            this.customerLevelModels = res.customerLevelModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCustomerOrderLevel (params) {
-        getCustomerOrderLevel(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCustomerOrderLevel(params) {
+      getCustomerOrderLevel(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerOrderLevelModels = res.customerOrderLevelModels
+            this.customerOrderLevelModels = res.customerOrderLevelModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCustomerSex (params) {
-        getCustomerSex(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCustomerSex(params) {
+      getCustomerSex(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerSexModels = res.customerSexModels
+            this.customerSexModels = res.customerSexModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCustomerSource (params) {
-        getCustomerSource(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCustomerSource(params) {
+      getCustomerSource(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerSourceModels = res.customerSourceModels
+            this.customerSourceModels = res.customerSourceModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCustomerType (params) {
-        getCustomerType(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCustomerType(params) {
+      getCustomerType(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerTypeModels = res.customerTypeModels
+            this.customerTypeModels = res.customerTypeModels;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getOperateStatus (params) {
-        getOperateStatus(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getOperateStatus(params) {
+      getOperateStatus(params)
+        .then(res => {
           if (res.code === 0) {
-            this.operateIdAndoperateStatus = res.operateIdAndoperateStatus
+            this.operateIdAndoperateStatus = res.operateIdAndoperateStatus;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllMasterCustomer (params) {
-        getAllMasterCustomer(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllMasterCustomer(params) {
+      getAllMasterCustomer(params)
+        .then(res => {
           if (res.code === 0) {
-            this.tableData = res.customerMaster
+            this.tableData = res.customerMaster;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getMasterCustomerDetail (params) {
-        console.log(params)
-        getMasterCustomerDetail(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getMasterCustomerDetail(params) {
+      console.log(params);
+      getMasterCustomerDetail(params)
+        .then(res => {
           if (res.code === 0) {
-            this.constantDetail = res.constantDetailModel
-            this.customerDetail = res.customerMaster
+            this.constantDetail = res.constantDetailModel;
+            this.customerDetail = res.customerMaster;
             // 数据大客户编辑
-            this.editCustomerItem = Object.assign({}, this.editCustomerItem, res.customerMaster)
+            this.editCustomerItem = Object.assign(
+              {},
+              this.editCustomerItem,
+              res.customerMaster
+            );
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _deleteMasterCustomer (params, index) {
-        deleteMasterCustomer(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _deleteMasterCustomer(params, index) {
+      deleteMasterCustomer(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.tableData.splice(index, 1)
+              type: "success",
+              message: "删除成功!"
+            });
+            this.tableData.splice(index, 1);
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _addMasterCustomer (params) {
-        console.log(params)
-        if (params.customerName === '') {
-          this.$message({
-            type: 'error',
-            message: '客户名字不可以为空！'
-          })
-          return
-        }
-        if (params.customerSimpleCode === '') {
-          this.$message({
-            type: 'error',
-            message: '客户简码不可以为空！'
-          })
-          return
-        }
-        if (params.prvName === '') {
-          this.$message({
-            type: 'error',
-            message: '省不可以为空！'
-          })
-          return
-        }
-        if (params.cityName === '') {
-          this.$message({
-            type: 'error',
-            message: '市不可以为空！'
-          })
-          return
-        }
-        if (params.cityAreaName === '') {
-          this.$message({
-            type: 'error',
-            message: '区不可以为空！'
-          })
-          return
-        }
-        if (params.customerSource === '') {
-          this.$message({
-            type: 'error',
-            message: '客户来源不可以为空！'
-          })
-          return
-        }
-        if (params.customerType === '') {
-          this.$message({
-            type: 'error',
-            message: '客户类型不可以为空！'
-          })
-          return
-        }
-        if (params.customerLevel === '') {
-          this.$message({
-            type: 'error',
-            message: '客户级别不可以为空！'
-          })
-          return
-        }
-        if (params.orderLevel === '') {
-          this.$message({
-            type: 'error',
-            message: '下单级别不可以为空！'
-          })
-          return
-        }
-        if (params.caculateType === '') {
-          this.$message({
-            type: 'error',
-            message: '结算方式不可以为空！'
-          })
-          return
-        }
-        if (params.checkStatus === '') {
-          this.$message({
-            type: 'error',
-            message: '审核状态不可以为空！'
-          })
-          return
-        }
-        if (params.serviceType === '') {
-          this.$message({
-            type: 'error',
-            message: '服务类型不可以为空！'
-          })
-          return
-        }
-        addMasterCustomer(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _addMasterCustomer(params) {
+      console.log(params);
+      if (params.customerName === "") {
+        this.$message({
+          type: "error",
+          message: "客户名字不可以为空！"
+        });
+        return;
+      }
+      if (params.customerSimpleCode === "") {
+        this.$message({
+          type: "error",
+          message: "客户简码不可以为空！"
+        });
+        return;
+      }
+      if (params.prvName === "") {
+        this.$message({
+          type: "error",
+          message: "省不可以为空！"
+        });
+        return;
+      }
+      if (params.cityName === "") {
+        this.$message({
+          type: "error",
+          message: "市不可以为空！"
+        });
+        return;
+      }
+      if (params.cityAreaName === "") {
+        this.$message({
+          type: "error",
+          message: "区不可以为空！"
+        });
+        return;
+      }
+      if (params.customerSource === "") {
+        this.$message({
+          type: "error",
+          message: "客户来源不可以为空！"
+        });
+        return;
+      }
+      if (params.customerType === "") {
+        this.$message({
+          type: "error",
+          message: "客户类型不可以为空！"
+        });
+        return;
+      }
+      if (params.customerLevel === "") {
+        this.$message({
+          type: "error",
+          message: "客户级别不可以为空！"
+        });
+        return;
+      }
+      if (params.orderLevel === "") {
+        this.$message({
+          type: "error",
+          message: "下单级别不可以为空！"
+        });
+        return;
+      }
+      if (params.caculateType === "") {
+        this.$message({
+          type: "error",
+          message: "结算方式不可以为空！"
+        });
+        return;
+      }
+      if (params.checkStatus === "") {
+        this.$message({
+          type: "error",
+          message: "审核状态不可以为空！"
+        });
+        return;
+      }
+      if (params.serviceType === "") {
+        this.$message({
+          type: "error",
+          message: "服务类型不可以为空！"
+        });
+        return;
+      }
+      addMasterCustomer(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '添加成功!'
-            })
-            this.addCustomerPopDialog = false
-            this.onSearch()
+              type: "success",
+              message: "添加成功!"
+            });
+            this.addCustomerPopDialog = false;
+            this.onSearch();
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _updateCustomerContact (params) {
-        updateCustomerContact(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _updateCustomerContact(params) {
+      updateCustomerContact(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '修改成功!'
-            })
-            this.editContactPopDialog = false
+              type: "success",
+              message: "修改成功!"
+            });
+            this.editContactPopDialog = false;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _updateMasterCustomer (params) {
-        console.log(params)
-        updateMasterCustomer(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _updateMasterCustomer(params) {
+      console.log(params);
+      updateMasterCustomer(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '修改成功!'
-            })
-            this.editCustomerPopDialog = false
-            this.onSearch()
+              type: "success",
+              message: "修改成功!"
+            });
+            this.editCustomerPopDialog = false;
+            this.onSearch();
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllSaleList (params) {
-        getAllSaleList(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllSaleList(params) {
+      getAllSaleList(params)
+        .then(res => {
           if (res.code === 0) {
-            this.customerSales = res.customerSales
+            this.customerSales = res.customerSales;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _deleteCustomerContact (params, index) {
-        deleteCustomerContact(params).then(res => {
-          if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.constantDetail.splice(index, 1)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _addCustomerContact (params) {
-        addCustomerContact(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _deleteCustomerContact(params, index) {
+      deleteCustomerContact(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '添加成功!'
-            })
-            this.addContactPopDialog = false
+              type: "success",
+              message: "删除成功!"
+            });
+            this.constantDetail.splice(index, 1);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _addCustomerContact(params) {
+      addCustomerContact(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: "success",
+              message: "添加成功!"
+            });
+            this.addContactPopDialog = false;
             // 刷新数据
             this._getMasterCustomerDetail({
               customerNumId: this.customerNumId,
               customerMasterId: this.addContactItem.customerMasterId
-            })
+            });
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      onSearch () {
-        this._getAllMasterCustomer({
-          current: this.currentPage,
-          pageSize: this.pageSize,
-          customerNumId: this.customerNumId,
-          saleId: this.searchItem.saleId,
-          contactNameSearchKey: this.searchItem.contactNameSearchKey,
-          customerNameSearchKey: this.searchItem.customerNameSearchKey,
-          mobilePhoneSearchKey: this.searchItem.mobilePhoneSearchKey,
-          registerEndTime: this.searchItem.registerEndTime,
-          registerStartTime: this.searchItem.registerStartTime
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    onSearch() {
+      this._getAllMasterCustomer({
+        current: this.currentPage,
+        pageSize: this.pageSize,
+        customerNumId: this.customerNumId,
+        saleId: this.searchItem.saleId,
+        contactNameSearchKey: this.searchItem.contactNameSearchKey,
+        customerNameSearchKey: this.searchItem.customerNameSearchKey,
+        mobilePhoneSearchKey: this.searchItem.mobilePhoneSearchKey,
+        registerEndTime: this.searchItem.registerEndTime,
+        registerStartTime: this.searchItem.registerStartTime
+      });
+    },
+    onAdd() {
+      this.addCustomerPopDialog = true;
+      this.addCustomerItem.customerNumId = this.customerNumId;
+    },
+    onAddCustomerConfirm() {
+      this._addMasterCustomer(this.addCustomerItem);
+    },
+    onRegisterTimeChange(time) {
+      this.searchItem.registerStartTime = time[0];
+      this.searchItem.registerEndTime = time[1];
+    },
+    onView(index, row) {
+      this.popDialog = true;
+      this._getMasterCustomerDetail({
+        customerNumId: this.customerNumId,
+        customerMasterId: row.customerMasterId
+      });
+      this.addContactItem.customerContactId = row.saleId;
+      this.addContactItem.customerMasterId = row.customerMasterId;
+      this.addContactItem.customerNumId = this.customerNumId;
+    },
+    onEditCustomer(index, row) {
+      this.editCustomerPopDialog = true;
+      this._getMasterCustomerDetail({
+        customerNumId: this.customerNumId,
+        customerMasterId: row.customerMasterId
+      });
+      this.editCustomerItem.customerNumId = this.customerNumId;
+      this.editCustomerItem.series = row.customerMasterId;
+    },
+    onEditCustomerConfirm() {
+      this._updateMasterCustomer(this.editCustomerItem);
+    },
+    onEditContact(index, row) {
+      this.editContactPopDialog = true;
+      console.log(row);
+      this.editContactItem = row;
+    },
+    onAddContact() {
+      this.addContactPopDialog = true;
+      // 清空数据
+      this.addContactItem.activeDtme = "";
+      this.addContactItem.activeStatus = "";
+      this.addContactItem.commendFranchisee = "";
+      this.addContactItem.commendSale = "";
+      this.addContactItem.contactName = "";
+      this.addContactItem.contactPhone = "";
+    },
+    onDeleteCustomer(index, row) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this._deleteMasterCustomer(
+            {
+              customerNumId: this.customerNumId,
+              series: row.customerMasterId
+            },
+            index
+          );
         })
-      },
-      onAdd () {
-        this.addCustomerPopDialog = true
-        this.addCustomerItem.customerNumId = this.customerNumId
-      },
-      onAddCustomerConfirm () {
-        this._addMasterCustomer(this.addCustomerItem)
-      },
-      onRegisterTimeChange (time) {
-        this.searchItem.registerStartTime = time[0]
-        this.searchItem.registerEndTime = time[1]
-      },
-      onView (index, row) {
-        this.popDialog = true
-        this._getMasterCustomerDetail({
-          customerNumId: this.customerNumId,
-          customerMasterId: row.customerMasterId
+        .catch(() => {
+          console.log("取消删除");
+        });
+    },
+    onDeleteContact(index, row) {
+      console.log(index, row);
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this._deleteCustomerContact(
+            {
+              customerNumId: this.customerNumId,
+              customerContactId: row.customerContactId
+            },
+            index
+          );
         })
-        this.addContactItem.customerContactId = row.saleId
-        this.addContactItem.customerMasterId = row.customerMasterId
-        this.addContactItem.customerNumId = this.customerNumId
-      },
-      onEditCustomer (index, row) {
-        this.editCustomerPopDialog = true
-        this._getMasterCustomerDetail({
-          customerNumId: this.customerNumId,
-          customerMasterId: row.customerMasterId
-        })
-        this.editCustomerItem.customerNumId = this.customerNumId
-        this.editCustomerItem.series = row.customerMasterId
-      },
-      onEditCustomerConfirm () {
-        this._updateMasterCustomer(this.editCustomerItem)
-      },
-      onEditContact (index, row) {
-        this.editContactPopDialog = true
-        console.log(row)
-        this.editContactItem = row
-      },
-      onAddContact () {
-        this.addContactPopDialog = true
-        // 清空数据
-        this.addContactItem.activeDtme = ''
-        this.addContactItem.activeStatus = ''
-        this.addContactItem.commendFranchisee = ''
-        this.addContactItem.commendSale = ''
-        this.addContactItem.contactName = ''
-        this.addContactItem.contactPhone = ''
-      },
-      onDeleteCustomer (index, row) {
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteMasterCustomer({
-            customerNumId: this.customerNumId,
-            series: row.customerMasterId
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
-        })
-      },
-      onDeleteContact (index, row) {
-        console.log(index, row)
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteCustomerContact({
-            customerNumId: this.customerNumId,
-            customerContactId: row.customerContactId
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
-        })
-      },
-      onEditContactConfirm () {
-        this._updateCustomerContact(this.editContactItem)
-      },
-      onAddContactConfirm () {
-        this._addCustomerContact(this.addContactItem)
-      },
-      handleSizeChange (val) {
-        console.log(`每页 ${val} 条`)
-        this.pageSize = val
-      },
-      handleCurrentChange (val) {
-        console.log(`当前页: ${val}`)
-        this.currentPage = val
-        // this._getAllRouterAndEmployee({
-        //   current: this.currentPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-        //   pageSize: val,
-        //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-        // })
-      }
+        .catch(() => {
+          console.log("取消删除");
+        });
+    },
+    onEditContactConfirm() {
+      this._updateCustomerContact(this.editContactItem);
+    },
+    onAddContactConfirm() {
+      this._addCustomerContact(this.addContactItem);
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      // this._getAllRouterAndEmployee({
+      //   current: this.currentPage,
+      //   customerNumId: this.customerNumId,
+      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+      //   pageSize: val,
+      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
+      // })
     }
   }
+};
 </script>
 
 <style lang="scss" scoped>
-  .page {
-    .block {
-      padding: 10px 30px;
-      text-align: left;
-    }
-    .pagination-wrapper {
-      padding: 10px 0;
-      text-align: right;
-    }
-    .i-list {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-      & li{
-        padding: 5px 15px;
-      }
+.page {
+  .block {
+    padding: 10px 30px;
+    text-align: left;
+  }
+  .pagination-wrapper {
+    padding: 10px 0;
+    text-align: right;
+  }
+  .i-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    & li {
+      padding: 5px 15px;
     }
   }
+}
 </style>

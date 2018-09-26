@@ -22,9 +22,9 @@ export default {
   // name 值和本页的 $route.name 一致才可以缓存页面
   name: 'demo-business-table-1',
   components: {
-    'DemoPageHeader': () => import('./componnets/PageHeader/index'),
-    'DemoPageMain': () => import('./componnets/PageMain/index'),
-    'DemoPageFooter': () => import('./componnets/PageFooter/index')
+    'DemoPageHeader': () => import('./componnets/PageHeader'),
+    'DemoPageMain': () => import('./componnets/PageMain'),
+    'DemoPageFooter': () => import('./componnets/PageFooter')
   },
   data () {
     return {

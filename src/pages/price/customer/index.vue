@@ -72,7 +72,7 @@
                 label="操作"
                 width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="onDeleteDetailPrice(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">删除</el-button>
+                  <el-button type="text" @click="onDeleteDetailPrice(scope.$index, scope.row)" v-if="scope.$index % 2 === 1" size="mini">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -99,8 +99,8 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button @click="onEditCustomerPrice(scope.$index, scope.row)" type="text">编辑</el-button>
-            <el-button @click="onDeleteCustomerPrice(scope.$index, scope.row)" type="text">删除</el-button>
+            <el-button @click="onEditCustomerPrice(scope.$index, scope.row)" type="text" size="mini">编辑</el-button>
+            <el-button @click="onDeleteCustomerPrice(scope.$index, scope.row)" type="text" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -608,804 +608,887 @@
 </template>
 
 <script>
-  import { getRouterAliaSearchList } from '@/api/schedule'
-  import { getCarTypeList } from '@/api/order'
-  import { getAllRouterCustomerPrice, getMasterCustomerList, addRouterCustomerPrice, deleteRouterByRouterId, deleteRouterCustomerPrice, updateBatchRouterPrice, updateRouterCustomerPrice, getConsumerRouterPriceByRouterId } from '@/api/price'
-  import { getAllPrv, getAllCity, getAllCityArea, getAllTown, getCarSizeList } from '@/api/dictionary'
-  import Cookies from 'js-cookie'
-  export default {
-    data () {
-      return {
-        customerNumId: Cookies.get('__user__customernumid'),
-        currentPage: 1,
+import { getRouterAliaSearchList } from "@/api/schedule";
+import { getCarTypeList } from "@/api/order";
+import {
+  getAllRouterCustomerPrice,
+  getMasterCustomerList,
+  addRouterCustomerPrice,
+  deleteRouterByRouterId,
+  deleteRouterCustomerPrice,
+  updateBatchRouterPrice,
+  updateRouterCustomerPrice,
+  getConsumerRouterPriceByRouterId
+} from "@/api/price";
+import {
+  getAllPrv,
+  getAllCity,
+  getAllCityArea,
+  getAllTown,
+  getCarSizeList
+} from "@/api/dictionary";
+import Cookies from "js-cookie";
+export default {
+  data() {
+    return {
+      customerNumId: Cookies.get("__user__customernumid"),
+      currentPage: 1,
+      pageSize: 200,
+      curPage: 1,
+      pgSize: 100,
+      routerDetail: [],
+      searchItem: {
+        carSizeNameAliaSearchKey: "",
+        customerSeries: "",
+        routerDetailAliaSearchKey: "",
+        routerDetailSeries: "",
+        routerNumberSearchKey: "",
+        routerType: 0
+      },
+      addItem: {
+        children: [],
+        customerNumId: "",
+        customerSeries: "",
+        destinationCity: "",
+        destinationCityArea: "",
+        destinationPrv: "",
+        destinationTown: "",
+        remark: "",
+        routerAlia: "",
+        routerNumber: "",
+        routerType: 0,
+        sourceCity: "",
+        sourceCityArea: "",
+        sourcePrv: "",
+        sourceTown: "",
+        sendGoodsPersonName: "",
+        sendGoodsPersonMobile: "",
+        sendAddressDetail: "",
+        receiveGoodsPersonName: "",
+        receiveGoodsPersonMobile: "",
+        receiveAddressDetail: "",
+        routerStations: []
+      },
+      priceSetAddList: [],
+      priceSetAddItem0: {
+        carTypeName: "",
+        carTypeRealName: "",
+        carSizeName: "",
+        carSizeRealName: "",
+        franchiseeProportion: "",
+        initDistance: "",
+        initPrice: "",
+        overstepPrice: "",
+        routerCustomerType: 0,
+        routerPriceId: "",
+        routerType: 0,
+        saleProportion: ""
+      },
+      priceSetAddItem1: {
+        carTypeName: "",
+        carTypeRealName: "",
+        carSizeName: "",
+        carSizeRealName: "",
+        franchiseeProportion: "",
+        initDistance: "",
+        initPrice: "",
+        overstepPrice: "",
+        routerCustomerType: 1,
+        routerPriceId: "",
+        routerType: 0,
+        saleProportion: ""
+      },
+      tableData: [],
+      searching: false,
+      addDialog: false,
+      editDialog: false,
+      innerAddVisible: false,
+      innerEditVisible: false,
+      customerMasterList: [],
+      allPrv: [],
+      allCity: [],
+      allCityDestination: [],
+      allCityArea: [],
+      allCityAreaDestination: [],
+      allTown: [],
+      allTownDestination: [],
+      carTypes: [],
+      carSizes: [],
+      carTypeName: "",
+      carSizeName: "",
+      editPriceIndex: ""
+    };
+  },
+  computed: {
+    totalPage() {
+      return this.tableData.length;
+    },
+    tableInlineData() {
+      return this.tableData.slice(
+        (this.currentPage - 1) * this.pageSize,
+        this.currentPage * this.pageSize
+      );
+    }
+  },
+  created() {
+    this._getMasterCustomerList({
+      customerNumId: this.customerNumId,
+      saleId: ""
+    });
+    this._getRouterAliaSearchList({
+      customerNumId: this.customerNumId,
+      customerSeries: "",
+      routerSearchKey: ""
+    });
+    this.onSearch();
+  },
+  watch: {
+    "addItem.sourcePrv"() {
+      // this.addItem.sourceCity = ''
+      // this.addItem.sourceCityArea = ''
+      // this.addItem.sourceTown = ''
+      this._getAllCity({
+        current: 1,
         pageSize: 200,
-        curPage: 1,
-        pgSize: 100,
-        routerDetail: [],
-        searchItem: {
-          carSizeNameAliaSearchKey: '',
-          customerSeries: '',
-          routerDetailAliaSearchKey: '',
-          routerDetailSeries: '',
-          routerNumberSearchKey: '',
-          routerType: 0
-        },
-        addItem: {
-          children: [],
-          customerNumId: '',
-          customerSeries: '',
-          destinationCity: '',
-          destinationCityArea: '',
-          destinationPrv: '',
-          destinationTown: '',
-          remark: '',
-          routerAlia: '',
-          routerNumber: '',
-          routerType: 0,
-          sourceCity: '',
-          sourceCityArea: '',
-          sourcePrv: '',
-          sourceTown: '',
-          sendGoodsPersonName: '',
-          sendGoodsPersonMobile: '',
-          sendAddressDetail: '',
-          receiveGoodsPersonName: '',
-          receiveGoodsPersonMobile: '',
-          receiveAddressDetail: '',
-          routerStations: []
-        },
-        priceSetAddList: [],
-        priceSetAddItem0: {
-          carTypeName: '',
-          carTypeRealName: '',
-          carSizeName: '',
-          carSizeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 0,
-          routerPriceId: '',
-          routerType: 0,
-          saleProportion: ''
-        },
-        priceSetAddItem1: {
-          carTypeName: '',
-          carTypeRealName: '',
-          carSizeName: '',
-          carSizeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 1,
-          routerPriceId: '',
-          routerType: 0,
-          saleProportion: ''
-        },
-        tableData: [],
-        searching: false,
-        addDialog: false,
-        editDialog: false,
-        innerAddVisible: false,
-        innerEditVisible: false,
-        customerMasterList: [],
-        allPrv: [],
-        allCity: [],
-        allCityDestination: [],
-        allCityArea: [],
-        allCityAreaDestination: [],
-        allTown: [],
-        allTownDestination: [],
-        carTypes: [],
-        carSizes: [],
-        carTypeName: '',
-        carSizeName: '',
-        editPriceIndex: ''
-      }
-    },
-    computed: {
-      totalPage () {
-        return this.tableData.length
-      },
-      tableInlineData () {
-        return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
-      }
-    },
-    created () {
-      this._getMasterCustomerList({
         customerNumId: this.customerNumId,
-        saleId: ''
-      })
-      this._getRouterAliaSearchList({
+        prvId: this.addItem.sourcePrv
+      });
+    },
+    "addItem.destinationPrv"() {
+      // this.addItem.destinationCity = ''
+      // this.addItem.destinationCityArea = ''
+      // this.addItem.destinationTown = ''
+      this._getAllCityDestination({
+        current: 1,
+        pageSize: 200,
         customerNumId: this.customerNumId,
-        customerSeries: '',
-        routerSearchKey: ''
-      })
-      this.onSearch()
+        prvId: this.addItem.destinationPrv
+      });
     },
-    watch: {
-      'addItem.sourcePrv' () {
-        // this.addItem.sourceCity = ''
-        // this.addItem.sourceCityArea = ''
-        // this.addItem.sourceTown = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.sourcePrv
-        })
-      },
-      'addItem.destinationPrv' () {
-        // this.addItem.destinationCity = ''
-        // this.addItem.destinationCityArea = ''
-        // this.addItem.destinationTown = ''
-        this._getAllCityDestination({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.destinationPrv
-        })
-      },
-      'addItem.sourceCity' () {
-        // this.addItem.sourceCityArea = ''
-        // this.addItem.sourceTown = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.sourcePrv,
-          cityId: this.addItem.sourceCity
-        })
-      },
-      'addItem.destinationCity' () {
-        // this.addItem.destinationCityArea = ''
-        // this.addItem.destinationTown = ''
-        this._getAllCityAreaDestination({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.destinationPrv,
-          cityId: this.addItem.destinationCity
-        })
-      },
-      'addItem.sourceCityArea' () {
-        // this.addItem.sourceTown = ''
-        this._getAllTown({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          cityAreaId: this.addItem.sourceCityArea
-        })
-      },
-      'addItem.destinationCityArea' () {
-        // this.addItem.destinationTown = ''
-        this._getAllTownDestination({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          cityAreaId: this.addItem.destinationCityArea
-        })
-      }
+    "addItem.sourceCity"() {
+      // this.addItem.sourceCityArea = ''
+      // this.addItem.sourceTown = ''
+      this._getAllCityArea({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        prvId: this.addItem.sourcePrv,
+        cityId: this.addItem.sourceCity
+      });
     },
-    methods: {
-      querySearchAsync (qs, cb) {
-        let routerDetail = this.routerDetail
-        var results = qs ? routerDetail.filter(this.createStateFilter(qs)) : routerDetail
+    "addItem.destinationCity"() {
+      // this.addItem.destinationCityArea = ''
+      // this.addItem.destinationTown = ''
+      this._getAllCityAreaDestination({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        prvId: this.addItem.destinationPrv,
+        cityId: this.addItem.destinationCity
+      });
+    },
+    "addItem.sourceCityArea"() {
+      // this.addItem.sourceTown = ''
+      this._getAllTown({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        cityAreaId: this.addItem.sourceCityArea
+      });
+    },
+    "addItem.destinationCityArea"() {
+      // this.addItem.destinationTown = ''
+      this._getAllTownDestination({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        cityAreaId: this.addItem.destinationCityArea
+      });
+    }
+  },
+  methods: {
+    querySearchAsync(qs, cb) {
+      let routerDetail = this.routerDetail;
+      var results = qs
+        ? routerDetail.filter(this.createStateFilter(qs))
+        : routerDetail;
 
-        cb(results)
-      },
-      createStateFilter (qs) {
-        return (state) => {
-          return (state.value.toLowerCase().indexOf(qs.toLowerCase()) === 0)
-        }
-      },
-      handleSelect (item) {
-        console.log(item)
-      },
-      _getRouterAliaSearchList (params) {
-        getRouterAliaSearchList(params).then(res => {
+      cb(results);
+    },
+    createStateFilter(qs) {
+      return state => {
+        return state.value.toLowerCase().indexOf(qs.toLowerCase()) === 0;
+      };
+    },
+    handleSelect(item) {
+      console.log(item);
+    },
+    _getRouterAliaSearchList(params) {
+      getRouterAliaSearchList(params)
+        .then(res => {
           if (res.code === 0) {
-            let routerDetail = []
-            res.routerDetailAliaModel.forEach((item) => {
+            let routerDetail = [];
+            res.routerDetailAliaModel.forEach(item => {
               routerDetail.push({
                 value: item.routerAlia,
                 ...item
-              })
-            })
-            this.routerDetail = routerDetail
+              });
+            });
+            this.routerDetail = routerDetail;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      routerCustomerTypeFormat (val) {
-        return val.routerCustomerType === 0 ? '客户报价' : '司机报价'
-      },
-      _getCarSizeList (params) {
-        getCarSizeList(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    routerCustomerTypeFormat(val) {
+      return val.routerCustomerType === 0 ? "客户报价" : "司机报价";
+    },
+    _getCarSizeList(params) {
+      getCarSizeList(params)
+        .then(res => {
           if (res.code === 0) {
-            this.carSizes = res.carSizes
+            this.carSizes = res.carSizes;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getCarTypeList (params) {
-        getCarTypeList(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCarTypeList(params) {
+      getCarTypeList(params)
+        .then(res => {
           if (res.code === 0) {
-            this.carTypes = res.carTypes
+            this.carTypes = res.carTypes;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllPrv (params) {
-        getAllPrv(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllPrv(params) {
+      getAllPrv(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allPrv = res.prvNameAndPrvIds
+            this.allPrv = res.prvNameAndPrvIds;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllCity (params) {
-        getAllCity(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCity(params) {
+      getAllCity(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allCity = res.cityeNameAndCityeIds
+            this.allCity = res.cityeNameAndCityeIds;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllCityDestination (params) {
-        getAllCity(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCityDestination(params) {
+      getAllCity(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allCityDestination = res.cityeNameAndCityeIds
+            this.allCityDestination = res.cityeNameAndCityeIds;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllCityArea (params) {
-        getAllCityArea(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCityArea(params) {
+      getAllCityArea(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allCityArea = res.cityAreaNameAndCityAreaIdModel
+            this.allCityArea = res.cityAreaNameAndCityAreaIdModel;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllCityAreaDestination (params) {
-        getAllCityArea(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCityAreaDestination(params) {
+      getAllCityArea(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allCityAreaDestination = res.cityAreaNameAndCityAreaIdModel
+            this.allCityAreaDestination = res.cityAreaNameAndCityAreaIdModel;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllTown (params) {
-        getAllTown(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllTown(params) {
+      getAllTown(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allTown = res.townNameAndTownIdModel
+            this.allTown = res.townNameAndTownIdModel;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getAllTownDestination (params) {
-        getAllTown(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllTownDestination(params) {
+      getAllTown(params)
+        .then(res => {
           if (res.code === 0) {
-            this.allTownDestination = res.townNameAndTownIdModel
+            this.allTownDestination = res.townNameAndTownIdModel;
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _getConsumerRouterPriceByRouterId (params) {
-        // console.log(params)
-        getConsumerRouterPriceByRouterId(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getConsumerRouterPriceByRouterId(params) {
+      // console.log(params)
+      getConsumerRouterPriceByRouterId(params)
+        .then(res => {
           if (res.code === 0) {
             // console.log(res)
-            this.addItem.children = []
-            this.addItem.customerNumId = this.customerNumId
-            this.addItem.customerSeries = res.allRouterPriceGetModel.customerSeries
-            this.addItem.destinationCity = res.allRouterPriceGetModel.destinationCity
-            this.addItem.destinationCityArea = res.allRouterPriceGetModel.destinationCityArea
-            this.addItem.destinationPrv = res.allRouterPriceGetModel.destinationPrv
-            this.addItem.destinationTown = res.allRouterPriceGetModel.destinationTown
-            this.addItem.remark = res.allRouterPriceGetModel.remark
-            this.addItem.routerAlia = res.allRouterPriceGetModel.routerAlia
-            this.addItem.routerDetailSeries = res.allRouterPriceGetModel.routerDetailSeries
-            this.addItem.routerNumber = res.allRouterPriceGetModel.routerNumber
-            this.addItem.sourceCity = res.allRouterPriceGetModel.sourceCity
-            this.addItem.sourceCityArea = res.allRouterPriceGetModel.sourceCityArea
-            this.addItem.sourcePrv = res.allRouterPriceGetModel.sourcePrv
-            this.addItem.sourceTown = res.allRouterPriceGetModel.sourceTown
-            this.priceSetAddList = res.allRouterPriceGetModel.routerPriceList
-            this.addItem.sendGoodsPersonName = res.allRouterPriceGetModel.sendGoodsPersonName
-            this.addItem.sendGoodsPersonMobile = res.allRouterPriceGetModel.sendGoodsPersonMobile
-            this.addItem.sendAddressDetail = res.allRouterPriceGetModel.sendAddressDetail
-            this.addItem.receiveGoodsPersonName = res.allRouterPriceGetModel.receiveGoodsPersonName
-            this.addItem.receiveGoodsPersonMobile = res.allRouterPriceGetModel.receiveGoodsPersonMobile
-            this.addItem.receiveAddressDetail = res.allRouterPriceGetModel.receiveAddressDetail
-            this.addItem.routerStations = res.allRouterPriceGetModel.routerStations
-            res.allRouterPriceGetModel.routerPriceList.forEach((item) => {
+            this.addItem.children = [];
+            this.addItem.customerNumId = this.customerNumId;
+            this.addItem.customerSeries =
+              res.allRouterPriceGetModel.customerSeries;
+            this.addItem.destinationCity =
+              res.allRouterPriceGetModel.destinationCity;
+            this.addItem.destinationCityArea =
+              res.allRouterPriceGetModel.destinationCityArea;
+            this.addItem.destinationPrv =
+              res.allRouterPriceGetModel.destinationPrv;
+            this.addItem.destinationTown =
+              res.allRouterPriceGetModel.destinationTown;
+            this.addItem.remark = res.allRouterPriceGetModel.remark;
+            this.addItem.routerAlia = res.allRouterPriceGetModel.routerAlia;
+            this.addItem.routerDetailSeries =
+              res.allRouterPriceGetModel.routerDetailSeries;
+            this.addItem.routerNumber = res.allRouterPriceGetModel.routerNumber;
+            this.addItem.sourceCity = res.allRouterPriceGetModel.sourceCity;
+            this.addItem.sourceCityArea =
+              res.allRouterPriceGetModel.sourceCityArea;
+            this.addItem.sourcePrv = res.allRouterPriceGetModel.sourcePrv;
+            this.addItem.sourceTown = res.allRouterPriceGetModel.sourceTown;
+            this.priceSetAddList = res.allRouterPriceGetModel.routerPriceList;
+            this.addItem.sendGoodsPersonName =
+              res.allRouterPriceGetModel.sendGoodsPersonName;
+            this.addItem.sendGoodsPersonMobile =
+              res.allRouterPriceGetModel.sendGoodsPersonMobile;
+            this.addItem.sendAddressDetail =
+              res.allRouterPriceGetModel.sendAddressDetail;
+            this.addItem.receiveGoodsPersonName =
+              res.allRouterPriceGetModel.receiveGoodsPersonName;
+            this.addItem.receiveGoodsPersonMobile =
+              res.allRouterPriceGetModel.receiveGoodsPersonMobile;
+            this.addItem.receiveAddressDetail =
+              res.allRouterPriceGetModel.receiveAddressDetail;
+            this.addItem.routerStations =
+              res.allRouterPriceGetModel.routerStations;
+            res.allRouterPriceGetModel.routerPriceList.forEach(item => {
               this.addItem.children.push({
                 carTypeName: item.carTypeName,
                 carSizeName: item.carSizeName,
                 routerType: item.routerType,
                 routerPriceList: [item]
-              })
-            })
+              });
+            });
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _addRouterCustomerPrice (params) {
-        if (params.customerSeries === '') {
-          this.$message({
-            type: 'error',
-            message: '大客户不可以为空！'
-          })
-          return
-        }
-        if (params.routerAlia === '') {
-          this.$message({
-            type: 'error',
-            message: '线路别名不可以为空！'
-          })
-          return
-        }
-        if (params.routerNumber === '') {
-          this.$message({
-            type: 'error',
-            message: '线路编号不可以为空！'
-          })
-          return
-        }
-        if (params.sourcePrv === '') {
-          this.$message({
-            type: 'error',
-            message: '起始省不可以为空！'
-          })
-          return
-        }
-        if (params.sourceCity === '') {
-          this.$message({
-            type: 'error',
-            message: '起始市不可以为空！'
-          })
-          return
-        }
-        if (params.sourceCityArea === '') {
-          this.$message({
-            type: 'error',
-            message: '起始区不可以为空！'
-          })
-          return
-        }
-        if (params.sourceTown === '') {
-          this.$message({
-            type: 'error',
-            message: '起始镇不可以为空！'
-          })
-          return
-        }
-        if (params.destinationPrv === '') {
-          this.$message({
-            type: 'error',
-            message: '目的省不可以为空！'
-          })
-          return
-        }
-        if (params.destinationCity === '') {
-          this.$message({
-            type: 'error',
-            message: '目的市不可以为空！'
-          })
-          return
-        }
-        if (params.destinationCityArea === '') {
-          this.$message({
-            type: 'error',
-            message: '目的区不可以为空！'
-          })
-          return
-        }
-        if (params.destinationTown === '') {
-          this.$message({
-            type: 'error',
-            message: '目的镇不可以为空！'
-          })
-          return
-        }
-        var x
-        for (x in params.children) {
-          if (params.children[x].carTypeName === '') {
-            this.$message({
-              type: 'error',
-              message: '车型不可以为空！'
-            })
-            return
-          }
-          if (params.children[x].carSizeName === '') {
-            this.$message({
-              type: 'error',
-              message: '尺寸不可以为空！'
-            })
-            return
-          }
-          var y
-          for (y in params.children[x].routerPriceList) {
-            if (params.children[x].routerPriceList[y].initPrice === '') {
-              this.$message({
-                type: 'error',
-                message: '起步价不可以为空！'
-              })
-              return
-            }
-            if (params.children[x].routerPriceList[y].initDistance === '') {
-              this.$message({
-                type: 'error',
-                message: '起步距离如果不清楚请写0！'
-              })
-              return
-            }
-            if (params.children[x].routerPriceList[y].overstepPrice === '') {
-              this.$message({
-                type: 'error',
-                message: '超过指定范围价如果不清楚请写0！'
-              })
-              return
-            }
-            if (params.children[x].routerPriceList[y].franchiseeProportion === '') {
-              this.$message({
-                type: 'error',
-                message: '加盟商提成比例如果不清楚请写0！'
-              })
-              return
-            }
-            if (params.children[x].routerPriceList[y].saleProportion === '') {
-              this.$message({
-                type: 'error',
-                message: '销售提成比例如果不清楚请写0！'
-              })
-              return
-            }
-          }
-        }
-        addRouterCustomerPrice(params).then(res => {
-          if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '添加成功!'
-            })
-            this.addDialog = false
-            this.onSearch()
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _deleteRouterByRouterId (params, index) {
-        deleteRouterByRouterId(params).then(res => {
-          if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.tableData.splice(index, 1)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _deleteRouterCustomerPrice (params, index) {
-        deleteRouterCustomerPrice(params).then(res => {
-          if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.onSearch()
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _updateBatchRouterPrice (params) {
-        updateBatchRouterPrice(params).then(res => {
-          if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '编辑成功!'
-            })
-            this.editDialog = false
-            this.onSearch()
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _updateRouterCustomerPrice (params) {
-        // console.log(params)
-        updateRouterCustomerPrice(params).then(res => {
-          if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '编辑成功!'
-            })
-            this.editDialog = false
-            this.onSearch()
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getMasterCustomerList (params) {
-        getMasterCustomerList(params).then(res => {
-          if (res.code === 0) {
-            this.customerMasterList = res.customerMasterList
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getAllRouterCustomerPrice (params) {
-        getAllRouterCustomerPrice(params).then(res => {
-          if (res.code === 0) {
-            this.tableData = res.allRouterPriceGetModels
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      onSearch () {
-        this._getAllRouterCustomerPrice({
-          current: this.currentPage,
-          pageSize: this.pageSize,
-          customerNumId: this.customerNumId,
-          carSizeNameAli_getAllTownaSearchKey: this.searchItem.carSizeNameAliaSearchKey,
-          customerSeries: this.searchItem.customerSeries,
-          routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
-          routerDetailSeries: this.searchItem.routerDetailSeries,
-          routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
-          routerType: this.searchItem.routerType
-        })
-      },
-      onAdd () {
-        this.addDialog = true
-        this._getAllPrv({
-          current: 1,
-          customerNumId: this.customerNumId,
-          pageSize: 200
-        })
-        // 清空数据
-        this.addItem = {
-          children: [],
-          customerNumId: '',
-          customerSeries: '',
-          destinationCity: '',
-          destinationCityArea: '',
-          destinationPrv: '',
-          destinationTown: '',
-          remark: '',
-          routerAlia: '',
-          routerNumber: '',
-          routerType: 0,
-          sourceCity: '',
-          sourceCityArea: '',
-          sourcePrv: '',
-          sourceTown: ''
-        }
-        this.priceSetAddList = []
-      },
-      onAddConfirm () {
-        this.addItem.customerNumId = this.customerNumId
-        this._addRouterCustomerPrice(this.addItem)
-      },
-      onEditConfirm () {
-        this.addItem.customerNumId = this.customerNumId
-        this._updateRouterCustomerPrice(this.addItem)
-      },
-      onAddPrice () {
-        this.innerAddVisible = true
-        this._getCarTypeList({
-          customerNumId: this.customerNumId
-        })
-        this._getCarSizeList({
-          customerNumId: this.customerNumId
-        })
-
-        // 清空数据
-        this.carTypeName = ''
-        this.carSizeName = ''
-        this.priceSetAddItem0 = {
-          carTypeName: '',
-          carTypeRealName: '',
-          carSizeName: '',
-          carSizeRealName: '',
-          franchiseeProportion: 0,
-          initDistance: 0,
-          initPrice: '',
-          overstepPrice: 0,
-          routerCustomerType: 0,
-          routerPriceId: '',
-          routerType: 0,
-          saleProportion: 0
-        }
-        this.priceSetAddItem1 = {
-          carTypeName: '',
-          carTypeRealName: '',
-          carSizeName: '',
-          carSizeRealName: '',
-          franchiseeProportion: 0,
-          initDistance: 0,
-          initPrice: '',
-          overstepPrice: 0,
-          routerCustomerType: 1,
-          routerPriceId: '',
-          routerType: 0,
-          saleProportion: 0
-        }
-      },
-      onEditPrice (index, row) {
-        this.innerEditVisible = true
-        this.editPriceIndex = index
-        this._getCarTypeList({
-          customerNumId: this.customerNumId
-        })
-        this._getCarSizeList({
-          customerNumId: this.customerNumId
-        })
-
-        // 把待编辑数据写入以下字段
-        this.carTypeName = `${row.carTypeName}-${row.carTypeRealName}`
-        this.carSizeName = `${row.carSizeName}-${row.carSizeRealName}`
-        this.priceSetAddItem0 = this.priceSetAddList[index - 1]
-        this.priceSetAddItem1 = this.priceSetAddList[index]
-        // .log(this.addItem.children)
-      },
-      onEditPriceConfirm (index) {
-        this.innerEditVisible = false
-        // console.log(index)
-        const item = this.carTypeName.split('-')
-        this.priceSetAddItem0.carTypeName = item[0]
-        this.priceSetAddItem0.carTypeRealName = item[1]
-        this.priceSetAddItem1.carTypeName = item[0]
-        this.priceSetAddItem1.carTypeRealName = item[1]
-
-        const item1 = this.carSizeName.split('-')
-        this.priceSetAddItem0.carSizeName = item1[0]
-        this.priceSetAddItem0.carSizeRealName = item1[1]
-        this.priceSetAddItem1.carSizeName = item1[0]
-        this.priceSetAddItem1.carSizeRealName = item1[1]
-
-        this.priceSetAddList[index - 1] = this.priceSetAddItem0
-        this.priceSetAddList[index] = this.priceSetAddItem1
-
-        this.addItem.children[index - 1] = {
-          carTypeName: item[0],
-          carSizeName: item1[0],
-          routerType: 0,
-          routerPriceList: [this.priceSetAddItem0]
-        }
-        this.addItem.children[index] = {
-          carTypeName: item[0],
-          carSizeName: item1[0],
-          routerType: 0,
-          routerPriceList: [this.priceSetAddItem1]
-        }
-      },
-      onDeleteDetailPrice (index, row) {
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteRouterCustomerPrice({
-            customerNumId: this.customerNumId,
-            routerPriceId: row.routerPriceId
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
-        })
-      },
-      onAddPriceConfirm () {
-        this.innerAddVisible = false
-
-        const item = this.carTypeName.split('-')
-        this.priceSetAddItem0.carTypeName = item[0]
-        this.priceSetAddItem0.carTypeRealName = item[1]
-        this.priceSetAddItem1.carTypeName = item[0]
-        this.priceSetAddItem1.carTypeRealName = item[1]
-
-        const item1 = this.carSizeName.split('-')
-        this.priceSetAddItem0.carSizeName = item1[0]
-        this.priceSetAddItem0.carSizeRealName = item1[1]
-        this.priceSetAddItem1.carSizeName = item1[0]
-        this.priceSetAddItem1.carSizeRealName = item1[1]
-
-        this.priceSetAddList.push(this.priceSetAddItem0)
-        this.priceSetAddList.push(this.priceSetAddItem1)
-
-        this.addItem.children.push({
-          carTypeName: item[0],
-          carSizeName: item1[0],
-          routerType: 0,
-          routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
-        })
-      },
-      onDeleteCustomerPrice (index, row) {
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteRouterByRouterId({
-            customerNumId: this.customerNumId,
-            routerDetailSeries: row.routerDetailSeries
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
-        })
-      },
-      onEditCustomerPrice (index, row) {
-        this._getAllPrv({
-          current: 1,
-          customerNumId: this.customerNumId,
-          pageSize: 200
-        })
-        // console.log(row)
-        this._getConsumerRouterPriceByRouterId({
-          consumerSeries: row.customerSeries,
-          customerNumId: this.customerNumId,
-          routerDetailSeries: row.routerDetailSeries,
-          routerType: 0
-        })
-        this.editDialog = true
-      },
-      handleSizeChange (val) {
-        console.log(`每页 ${val} 条`)
-        this.pageSize = val
-      },
-      handleCurrentChange (val) {
-        console.log(`当前页: ${val}`)
-        this.currentPage = val
-        // this._getAllRouterAndEmployee({
-        //   current: this.currentPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-        //   pageSize: val,
-        //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-        // })
-      },
-      handleSzChange (val) {
-        this.pgSize = val
-      },
-      handleCurChange (val) {
-        this.curPage = val
-        // this._getAllEmployee({
-        //   current: this.curPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeJobNumSearchKey: '',
-        //   employeeNameSearchKey: '',
-        //   jobId: 0,
-        //   pageSize: this.pgSize
-        // })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _addRouterCustomerPrice(params) {
+      if (params.customerSeries === "") {
+        this.$message({
+          type: "error",
+          message: "大客户不可以为空！"
+        });
+        return;
       }
+      if (params.routerAlia === "") {
+        this.$message({
+          type: "error",
+          message: "线路别名不可以为空！"
+        });
+        return;
+      }
+      if (params.routerNumber === "") {
+        this.$message({
+          type: "error",
+          message: "线路编号不可以为空！"
+        });
+        return;
+      }
+      if (params.sourcePrv === "") {
+        this.$message({
+          type: "error",
+          message: "起始省不可以为空！"
+        });
+        return;
+      }
+      if (params.sourceCity === "") {
+        this.$message({
+          type: "error",
+          message: "起始市不可以为空！"
+        });
+        return;
+      }
+      if (params.sourceCityArea === "") {
+        this.$message({
+          type: "error",
+          message: "起始区不可以为空！"
+        });
+        return;
+      }
+      if (params.sourceTown === "") {
+        this.$message({
+          type: "error",
+          message: "起始镇不可以为空！"
+        });
+        return;
+      }
+      if (params.destinationPrv === "") {
+        this.$message({
+          type: "error",
+          message: "目的省不可以为空！"
+        });
+        return;
+      }
+      if (params.destinationCity === "") {
+        this.$message({
+          type: "error",
+          message: "目的市不可以为空！"
+        });
+        return;
+      }
+      if (params.destinationCityArea === "") {
+        this.$message({
+          type: "error",
+          message: "目的区不可以为空！"
+        });
+        return;
+      }
+      if (params.destinationTown === "") {
+        this.$message({
+          type: "error",
+          message: "目的镇不可以为空！"
+        });
+        return;
+      }
+      var x;
+      for (x in params.children) {
+        if (params.children[x].carTypeName === "") {
+          this.$message({
+            type: "error",
+            message: "车型不可以为空！"
+          });
+          return;
+        }
+        if (params.children[x].carSizeName === "") {
+          this.$message({
+            type: "error",
+            message: "尺寸不可以为空！"
+          });
+          return;
+        }
+        var y;
+        for (y in params.children[x].routerPriceList) {
+          if (params.children[x].routerPriceList[y].initPrice === "") {
+            this.$message({
+              type: "error",
+              message: "起步价不可以为空！"
+            });
+            return;
+          }
+          if (params.children[x].routerPriceList[y].initDistance === "") {
+            this.$message({
+              type: "error",
+              message: "起步距离如果不清楚请写0！"
+            });
+            return;
+          }
+          if (params.children[x].routerPriceList[y].overstepPrice === "") {
+            this.$message({
+              type: "error",
+              message: "超过指定范围价如果不清楚请写0！"
+            });
+            return;
+          }
+          if (
+            params.children[x].routerPriceList[y].franchiseeProportion === ""
+          ) {
+            this.$message({
+              type: "error",
+              message: "加盟商提成比例如果不清楚请写0！"
+            });
+            return;
+          }
+          if (params.children[x].routerPriceList[y].saleProportion === "") {
+            this.$message({
+              type: "error",
+              message: "销售提成比例如果不清楚请写0！"
+            });
+            return;
+          }
+        }
+      }
+      addRouterCustomerPrice(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: "success",
+              message: "添加成功!"
+            });
+            this.addDialog = false;
+            this.onSearch();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _deleteRouterByRouterId(params, index) {
+      deleteRouterByRouterId(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.tableData.splice(index, 1);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _deleteRouterCustomerPrice(params, index) {
+      deleteRouterCustomerPrice(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.onSearch();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _updateBatchRouterPrice(params) {
+      updateBatchRouterPrice(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: "success",
+              message: "编辑成功!"
+            });
+            this.editDialog = false;
+            this.onSearch();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _updateRouterCustomerPrice(params) {
+      // console.log(params)
+      updateRouterCustomerPrice(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: "success",
+              message: "编辑成功!"
+            });
+            this.editDialog = false;
+            this.onSearch();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getMasterCustomerList(params) {
+      getMasterCustomerList(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.customerMasterList = res.customerMasterList;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllRouterCustomerPrice(params) {
+      getAllRouterCustomerPrice(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.tableData = res.allRouterPriceGetModels;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    onSearch() {
+      this._getAllRouterCustomerPrice({
+        current: this.currentPage,
+        pageSize: this.pageSize,
+        customerNumId: this.customerNumId,
+        carSizeNameAli_getAllTownaSearchKey: this.searchItem
+          .carSizeNameAliaSearchKey,
+        customerSeries: this.searchItem.customerSeries,
+        routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
+        routerDetailSeries: this.searchItem.routerDetailSeries,
+        routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
+        routerType: this.searchItem.routerType
+      });
+    },
+    onAdd() {
+      this.addDialog = true;
+      this._getAllPrv({
+        current: 1,
+        customerNumId: this.customerNumId,
+        pageSize: 200
+      });
+      // 清空数据
+      this.addItem = {
+        children: [],
+        customerNumId: "",
+        customerSeries: "",
+        destinationCity: "",
+        destinationCityArea: "",
+        destinationPrv: "",
+        destinationTown: "",
+        remark: "",
+        routerAlia: "",
+        routerNumber: "",
+        routerType: 0,
+        sourceCity: "",
+        sourceCityArea: "",
+        sourcePrv: "",
+        sourceTown: ""
+      };
+      this.priceSetAddList = [];
+    },
+    onAddConfirm() {
+      this.addItem.customerNumId = this.customerNumId;
+      this._addRouterCustomerPrice(this.addItem);
+    },
+    onEditConfirm() {
+      this.addItem.customerNumId = this.customerNumId;
+      this._updateRouterCustomerPrice(this.addItem);
+    },
+    onAddPrice() {
+      this.innerAddVisible = true;
+      this._getCarTypeList({
+        customerNumId: this.customerNumId
+      });
+      this._getCarSizeList({
+        customerNumId: this.customerNumId
+      });
+
+      // 清空数据
+      this.carTypeName = "";
+      this.carSizeName = "";
+      this.priceSetAddItem0 = {
+        carTypeName: "",
+        carTypeRealName: "",
+        carSizeName: "",
+        carSizeRealName: "",
+        franchiseeProportion: 0,
+        initDistance: 0,
+        initPrice: "",
+        overstepPrice: 0,
+        routerCustomerType: 0,
+        routerPriceId: "",
+        routerType: 0,
+        saleProportion: 0
+      };
+      this.priceSetAddItem1 = {
+        carTypeName: "",
+        carTypeRealName: "",
+        carSizeName: "",
+        carSizeRealName: "",
+        franchiseeProportion: 0,
+        initDistance: 0,
+        initPrice: "",
+        overstepPrice: 0,
+        routerCustomerType: 1,
+        routerPriceId: "",
+        routerType: 0,
+        saleProportion: 0
+      };
+    },
+    onEditPrice(index, row) {
+      this.innerEditVisible = true;
+      this.editPriceIndex = index;
+      this._getCarTypeList({
+        customerNumId: this.customerNumId
+      });
+      this._getCarSizeList({
+        customerNumId: this.customerNumId
+      });
+
+      // 把待编辑数据写入以下字段
+      this.carTypeName = `${row.carTypeName}-${row.carTypeRealName}`;
+      this.carSizeName = `${row.carSizeName}-${row.carSizeRealName}`;
+      this.priceSetAddItem0 = this.priceSetAddList[index - 1];
+      this.priceSetAddItem1 = this.priceSetAddList[index];
+      // .log(this.addItem.children)
+    },
+    onEditPriceConfirm(index) {
+      this.innerEditVisible = false;
+      // console.log(index)
+      const item = this.carTypeName.split("-");
+      this.priceSetAddItem0.carTypeName = item[0];
+      this.priceSetAddItem0.carTypeRealName = item[1];
+      this.priceSetAddItem1.carTypeName = item[0];
+      this.priceSetAddItem1.carTypeRealName = item[1];
+
+      const item1 = this.carSizeName.split("-");
+      this.priceSetAddItem0.carSizeName = item1[0];
+      this.priceSetAddItem0.carSizeRealName = item1[1];
+      this.priceSetAddItem1.carSizeName = item1[0];
+      this.priceSetAddItem1.carSizeRealName = item1[1];
+
+      this.priceSetAddList[index - 1] = this.priceSetAddItem0;
+      this.priceSetAddList[index] = this.priceSetAddItem1;
+
+      this.addItem.children[index - 1] = {
+        carTypeName: item[0],
+        carSizeName: item1[0],
+        routerType: 0,
+        routerPriceList: [this.priceSetAddItem0]
+      };
+      this.addItem.children[index] = {
+        carTypeName: item[0],
+        carSizeName: item1[0],
+        routerType: 0,
+        routerPriceList: [this.priceSetAddItem1]
+      };
+    },
+    onDeleteDetailPrice(index, row) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this._deleteRouterCustomerPrice(
+            {
+              customerNumId: this.customerNumId,
+              routerPriceId: row.routerPriceId
+            },
+            index
+          );
+        })
+        .catch(() => {
+          console.log("取消删除");
+        });
+    },
+    onAddPriceConfirm() {
+      this.innerAddVisible = false;
+
+      const item = this.carTypeName.split("-");
+      this.priceSetAddItem0.carTypeName = item[0];
+      this.priceSetAddItem0.carTypeRealName = item[1];
+      this.priceSetAddItem1.carTypeName = item[0];
+      this.priceSetAddItem1.carTypeRealName = item[1];
+
+      const item1 = this.carSizeName.split("-");
+      this.priceSetAddItem0.carSizeName = item1[0];
+      this.priceSetAddItem0.carSizeRealName = item1[1];
+      this.priceSetAddItem1.carSizeName = item1[0];
+      this.priceSetAddItem1.carSizeRealName = item1[1];
+
+      this.priceSetAddList.push(this.priceSetAddItem0);
+      this.priceSetAddList.push(this.priceSetAddItem1);
+
+      this.addItem.children.push({
+        carTypeName: item[0],
+        carSizeName: item1[0],
+        routerType: 0,
+        routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
+      });
+    },
+    onDeleteCustomerPrice(index, row) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this._deleteRouterByRouterId(
+            {
+              customerNumId: this.customerNumId,
+              routerDetailSeries: row.routerDetailSeries
+            },
+            index
+          );
+        })
+        .catch(() => {
+          console.log("取消删除");
+        });
+    },
+    onEditCustomerPrice(index, row) {
+      this._getAllPrv({
+        current: 1,
+        customerNumId: this.customerNumId,
+        pageSize: 200
+      });
+      // console.log(row)
+      this._getConsumerRouterPriceByRouterId({
+        consumerSeries: row.customerSeries,
+        customerNumId: this.customerNumId,
+        routerDetailSeries: row.routerDetailSeries,
+        routerType: 0
+      });
+      this.editDialog = true;
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      // this._getAllRouterAndEmployee({
+      //   current: this.currentPage,
+      //   customerNumId: this.customerNumId,
+      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+      //   pageSize: val,
+      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
+      // })
+    },
+    handleSzChange(val) {
+      this.pgSize = val;
+    },
+    handleCurChange(val) {
+      this.curPage = val;
+      // this._getAllEmployee({
+      //   current: this.curPage,
+      //   customerNumId: this.customerNumId,
+      //   employeeJobNumSearchKey: '',
+      //   employeeNameSearchKey: '',
+      //   jobId: 0,
+      //   pageSize: this.pgSize
+      // })
     }
   }
+};
 </script>
 
 <style lang="scss" scoped>
-  .page {
-    .block {
-      padding: 10px 0;
-      text-align: right;
-    }
+.page {
+  .block {
+    padding: 10px 0;
+    text-align: right;
   }
+}
 </style>

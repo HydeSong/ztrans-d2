@@ -37,7 +37,7 @@ import '@/plugin/axios'
 import buildConfig from '../config/index'
 
 Vue.use(ElementUI)
-Vue.use(D2Crud, {size: 'mini'})
+Vue.use(D2Crud)
 
 Vue.config.productionTip = false
 

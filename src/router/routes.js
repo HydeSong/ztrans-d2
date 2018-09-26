@@ -1,5 +1,4 @@
 const meta = { requiresAuth: true }
-
 /**
  * 在主框架内显示
  */
@@ -93,6 +92,16 @@ const frameIn = [
       { path: 'list', name: `${pre}list`, component: () => import('@/pages/orderprice/list'), meta: { ...meta, title: '订单费用' } }
     ])('orderprice-')
   }
+  // {
+  //   path: '/demo/business',
+  //   name: 'demo-business',
+  //   meta,
+  //   redirect: { name: 'demo-business-index' },
+  //   children: (pre => [
+  //     { path: 'index', name: `${pre}index`, component: () => import('@/pages/demo/business/index'), meta: { ...meta, title: '示例首页' } },
+  //     { path: 'table/1', name: `${pre}table-1`, component: () => import('@/pages/demo/business/table/1'), meta: { ...meta, title: '表格 1' } }
+  //   ])('demo-business-')
+  // }
 ]
 
 /**

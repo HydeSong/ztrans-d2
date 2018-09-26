@@ -8,6 +8,8 @@
 //   ])('/core/setting/')
 // }
 
+// import demoBusiness from './modules/demo-business'
+
 const schedule = {
   path: '/schedule',
   title: '调度管理',
@@ -74,6 +76,7 @@ export const side = [
   truck,
   price,
   orderprice
+  // demoBusiness
 ]
 
 // 菜单 顶栏
@@ -89,4 +92,5 @@ export default [
   truck,
   price,
   orderprice
+  // demoBusiness
 ]

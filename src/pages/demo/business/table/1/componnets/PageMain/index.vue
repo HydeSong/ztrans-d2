@@ -147,8 +147,8 @@
 </template>
 
 <script>
-import BooleanControl from '../BooleanControl/index'
-import BooleanControlMini from '../BooleanControlMini/index'
+import BooleanControl from '../BooleanControl'
+import BooleanControlMini from '../BooleanControlMini'
 export default {
   components: {
     BooleanControl,

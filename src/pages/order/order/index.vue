@@ -297,103 +297,219 @@
 </template>
 
 <script>
-  import { getRouterAliaList } from '@/api/schedule'
-  import { getCarTypeList, getOrderByCustomerNumId, selectDriver, confirmDriver, getDriverOrderDetail, getCarSizeList } from '@/api/order'
-  import Cookies from 'js-cookie'
-  export default {
-    data () {
-      return {
-        customerNumId: Cookies.get('__user__customernumid'),
-        currentPage: 1,
-        pageSize: 200,
-        curPage: 1,
-        pgSize: 100,
-        routerDetail: [],
-        carTypes: [],
-        carSizes: [],
-        searchItem: {
-          carType: '',
-          appointmentDate: '',
-          customerNameSearchKey: '',
-          routerAliaSearchKey: '',
-          routerNumberSearchKey: '',
-          deliverStatus: 1
+import { getRouterAliaList } from "@/api/schedule";
+import {
+  getCarTypeList,
+  getOrderByCustomerNumId,
+  selectDriver,
+  confirmDriver,
+  getDriverOrderDetail,
+  getCarSizeList
+} from "@/api/order";
+import Cookies from "js-cookie";
+export default {
+  data() {
+    return {
+      customerNumId: Cookies.get("__user__customernumid"),
+      currentPage: 1,
+      pageSize: 200,
+      curPage: 1,
+      pgSize: 100,
+      routerDetail: [],
+      carTypes: [],
+      carSizes: [],
+      searchItem: {
+        carType: "",
+        appointmentDate: "",
+        customerNameSearchKey: "",
+        routerAliaSearchKey: "",
+        routerNumberSearchKey: "",
+        deliverStatus: 1
+      },
+      searchItemPop: {
+        appointmentDate: "",
+        carPlateNumberSearchKey: "",
+        carTypeSeries: "",
+        carSizeSeries: "",
+        driverNameSearchKey: "",
+        routerDetailSeries: "",
+        series: ""
+      },
+      driverSeries: "",
+      tableData: [],
+      searching: false,
+      addDialog: false,
+      orderDetailDialog: false,
+      orderDetail: {},
+      driverModel: [],
+      orderTask: [],
+      // series, routerAlia, appointmentDate, customerName
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
         },
-        searchItemPop: {
-          appointmentDate: '',
-          carPlateNumberSearchKey: '',
-          carTypeSeries: '',
-          carSizeSeries: '',
-          driverNameSearchKey: '',
-          routerDetailSeries: '',
-          series: ''
-        },
-        driverSeries: '',
-        tableData: [],
-        searching: false,
-        addDialog: false,
-        orderDetailDialog: false,
-        orderDetail: {},
-        driverModel: [],
-        orderTask: [],
-        // series, routerAlia, appointmentDate, customerName
-        pickerOptions: {
-          disabledDate (time) {
-            return time.getTime() > Date.now()
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              picker.$emit("pick", new Date());
+            }
           },
-          shortcuts: [{
-            text: '今天',
-            onClick (picker) {
-              picker.$emit('pick', new Date())
+          {
+            text: "昨天",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit("pick", date);
             }
-          }, {
-            text: '昨天',
-            onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
+          },
+          {
+            text: "一周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", date);
             }
-          }, {
-            text: '一周前',
-            onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            }
-          }]
-        }
+          }
+        ]
       }
+    };
+  },
+  computed: {
+    totalPage() {
+      return this.tableData.length;
     },
-    computed: {
-      totalPage () {
-        return this.tableData.length
-      },
-      addTotalPage () {
-        return this.driverModel.length
-      },
-      tableInlineData () {
-        return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
-      },
-      tablePopData () {
-        this.driverModel.forEach((item) => {
-          item.district = `${item.prvRealName}/${item.cityRealName}/${item.cityAreaRealName}`
+    addTotalPage() {
+      return this.driverModel.length;
+    },
+    tableInlineData() {
+      return this.tableData.slice(
+        (this.currentPage - 1) * this.pageSize,
+        this.currentPage * this.pageSize
+      );
+    },
+    tablePopData() {
+      this.driverModel.forEach(item => {
+        item.district = `${item.prvRealName}/${item.cityRealName}/${
+          item.cityAreaRealName
+        }`;
+      });
+      return this.driverModel.slice(
+        (this.curPage - 1) * this.pgSize,
+        this.curPage * this.pgSize
+      );
+    }
+  },
+  created() {
+    this._getRouterAliaList({
+      customerNumId: this.customerNumId
+    });
+    this._getCarTypeList({
+      customerNumId: this.customerNumId
+    });
+    this._getCarSizeList({
+      customerNumId: this.customerNumId
+    });
+    this._getOrderByCustomerNumId({
+      current: this.currentPage,
+      pageSize: 1000,
+      customerNumId: this.customerNumId,
+      deliverStatus: this.searchItem.deliverStatus,
+      carType: this.searchItem.carType,
+      appointmentDate: this.searchItem.appointmentDate,
+      customerNameSearchKey: this.searchItem.customerNameSearchKey,
+      routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
+      routerNumberSearchKey: this.searchItem.routerNumberSearchKey
+    });
+  },
+  methods: {
+    _getDriverOrderDetail(params) {
+      getDriverOrderDetail(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.orderDetail = res;
+          }
         })
-        return this.driverModel.slice((this.curPage - 1) * this.pgSize, this.curPage * this.pgSize)
-      }
+        .catch(err => {
+          console.log(err);
+        });
     },
-    created () {
-      this._getRouterAliaList({
-        customerNumId: this.customerNumId
-      })
-      this._getCarTypeList({
-        customerNumId: this.customerNumId
-      })
-      this._getCarSizeList({
-        customerNumId: this.customerNumId
-      })
-      this._getOrderByCustomerNumId({
+    _getOrderByCustomerNumId(params) {
+      getOrderByCustomerNumId(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.tableData = res.orderModel;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCarTypeList(params) {
+      getCarTypeList(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.carTypes = res.carTypes;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getCarSizeList(params) {
+      getCarSizeList(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.carSizes = res.carSizes;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getRouterAliaList(params) {
+      getRouterAliaList(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.routerDetail = res.routerDetail;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _confirmDriver(params) {
+      confirmDriver(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: "success",
+              message: "指派成功!"
+            });
+            this.addDialog = false;
+            this.orderDetailDialog = false;
+            this.onSearch();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _selectDriver(params) {
+      selectDriver(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.driverModel = res.driverModel;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    onSearch() {
+      const params = {
         current: this.currentPage,
-        pageSize: 1000,
+        pageSize: this.pageSize,
         customerNumId: this.customerNumId,
         deliverStatus: this.searchItem.deliverStatus,
         carType: this.searchItem.carType,
@@ -401,183 +517,100 @@
         customerNameSearchKey: this.searchItem.customerNameSearchKey,
         routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
         routerNumberSearchKey: this.searchItem.routerNumberSearchKey
-      })
+      };
+      this._getOrderByCustomerNumId(params);
     },
-    methods: {
-      _getDriverOrderDetail (params) {
-        getDriverOrderDetail(params).then(res => {
-          if (res.code === 0) {
-            this.orderDetail = res
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getOrderByCustomerNumId (params) {
-        getOrderByCustomerNumId(params).then(res => {
-          if (res.code === 0) {
-            this.tableData = res.orderModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getCarTypeList (params) {
-        getCarTypeList(params).then(res => {
-          if (res.code === 0) {
-            this.carTypes = res.carTypes
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getCarSizeList (params) {
-        getCarSizeList(params).then(res => {
-          if (res.code === 0) {
-            this.carSizes = res.carSizes
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getRouterAliaList (params) {
-        getRouterAliaList(params).then(res => {
-          if (res.code === 0) {
-            this.routerDetail = res.routerDetail
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _confirmDriver (params) {
-        confirmDriver(params).then(res => {
-          if (res.code === 0) {
-            this.$message({
-              type: 'success',
-              message: '指派成功!'
-            })
-            this.addDialog = false
-            this.orderDetailDialog = false
-            this.onSearch()
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _selectDriver (params) {
-        selectDriver(params).then(res => {
-          if (res.code === 0) {
-            this.driverModel = res.driverModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      onSearch () {
-        const params = {
-          current: this.currentPage,
-          pageSize: this.pageSize,
+    onSearchPop() {
+      this._selectDriver({
+        current: this.curPage,
+        pageSize: this.pgSize,
+        customerNumId: this.customerNumId,
+        appointmentDate: this.searchItemPop.appointmentDate,
+        carPlateNumberSearchKey: this.searchItemPop.carPlateNumberSearchKey,
+        carTypeSeries: this.searchItemPop.carTypeSeries,
+        driverNameSearchKey: this.searchItemPop.driverNameSearchKey,
+        routerDetailSeries: this.searchItemPop.routerDetailSeries
+      });
+    },
+    onAssign(index, row) {
+      this.addDialog = true;
+      this.searchItemPop.appointmentDate = row.appointmentDate;
+      this.searchItemPop.carTypeSeries = row.carType;
+      this.searchItemPop.routerDetailSeries = row.routerDetailSeries;
+      this.searchItemPop.series = row.series;
+      // 加载全部数据
+      this.onSearchPop();
+    },
+    onAssignConfirm() {
+      if (this.orderDetail.carRealMoney <= this.orderDetail.carMoney) {
+        this._confirmDriver({
+          carRealMoney: this.orderDetail.carRealMoney,
           customerNumId: this.customerNumId,
-          deliverStatus: this.searchItem.deliverStatus,
-          carType: this.searchItem.carType,
-          appointmentDate: this.searchItem.appointmentDate,
-          customerNameSearchKey: this.searchItem.customerNameSearchKey,
-          routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-          routerNumberSearchKey: this.searchItem.routerNumberSearchKey
-        }
-        this._getOrderByCustomerNumId(params)
-      },
-      onSearchPop () {
-        this._selectDriver({
-          current: this.curPage,
-          pageSize: this.pgSize,
-          customerNumId: this.customerNumId,
-          appointmentDate: this.searchItemPop.appointmentDate,
-          carPlateNumberSearchKey: this.searchItemPop.carPlateNumberSearchKey,
-          carTypeSeries: this.searchItemPop.carTypeSeries,
-          driverNameSearchKey: this.searchItemPop.driverNameSearchKey,
-          routerDetailSeries: this.searchItemPop.routerDetailSeries
-        })
-      },
-      onAssign (index, row) {
-        this.addDialog = true
-        this.searchItemPop.appointmentDate = row.appointmentDate
-        this.searchItemPop.carTypeSeries = row.carType
-        this.searchItemPop.routerDetailSeries = row.routerDetailSeries
-        this.searchItemPop.series = row.series
-        // 加载全部数据
-        this.onSearchPop()
-      },
-      onAssignConfirm () {
-        if (this.orderDetail.carRealMoney <= this.orderDetail.carMoney) {
-          this._confirmDriver({
-            carRealMoney: this.orderDetail.carRealMoney,
-            customerNumId: this.customerNumId,
-            driverSeries: this.driverSeries,
-            orderSeries: this.searchItemPop.series
-          })
-        } else {
-          this.$message.error('接单价必须不高于车辆报价！')
-        }
-      },
-      onCheckOrderDetail (index, row) {
-        this.orderDetailDialog = true
-        this.driverSeries = row.series
-        this._getDriverOrderDetail({
-          customerNumId: this.customerNumId,
-          driverSeries: row.series,
+          driverSeries: this.driverSeries,
           orderSeries: this.searchItemPop.series
-        })
-      },
-      handleSizeChange (val) {
-        console.log(`每页 ${val} 条`)
-        this.pageSize = val
-      },
-      handleCurrentChange (val) {
-        console.log(`当前页: ${val}`)
-        this.currentPage = val
-        // this._getAllRouterAndEmployee({
-        //   current: this.currentPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-        //   pageSize: val,
-        //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-        // })
-      },
-      handleSzChange (val) {
-        this.pgSize = val
-      },
-      handleCurChange (val) {
-        this.curPage = val
-        // this._getAllEmployee({
-        //   current: this.curPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeJobNumSearchKey: '',
-        //   employeeNameSearchKey: '',
-        //   jobId: 0,
-        //   pageSize: this.pgSize
-        // })
+        });
+      } else {
+        this.$message.error("接单价必须不高于车辆报价！");
       }
+    },
+    onCheckOrderDetail(index, row) {
+      this.orderDetailDialog = true;
+      this.driverSeries = row.series;
+      this._getDriverOrderDetail({
+        customerNumId: this.customerNumId,
+        driverSeries: row.series,
+        orderSeries: this.searchItemPop.series
+      });
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      // this._getAllRouterAndEmployee({
+      //   current: this.currentPage,
+      //   customerNumId: this.customerNumId,
+      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+      //   pageSize: val,
+      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
+      // })
+    },
+    handleSzChange(val) {
+      this.pgSize = val;
+    },
+    handleCurChange(val) {
+      this.curPage = val;
+      // this._getAllEmployee({
+      //   current: this.curPage,
+      //   customerNumId: this.customerNumId,
+      //   employeeJobNumSearchKey: '',
+      //   employeeNameSearchKey: '',
+      //   jobId: 0,
+      //   pageSize: this.pgSize
+      // })
     }
   }
+};
 </script>
 
 <style lang="scss" scoped>
-  .page {
-    .block {
-      padding: 10px 0;
-      text-align: right;
-    }
-    .order-price {
-      margin: 0
-    }
-    .i-list {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-      & li{
-        padding: 5px 15px;
-      }
+.page {
+  .block {
+    padding: 10px 0;
+    text-align: right;
+  }
+  .order-price {
+    margin: 0;
+  }
+  .i-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    & li {
+      padding: 5px 15px;
     }
   }
+}
 </style>

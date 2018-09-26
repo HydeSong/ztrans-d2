@@ -60,7 +60,7 @@
                 label="操作"
                 width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="onDeleteLocalDetail(scope.$index, scope.row)" v-if="scope.$index % 2 === 1">删除</el-button>
+                  <el-button type="text" @click="onDeleteLocalDetail(scope.$index, scope.row)" v-if="scope.$index % 2 === 1" size="mini">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -87,8 +87,8 @@
           label="操作"
           width="160">
           <template slot-scope="scope">
-            <el-button @click="onEditLocalPrice(scope.$index, scope.row)" type="text">编辑</el-button>
-            <el-button @click="onDeleteLocalPrice(scope.$index, scope.row)" type="text">删除</el-button>
+            <el-button @click="onEditLocalPrice(scope.$index, scope.row)" type="text" size="mini">编辑</el-button>
+            <el-button @click="onDeleteLocalPrice(scope.$index, scope.row)" type="text" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -382,472 +382,528 @@
 </template>
 
 <script>
-  import { getRouterAliaList } from '@/api/schedule'
-  import { getCarTypeList } from '@/api/order'
-  import { getAllRouterPriceByRouterId, deleteRouterByRouterId, addRouterPrice, deleteRouterPrice, updateBatchRouterPrice } from '@/api/price'
-  import { getAllPrv, getAllCity, getAllCityArea, getAllTown } from '@/api/dictionary'
-  import Cookies from 'js-cookie'
-  export default {
-    data () {
-      return {
-        customerNumId: Cookies.get('__user__customernumid'),
-        currentPage: 1,
+import { getRouterAliaList } from "@/api/schedule";
+import { getCarTypeList } from "@/api/order";
+import {
+  getAllRouterPriceByRouterId,
+  deleteRouterByRouterId,
+  addRouterPrice,
+  deleteRouterPrice,
+  updateBatchRouterPrice
+} from "@/api/price";
+import {
+  getAllPrv,
+  getAllCity,
+  getAllCityArea,
+  getAllTown
+} from "@/api/dictionary";
+import Cookies from "js-cookie";
+export default {
+  data() {
+    return {
+      customerNumId: Cookies.get("__user__customernumid"),
+      currentPage: 1,
+      pageSize: 200,
+      curPage: 1,
+      pgSize: 100,
+      routerDetail: [],
+      searchItem: {
+        routerDetailAliaSearchKey: "",
+        routerDetailSeries: "",
+        routerNumberSearchKey: "",
+        routerType: 1
+      },
+      addItem: {
+        children: [],
+        customerNumId: "",
+        destinationCity: "",
+        destinationCityArea: "",
+        destinationPrv: "",
+        destinationTown: "",
+        remark: "",
+        routerAlia: "",
+        routerNumber: "",
+        routerType: 1,
+        sourceCity: "",
+        sourceCityArea: "",
+        sourcePrv: "",
+        sourceTown: ""
+      },
+      priceSetAddList: [],
+      priceSetAddItem0: {
+        carTypeName: "",
+        carTypeRealName: "",
+        franchiseeProportion: "",
+        initDistance: "",
+        initPrice: "",
+        overstepPrice: "",
+        routerCustomerType: 0,
+        routerPriceId: "",
+        routerType: 1,
+        saleProportion: ""
+      },
+      priceSetAddItem1: {
+        carTypeName: "",
+        carTypeRealName: "",
+        franchiseeProportion: "",
+        initDistance: "",
+        initPrice: "",
+        overstepPrice: "",
+        routerCustomerType: 1,
+        routerPriceId: "",
+        routerType: 1,
+        saleProportion: ""
+      },
+      tableData: [],
+      searching: false,
+      addDialog: false,
+      editDialog: false,
+      innerAddVisible: false,
+      allPrv: [],
+      allCity: [],
+      allCityArea: [],
+      allTown: [],
+      carTypes: [],
+      carTypeName: ""
+    };
+  },
+  computed: {
+    totalPage() {
+      return this.tableData.length;
+    },
+    tableInlineData() {
+      return this.tableData.slice(
+        (this.currentPage - 1) * this.pageSize,
+        this.currentPage * this.pageSize
+      );
+    }
+  },
+  created() {
+    this._getRouterAliaList({
+      customerNumId: this.customerNumId
+    });
+    this.onSearch();
+  },
+  watch: {
+    "addItem.sourcePrv"() {
+      // this.addItem.sourceCity = ''
+      // this.addItem.sourceCityArea = ''
+      // this.addItem.sourceTown = ''
+      this._getAllCity({
+        current: 1,
         pageSize: 200,
-        curPage: 1,
-        pgSize: 100,
-        routerDetail: [],
-        searchItem: {
-          routerDetailAliaSearchKey: '',
-          routerDetailSeries: '',
-          routerNumberSearchKey: '',
-          routerType: 1
-        },
-        addItem: {
-          children: [],
-          customerNumId: '',
-          destinationCity: '',
-          destinationCityArea: '',
-          destinationPrv: '',
-          destinationTown: '',
-          remark: '',
-          routerAlia: '',
-          routerNumber: '',
-          routerType: 1,
-          sourceCity: '',
-          sourceCityArea: '',
-          sourcePrv: '',
-          sourceTown: ''
-        },
-        priceSetAddList: [],
-        priceSetAddItem0: {
-          carTypeName: '',
-          carTypeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 0,
-          routerPriceId: '',
-          routerType: 1,
-          saleProportion: ''
-        },
-        priceSetAddItem1: {
-          carTypeName: '',
-          carTypeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 1,
-          routerPriceId: '',
-          routerType: 1,
-          saleProportion: ''
-        },
-        tableData: [],
-        searching: false,
-        addDialog: false,
-        editDialog: false,
-        innerAddVisible: false,
-        allPrv: [],
-        allCity: [],
-        allCityArea: [],
-        allTown: [],
-        carTypes: [],
-        carTypeName: ''
-      }
+        customerNumId: this.customerNumId,
+        prvId: this.addItem.sourcePrv
+      });
     },
-    computed: {
-      totalPage () {
-        return this.tableData.length
-      },
-      tableInlineData () {
-        return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
-      }
+    "addItem.sourceCity"() {
+      // this.addItem.sourceCityArea = ''
+      // this.addItem.sourceTown = ''
+      this._getAllCityArea({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        prvId: this.addItem.sourcePrv,
+        cityId: this.addItem.sourceCity
+      });
     },
-    created () {
-      this._getRouterAliaList({
-        customerNumId: this.customerNumId
+    "addItem.sourceCityArea"() {
+      // this.addItem.sourceTown = ''
+      this._getAllTown({
+        current: 1,
+        pageSize: 200,
+        customerNumId: this.customerNumId,
+        cityAreaId: this.addItem.sourceCityArea
+      });
+    }
+  },
+  methods: {
+    routerCustomerTypeFormat(val) {
+      return val.routerCustomerType === 0 ? "客户报价" : "司机报价";
+    },
+    _getCarTypeList(params) {
+      getCarTypeList(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.carTypes = res.carTypes;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllPrv(params) {
+      getAllPrv(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.allPrv = res.prvNameAndPrvIds;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCity(params) {
+      getAllCity(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.allCity = res.cityeNameAndCityeIds;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllCityArea(params) {
+      getAllCityArea(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.allCityArea = res.cityAreaNameAndCityAreaIdModel;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllTown(params) {
+      getAllTown(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.allTown = res.townNameAndTownIdModel;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getRouterAliaList(params) {
+      getRouterAliaList(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.routerDetail = res.routerDetail;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getAllRouterPriceByRouterId(params) {
+      getAllRouterPriceByRouterId(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.tableData = res.allRouterPriceGetModels;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    onSearch() {
+      this._getAllRouterPriceByRouterId({
+        current: this.currentPage,
+        pageSize: this.pageSize,
+        customerNumId: this.customerNumId,
+        routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
+        routerDetailSeries: this.searchItem.routerDetailSeries,
+        routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
+        routerType: this.searchItem.routerType
+      });
+    },
+    onDeleteLocalPrice(index, row) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-      this.onSearch()
+        .then(() => {
+          this._deleteRouterByRouterId(
+            {
+              customerNumId: this.customerNumId,
+              routerDetailSeries: row.routerDetailSeries
+            },
+            index
+          );
+        })
+        .catch(() => {
+          console.log("取消删除");
+        });
     },
-    watch: {
-      'addItem.sourcePrv' () {
-        // this.addItem.sourceCity = ''
-        // this.addItem.sourceCityArea = ''
-        // this.addItem.sourceTown = ''
-        this._getAllCity({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.sourcePrv
+    onDeleteLocalDetail(index, row) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this._deleteRouterPrice(
+            {
+              customerNumId: this.customerNumId,
+              routerPriceId: row.routerPriceId
+            },
+            index
+          );
         })
-      },
-      'addItem.sourceCity' () {
-        // this.addItem.sourceCityArea = ''
-        // this.addItem.sourceTown = ''
-        this._getAllCityArea({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          prvId: this.addItem.sourcePrv,
-          cityId: this.addItem.sourceCity
-        })
-      },
-      'addItem.sourceCityArea' () {
-        // this.addItem.sourceTown = ''
-        this._getAllTown({
-          current: 1,
-          pageSize: 200,
-          customerNumId: this.customerNumId,
-          cityAreaId: this.addItem.sourceCityArea
-        })
-      }
+        .catch(() => {
+          console.log("取消删除");
+        });
     },
-    methods: {
-      routerCustomerTypeFormat (val) {
-        return val.routerCustomerType === 0 ? '客户报价' : '司机报价'
-      },
-      _getCarTypeList (params) {
-        getCarTypeList(params).then(res => {
-          if (res.code === 0) {
-            this.carTypes = res.carTypes
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getAllPrv (params) {
-        getAllPrv(params).then(res => {
-          if (res.code === 0) {
-            this.allPrv = res.prvNameAndPrvIds
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getAllCity (params) {
-        getAllCity(params).then(res => {
-          if (res.code === 0) {
-            this.allCity = res.cityeNameAndCityeIds
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getAllCityArea (params) {
-        getAllCityArea(params).then(res => {
-          if (res.code === 0) {
-            this.allCityArea = res.cityAreaNameAndCityAreaIdModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getAllTown (params) {
-        getAllTown(params).then(res => {
-          if (res.code === 0) {
-            this.allTown = res.townNameAndTownIdModel
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getRouterAliaList (params) {
-        getRouterAliaList(params).then(res => {
-          if (res.code === 0) {
-            this.routerDetail = res.routerDetail
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      _getAllRouterPriceByRouterId (params) {
-        getAllRouterPriceByRouterId(params).then(res => {
-          if (res.code === 0) {
-            this.tableData = res.allRouterPriceGetModels
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      onSearch () {
-        this._getAllRouterPriceByRouterId({
-          current: this.currentPage,
-          pageSize: this.pageSize,
-          customerNumId: this.customerNumId,
-          routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey,
-          routerDetailSeries: this.searchItem.routerDetailSeries,
-          routerNumberSearchKey: this.searchItem.routerNumberSearchKey,
-          routerType: this.searchItem.routerType
-        })
-      },
-      onDeleteLocalPrice (index, row) {
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteRouterByRouterId({
-            customerNumId: this.customerNumId,
-            routerDetailSeries: row.routerDetailSeries
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
-        })
-      },
-      onDeleteLocalDetail (index, row) {
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteRouterPrice({
-            customerNumId: this.customerNumId,
-            routerPriceId: row.routerPriceId
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
-        })
-      },
-      _addRouterPrice (params) {
-        addRouterPrice(params).then(res => {
+    _addRouterPrice(params) {
+      addRouterPrice(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '添加成功!'
-            })
-            this.addDialog = false
-            this.onSearch()
+              type: "success",
+              message: "添加成功!"
+            });
+            this.addDialog = false;
+            this.onSearch();
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _deleteRouterPrice (params, index) {
-        deleteRouterPrice(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _deleteRouterPrice(params, index) {
+      deleteRouterPrice(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.onSearch()
+              type: "success",
+              message: "删除成功!"
+            });
+            this.onSearch();
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _deleteRouterByRouterId (params, index) {
-        deleteRouterByRouterId(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _deleteRouterByRouterId(params, index) {
+      deleteRouterByRouterId(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.tableData.splice(index, 1)
+              type: "success",
+              message: "删除成功!"
+            });
+            this.tableData.splice(index, 1);
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      _updateBatchRouterPrice (params) {
-        updateBatchRouterPrice(params).then(res => {
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _updateBatchRouterPrice(params) {
+      updateBatchRouterPrice(params)
+        .then(res => {
           if (res.code === 0) {
             this.$message({
-              type: 'success',
-              message: '编辑成功!'
-            })
-            this.editDialog = false
-            this.onSearch()
+              type: "success",
+              message: "编辑成功!"
+            });
+            this.editDialog = false;
+            this.onSearch();
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      onAdd () {
-        this.addDialog = true
-        this._getAllPrv({
-          current: 1,
-          customerNumId: this.customerNumId,
-          pageSize: 200
-        })
-        // 清空数据
-        this.addItem = {
-          children: [],
-          customerNumId: '',
-          destinationCity: '',
-          destinationCityArea: '',
-          destinationPrv: '',
-          destinationTown: '',
-          remark: '',
-          routerAlia: '',
-          routerNumber: '',
-          routerType: 1,
-          sourceCity: '',
-          sourceCityArea: '',
-          sourcePrv: '',
-          sourceTown: ''
-        }
-        this.priceSetAddList = []
-      },
-      onAddConfirm () {
-        this.addItem.customerNumId = this.customerNumId
-        this.addItem.destinationCity = this.addItem.sourceCity
-        this.addItem.destinationCityArea = this.addItem.sourceCityArea
-        this.addItem.destinationPrv = this.addItem.sourcePrv
-        this.addItem.destinationTown = this.addItem.sourceTown
-        this._addRouterPrice(this.addItem)
-      },
-      onEditConfirm () {
-        this.addItem.customerNumId = this.customerNumId
-        this.addItem.destinationCity = this.addItem.sourceCity
-        this.addItem.destinationCityArea = this.addItem.sourceCityArea
-        this.addItem.destinationPrv = this.addItem.sourcePrv
-        this.addItem.destinationTown = this.addItem.sourceTown
-        this._updateBatchRouterPrice(this.addItem)
-      },
-      onAddPrice () {
-        this.innerAddVisible = true
-        this._getCarTypeList({
-          customerNumId: this.customerNumId
-        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    onAdd() {
+      this.addDialog = true;
+      this._getAllPrv({
+        current: 1,
+        customerNumId: this.customerNumId,
+        pageSize: 200
+      });
+      // 清空数据
+      this.addItem = {
+        children: [],
+        customerNumId: "",
+        destinationCity: "",
+        destinationCityArea: "",
+        destinationPrv: "",
+        destinationTown: "",
+        remark: "",
+        routerAlia: "",
+        routerNumber: "",
+        routerType: 1,
+        sourceCity: "",
+        sourceCityArea: "",
+        sourcePrv: "",
+        sourceTown: ""
+      };
+      this.priceSetAddList = [];
+    },
+    onAddConfirm() {
+      this.addItem.customerNumId = this.customerNumId;
+      this.addItem.destinationCity = this.addItem.sourceCity;
+      this.addItem.destinationCityArea = this.addItem.sourceCityArea;
+      this.addItem.destinationPrv = this.addItem.sourcePrv;
+      this.addItem.destinationTown = this.addItem.sourceTown;
+      this._addRouterPrice(this.addItem);
+    },
+    onEditConfirm() {
+      this.addItem.customerNumId = this.customerNumId;
+      this.addItem.destinationCity = this.addItem.sourceCity;
+      this.addItem.destinationCityArea = this.addItem.sourceCityArea;
+      this.addItem.destinationPrv = this.addItem.sourcePrv;
+      this.addItem.destinationTown = this.addItem.sourceTown;
+      this._updateBatchRouterPrice(this.addItem);
+    },
+    onAddPrice() {
+      this.innerAddVisible = true;
+      this._getCarTypeList({
+        customerNumId: this.customerNumId
+      });
 
-        // 清空数据
-        this.carTypeName = ''
-        this.priceSetAddItem0 = {
-          carTypeName: '',
-          carTypeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 0,
-          routerPriceId: '',
-          routerType: 1,
-          saleProportion: ''
-        }
-        this.priceSetAddItem1 = {
-          carTypeName: '',
-          carTypeRealName: '',
-          franchiseeProportion: '',
-          initDistance: '',
-          initPrice: '',
-          overstepPrice: '',
-          routerCustomerType: 1,
-          routerPriceId: '',
-          routerType: 1,
-          saleProportion: ''
-        }
-      },
-      onDeleteDetailPrice (index, row) {
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteRouterCustomerPrice({
-            customerNumId: this.customerNumId,
-            routerPriceId: row.routerPriceId
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
+      // 清空数据
+      this.carTypeName = "";
+      this.priceSetAddItem0 = {
+        carTypeName: "",
+        carTypeRealName: "",
+        franchiseeProportion: "",
+        initDistance: "",
+        initPrice: "",
+        overstepPrice: "",
+        routerCustomerType: 0,
+        routerPriceId: "",
+        routerType: 1,
+        saleProportion: ""
+      };
+      this.priceSetAddItem1 = {
+        carTypeName: "",
+        carTypeRealName: "",
+        franchiseeProportion: "",
+        initDistance: "",
+        initPrice: "",
+        overstepPrice: "",
+        routerCustomerType: 1,
+        routerPriceId: "",
+        routerType: 1,
+        saleProportion: ""
+      };
+    },
+    onDeleteDetailPrice(index, row) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this._deleteRouterCustomerPrice(
+            {
+              customerNumId: this.customerNumId,
+              routerPriceId: row.routerPriceId
+            },
+            index
+          );
         })
-      },
-      onAddPriceConfirm () {
-        this.innerAddVisible = false
+        .catch(() => {
+          console.log("取消删除");
+        });
+    },
+    onAddPriceConfirm() {
+      this.innerAddVisible = false;
 
-        const item = this.carTypeName.split('-')
-        this.priceSetAddItem0.carTypeName = item[0]
-        this.priceSetAddItem0.carTypeRealName = item[1]
-        this.priceSetAddItem1.carTypeName = item[0]
-        this.priceSetAddItem1.carTypeRealName = item[1]
-        this.priceSetAddList.push(this.priceSetAddItem0)
-        this.priceSetAddList.push(this.priceSetAddItem1)
+      const item = this.carTypeName.split("-");
+      this.priceSetAddItem0.carTypeName = item[0];
+      this.priceSetAddItem0.carTypeRealName = item[1];
+      this.priceSetAddItem1.carTypeName = item[0];
+      this.priceSetAddItem1.carTypeRealName = item[1];
+      this.priceSetAddList.push(this.priceSetAddItem0);
+      this.priceSetAddList.push(this.priceSetAddItem1);
 
-        // TODO: fixbug 报价设置列表填了一个报价，然后再删除，还能传到后台
-        this.addItem.children.push({
-          carTypeName: item[0],
-          routerType: 1,
-          routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
+      // TODO: fixbug 报价设置列表填了一个报价，然后再删除，还能传到后台
+      this.addItem.children.push({
+        carTypeName: item[0],
+        routerType: 1,
+        routerPriceList: [this.priceSetAddItem0, this.priceSetAddItem1]
+      });
+    },
+    onDeleteCustomerPrice(index, row) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this._deleteRouterByRouterId(
+            {
+              customerNumId: this.customerNumId,
+              routerDetailSeries: row.routerDetailSeries
+            },
+            index
+          );
         })
-      },
-      onDeleteCustomerPrice (index, row) {
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this._deleteRouterByRouterId({
-            customerNumId: this.customerNumId,
-            routerDetailSeries: row.routerDetailSeries
-          }, index)
-        }).catch(() => {
-          console.log('取消删除')
-        })
-      },
-      onEditLocalPrice (index, row) {
-        this._getAllPrv({
-          current: 1,
-          customerNumId: this.customerNumId,
-          pageSize: 200
-        })
+        .catch(() => {
+          console.log("取消删除");
+        });
+    },
+    onEditLocalPrice(index, row) {
+      this._getAllPrv({
+        current: 1,
+        customerNumId: this.customerNumId,
+        pageSize: 200
+      });
 
-        this.addItem.children = []
-        this.addItem.customerNumId = row.customerNumId
-        this.addItem.destinationCity = row.destinationCity
-        this.addItem.destinationCityArea = row.destinationCityArea
-        this.addItem.destinationPrv = row.destinationPrv
-        this.addItem.destinationTown = row.destinationTown
-        this.addItem.remark = row.remark
-        this.addItem.routerAlia = row.routerAlia
-        this.addItem.routerDetailSeries = row.routerDetailSeries
-        this.addItem.routerNumber = row.routerNumber
-        this.addItem.sourceCity = row.sourceCity
-        this.addItem.sourceCityArea = row.sourceCityArea
-        this.addItem.sourcePrv = row.sourcePrv
-        this.addItem.sourceTown = row.sourceTown
+      this.addItem.children = [];
+      this.addItem.customerNumId = row.customerNumId;
+      this.addItem.destinationCity = row.destinationCity;
+      this.addItem.destinationCityArea = row.destinationCityArea;
+      this.addItem.destinationPrv = row.destinationPrv;
+      this.addItem.destinationTown = row.destinationTown;
+      this.addItem.remark = row.remark;
+      this.addItem.routerAlia = row.routerAlia;
+      this.addItem.routerDetailSeries = row.routerDetailSeries;
+      this.addItem.routerNumber = row.routerNumber;
+      this.addItem.sourceCity = row.sourceCity;
+      this.addItem.sourceCityArea = row.sourceCityArea;
+      this.addItem.sourcePrv = row.sourcePrv;
+      this.addItem.sourceTown = row.sourceTown;
 
-        // 深拷贝
-        this.priceSetAddList = row.routerPriceList.slice()
-        this.editDialog = true
-      },
-      handleSizeChange (val) {
-        console.log(`每页 ${val} 条`)
-        this.pageSize = val
-      },
-      handleCurrentChange (val) {
-        console.log(`当前页: ${val}`)
-        this.currentPage = val
-        // this._getAllRouterAndEmployee({
-        //   current: this.currentPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-        //   pageSize: val,
-        //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-        // })
-      },
-      handleSzChange (val) {
-        this.pgSize = val
-      },
-      handleCurChange (val) {
-        this.curPage = val
-        // this._getAllEmployee({
-        //   current: this.curPage,
-        //   customerNumId: this.customerNumId,
-        //   employeeJobNumSearchKey: '',
-        //   employeeNameSearchKey: '',
-        //   jobId: 0,
-        //   pageSize: this.pgSize
-        // })
-      }
+      // 深拷贝
+      this.priceSetAddList = row.routerPriceList.slice();
+      this.editDialog = true;
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      // this._getAllRouterAndEmployee({
+      //   current: this.currentPage,
+      //   customerNumId: this.customerNumId,
+      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
+      //   pageSize: val,
+      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
+      // })
+    },
+    handleSzChange(val) {
+      this.pgSize = val;
+    },
+    handleCurChange(val) {
+      this.curPage = val;
+      // this._getAllEmployee({
+      //   current: this.curPage,
+      //   customerNumId: this.customerNumId,
+      //   employeeJobNumSearchKey: '',
+      //   employeeNameSearchKey: '',
+      //   jobId: 0,
+      //   pageSize: this.pgSize
+      // })
     }
   }
+};
 </script>
 
 <style lang="scss" scoped>
-  .page {
-    .block {
-      padding: 10px 0;
-      text-align: right;
-    }
+.page {
+  .block {
+    padding: 10px 0;
+    text-align: right;
   }
+}
 </style>
