@@ -148,3 +148,16 @@ export function getConsumerRouterPriceByRouterId (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function getRouterPriceByRouterId (params) {
+  const url = `${CONFIG.HOST}/getRouterPriceByRouterId`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
