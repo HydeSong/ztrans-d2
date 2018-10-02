@@ -1073,6 +1073,37 @@ export default {
       this.addItem.destinationTown = this.addItem.sourceTown;
       this._updateBatchRouterPrice(this.addItem);
     },
+    onEditPriceConfirm(index) {
+      this.innerEditVisible = false;
+      // console.log(index)
+      const item = this.carTypeName.split("-");
+      this.priceSetAddItem0.carTypeName = item[0];
+      this.priceSetAddItem0.carTypeRealName = item[1];
+      this.priceSetAddItem1.carTypeName = item[0];
+      this.priceSetAddItem1.carTypeRealName = item[1];
+
+      const item1 = this.carSizeName.split("-");
+      this.priceSetAddItem0.carSizeName = item1[0];
+      this.priceSetAddItem0.carSizeRealName = item1[1];
+      this.priceSetAddItem1.carSizeName = item1[0];
+      this.priceSetAddItem1.carSizeRealName = item1[1];
+
+      this.priceSetAddList[index - 1] = this.priceSetAddItem0;
+      this.priceSetAddList[index] = this.priceSetAddItem1;
+
+      this.addItem.children[index - 1] = {
+        carTypeName: item[0],
+        carSizeName: item1[0],
+        routerType: 1,
+        routerPriceList: [this.priceSetAddItem0]
+      };
+      this.addItem.children[index] = {
+        carTypeName: item[0],
+        carSizeName: item1[0],
+        routerType: 1,
+        routerPriceList: [this.priceSetAddItem1]
+      };
+    },
     onAddPrice() {
       this.innerAddVisible = true;
       this._getCarTypeList({
