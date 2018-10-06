@@ -30,10 +30,11 @@
         </el-form-item>
       </el-form>
       <d2-crud
-            :columnWs="columns"
+            :columns="columns"
             :data="tableInlineData"
             :pagination="pagination"
-            :loading="loading"/>
+            :loading="loading"
+      />
     </template>
   </d2-container>
 </template>
