@@ -91,7 +91,16 @@ const frameIn = [
     children: (pre => [
       { path: 'list', name: `${pre}list`, component: () => import('@/pages/orderprice/list'), meta: { ...meta, title: '订单费用' } }
     ])('orderprice-')
-  }
+  },{
+  path: '/createorder',
+    name: 'createorder',
+    meta,
+    redirect: { name: 'createorder-create' },
+  component: () => import('@/components/core/d2-layout-main'),
+    children: (pre => [
+    { path: 'create', name: `${pre}create`, component: () => import('@/pages/createorder/create'), meta: { ...meta, title: '后台下单' } }
+])('createorder-')
+}
   // {
   //   path: '/demo/business',
   //   name: 'demo-business',

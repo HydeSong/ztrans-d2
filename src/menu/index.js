@@ -68,6 +68,15 @@ const orderprice = {
   ])('/orderprice/')
 }
 
+const createorder = {
+  path: '/createorder',
+  title: '后台下单',
+  icon: 'rocket',
+  children: (pre => [
+    { path: `${pre}create`, title: '后台下单', icon: 'list-ol' }
+  ])('/createorder/')
+}
+
 // 菜单 侧边栏
 export const side = [
   schedule,
@@ -91,6 +100,7 @@ export default [
   customer,
   truck,
   price,
-  orderprice
+  orderprice,
+  createorder
   // demoBusiness
 ]
