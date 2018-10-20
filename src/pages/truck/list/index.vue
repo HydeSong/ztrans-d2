@@ -28,76 +28,16 @@
           <el-button type="primary" @click="onAddCar" icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
-      <el-table
-        size="mini"
-        :data="tableInlineData"
-        highlight-current-row
-        style="width: 100%"
-        stripe>
-        <el-table-column
-          fixed
-          type="index"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          fixed
-          prop="carPlateNumber"
-          label="车牌号">
-        </el-table-column>
-        <el-table-column
-          prop="carTypeRealName"
-          label="车型">
-        </el-table-column>
-        <el-table-column
-          prop="carSizeRealName"
-          label="尺寸">
-        </el-table-column>
-        <el-table-column
-          prop="driverName"
-          label="司机姓名">
-        </el-table-column>
-        <el-table-column
-          prop="district"
-          label="接单区域">
-        </el-table-column>
-        <el-table-column
-          prop="driverIdentityId"
-          label="司机身份证">
-        </el-table-column>
-        <el-table-column
-          prop="driverPhone"
-          label="司机手机">
-        </el-table-column>
-        <el-table-column
-          prop="activeStatusName"
-          label="激活状态">
-        </el-table-column>
-        <el-table-column
-          prop="checkStatusName"
-          label="审核状态">
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="160">
-          <template slot-scope="scope">
-            <el-button @click="onEditCar(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onDetailCar(scope.$index, scope.row)" type="text" size="small">查看</el-button>
-            <el-button @click="onDeleteCar(scope.$index, scope.row)" type="text" size="small">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination-wrapper">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalPage">
-        </el-pagination>
-      </div>
+      <d2-crud
+          :columns="columns"
+          :index-row="indexRow"
+          :data="tableInlineData"
+          :pagination="pagination"
+          :loading="loading"
+          :rowHandle="rowHandle"
+          @edit="onEditCar"
+          @view="onDetailCar"
+          @delete="onDeleteCar"/>
       <el-dialog title="车辆详情" :visible.sync="detailCarDialog">
         <el-row>
           <el-col :span="12">
@@ -518,11 +458,78 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
+      loading: false,
+      indexRow: {
+        title: '#'
+      },
+      columns: [
+        {
+          title: "车牌号",
+          key: "carPlateNumber"
+        },
+        {
+          title: "车型",
+          key: "carTypeRealName"
+        },
+        {
+          title: "尺寸",
+          key: "carSizeRealName"
+        },
+        {
+          title: "司机姓名",
+          key: "driverName"
+        },
+        {
+          title: "接单区域",
+          key: "district"
+        },
+        {
+          title: "司机身份证",
+          key: "driverIdentityId"
+        },
+        {
+          title: "司机手机",
+          key: "driverPhone"
+        },
+        {
+          title: "激活状态",
+          key: "activeStatusName"
+        },
+        {
+          title: "审核状态",
+          key: "checkStatusName"
+        }
+      ],
+      pagination: {
+        pageSize: 10,
+        layout: "sizes, prev, pager, next, jumper, ->, total"
+      },
+      rowHandle: {
+        fixed: 'right',
+        custom: [
+          {
+            text: "编辑",
+            type: "text",
+            size: "mini",
+            emit: "edit"
+          },
+          {
+            text: "查看",
+            type: "text",
+            size: "mini",
+            emit: "view"
+          },
+          {
+            text: "删除",
+            type: "text",
+            size: "mini",
+            emit: "delete"
+          }
+        ]
+      },
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
-      pageSize: 200,
-      curPage: 1,
-      pgSize: 100,
+      pageSize: 1000,
       routerDetail: [],
       searchItem: {
         checkStatus: "",
@@ -1046,10 +1053,12 @@ export default {
         });
     },
     _getAllCar(params) {
+      this.loading = true;
       getAllCar(params)
         .then(res => {
           if (res.code === 0) {
             this.tableData = res.cars;
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -1124,7 +1133,7 @@ export default {
       this.addCarItem.customerNumId = this.customerNumId;
       this._addCar(this.addCarItem);
     },
-    onEditCar(index, row) {
+    onEditCar({ index, row }) {
       this.addCarItem.drivingLicense = "";
       this.addCarItem.drivingPicture = "";
       this.addCarItem.identityCard = "";
@@ -1139,15 +1148,14 @@ export default {
       this.addCarItem.customerNumId = this.customerNumId;
       this._updateCar(this.addCarItem);
     },
-    onDetailCar(index, row) {
+    onDetailCar({ index, row }) {
       this.detailCarDialog = true;
       this._getCarDetail({
         carId: row.carId,
         customerNumId: this.customerNumId
       });
     },
-    onDeleteCar(index, row) {
-      console.log(row);
+    onDeleteCar({ index, row }) {
       this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1165,35 +1173,6 @@ export default {
         .catch(() => {
           console.log("取消删除");
         });
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.pageSize = val;
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-      // this._getAllRouterAndEmployee({
-      //   current: this.currentPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-      //   pageSize: val,
-      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-      // })
-    },
-    handleSzChange(val) {
-      this.pgSize = val;
-    },
-    handleCurChange(val) {
-      this.curPage = val;
-      // this._getAllEmployee({
-      //   current: this.curPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeJobNumSearchKey: '',
-      //   employeeNameSearchKey: '',
-      //   jobId: 0,
-      //   pageSize: this.pgSize
-      // })
     }
   }
 };

@@ -33,131 +33,17 @@
           :picker-options="pickerOptions">
         </el-date-picker>
         <el-form-item>
-          <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
+          <el-button type="primary" @click="onSearch" icon="el-icon-search">查询</el-button>
         </el-form-item>
       </el-form>
-      <el-table
-        size="mini"
-        :data="tableInlineData"
-        highlight-current-row
-        style="width: 100%"
-        stripe>
-        <el-table-column
-          fixed
-          type="index"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          fixed
-          prop="series"
-          label="订单号">
-        </el-table-column>
-        <el-table-column
-          width="140"
-          prop="routerAlisa"
-          label="线路别名（编号）">
-        </el-table-column>
-        <el-table-column
-          prop="driverName"
-          label="司机姓名">
-        </el-table-column>
-        <el-table-column
-          prop="carPlateNumber"
-          label="车牌号">
-        </el-table-column>
-        <el-table-column
-          prop="carTypeName"
-          label="车型">
-        </el-table-column>
-        <el-table-column
-          prop="carSizeName"
-          label="尺寸">
-        </el-table-column>
-        <el-table-column
-          prop="wetherTakeover"
-          label="需要搬卸">
-        </el-table-column>
-        <el-table-column
-          prop="appointmentDate"
-          label="用车时间">
-        </el-table-column>
-        <el-table-column
-          prop="initPrice"
-          label="起步价">
-        </el-table-column>
-        <el-table-column
-          prop="overstepPrice"
-          label="超出价格">
-        </el-table-column>
-        <el-table-column
-          prop="masterCustomerName"
-          label="客户姓名">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsLocationNum"
-          label="发货/收货点数">
-        </el-table-column>
-        <el-table-column
-          prop="createOrderName"
-          label="下单人">
-        </el-table-column>
-        <el-table-column
-          prop="createOrderTime"
-          label="下单时间">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsPersonName"
-          label="发货人">
-        </el-table-column>
-        <el-table-column
-          prop="sendAddressDetail"
-          label="发货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsPersonMobile"
-          label="发货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonName"
-          label="收货人">
-        </el-table-column>
-        <el-table-column
-          prop="receiveAddressDetail"
-          label="收货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonMobile"
-          label="收货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="goodsRemark"
-          label="货物描述">
-        </el-table-column>
-        <el-table-column
-          prop="remark"
-          label="补充信息">
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="100">
-          <template slot-scope="scope">
-            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">修改车辆</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="block">
-        <el-pagination
-          size="mini"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalPage">
-        </el-pagination>
-      </div>
+      <d2-crud
+          :columns="columns"
+          :index-row="indexRow"
+          :data="tableInlineData"
+          :pagination="pagination"
+          :loading="loading"
+          :rowHandle="rowHandle"
+          @assign="onAssign"/>
       <el-dialog title="修改车辆" :visible.sync="addDialog">
         <el-form :inline="true" :model="searchItemPop" size="mini">
           <el-form-item>
@@ -177,7 +63,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
+            <el-button type="primary" @click="onSearchPop" icon="el-icon-search">查询</el-button>
           </el-form-item>
         </el-form>
         <el-table
@@ -223,18 +109,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block">
-          <el-pagination
-            size="mini"
-            @size-change="handleSzChange"
-            @current-change="handleCurChange"
-            :current-page="curPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pgSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="addTotalPage">
-          </el-pagination>
-        </div>
       </el-dialog>
       <el-dialog title="已接单明细" :visible.sync="orderDetailDialog">
         <div class="block" style="text-align: left">
@@ -310,11 +184,112 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
+      loading: false,
+      indexRow: {
+        title: '#'
+      },
+      columns: [
+        {
+          title: "订单号",
+          key: "series"
+        },
+        {
+          title: "线路别名（编号）",
+          key: "routerAlisa"
+        },
+        {
+          title: "车型",
+          key: "carTypeName"
+        },
+        {
+          title: "尺寸",
+          key: "carSizeName"
+        },
+        {
+          title: "需要搬卸",
+          key: "wetherTakeover"
+        },
+        {
+          title: "用车时间",
+          key: "appointmentDate"
+        },
+        {
+          title: "起步价",
+          key: "initPrice"
+        },
+        {
+          title: "超出价格",
+          key: "overstepPrice"
+        },
+        {
+          title: "客户姓名",
+          key: "masterCustomerName"
+        },
+        {
+          title: "发货/收货点数",
+          key: "sendGoodsLocationNum"
+        },
+        {
+          title: "下单人",
+          key: "createOrderName"
+        },
+        {
+          title: "下单时间",
+          key: "createOrderTime"
+        },
+        {
+          title: "发货人",
+          key: "sendGoodsPersonName"
+        },
+        {
+          title: "发货详细地址",
+          key: "sendAddressDetail"
+        },
+        {
+          title: "发货人联系电话",
+          key: "sendGoodsPersonMobile"
+        },
+        {
+          title: "收货人",
+          key: "receiveGoodsPersonName"
+        },
+        {
+          title: "收货详细地址",
+          key: "receiveAddressDetail"
+        },
+        {
+          title: "收货人联系电话",
+          key: "receiveGoodsPersonMobile"
+        },
+        {
+          title: "货物描述",
+          key: "goodsRemark"
+        },
+        {
+          title: "补充信息",
+          key: "remark"
+        }
+      ],
+      pagination: {
+        pageSize: 10,
+        layout: "sizes, prev, pager, next, jumper, ->, total"
+      },
+      rowHandle: {
+        fixed: 'right',
+        custom: [
+          {
+            text: "指派车辆",
+            type: "text",
+            size: "mini",
+            emit: "assign"
+          }
+        ]
+      },
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
-      pageSize: 200,
+      pageSize: 1000,
       curPage: 1,
-      pgSize: 100,
+      pgSize: 1000,
       routerDetail: [],
       carTypes: [],
       carSizes: [],
@@ -337,7 +312,6 @@ export default {
       },
       driverSeries: "",
       tableData: [],
-      searching: false,
       addDialog: false,
       orderDetailDialog: false,
       orderDetail: {},
@@ -410,17 +384,7 @@ export default {
     this._getCarSizeList({
       customerNumId: this.customerNumId
     });
-    this._getOrderByCustomerNumId({
-      current: this.currentPage,
-      pageSize: 1000,
-      customerNumId: this.customerNumId,
-      deliverStatus: this.searchItem.deliverStatus,
-      carType: this.searchItem.carType,
-      appointmentDate: this.searchItem.appointmentDate,
-      customerNameSearchKey: this.searchItem.customerNameSearchKey,
-      routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-      routerNumberSearchKey: this.searchItem.routerNumberSearchKey
-    });
+    this.onSearch();
   },
   methods: {
     _getDriverOrderDetail(params) {
@@ -435,10 +399,12 @@ export default {
         });
     },
     _getOrderByCustomerNumId(params) {
+      this.loading = true;
       getOrderByCustomerNumId(params)
         .then(res => {
           if (res.code === 0) {
             this.tableData = res.orderModel;
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -532,7 +498,7 @@ export default {
         routerDetailSeries: this.searchItemPop.routerDetailSeries
       });
     },
-    onAssign(index, row) {
+    onAssign({index, row}) {
       this.addDialog = true;
       this.searchItemPop.appointmentDate = row.appointmentDate;
       this.searchItemPop.carTypeSeries = row.carType;
@@ -561,35 +527,6 @@ export default {
         driverSeries: row.series,
         orderSeries: this.searchItemPop.series
       });
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.pageSize = val;
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-      // this._getAllRouterAndEmployee({
-      //   current: this.currentPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-      //   pageSize: val,
-      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-      // })
-    },
-    handleSzChange(val) {
-      this.pgSize = val;
-    },
-    handleCurChange(val) {
-      this.curPage = val;
-      // this._getAllEmployee({
-      //   current: this.curPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeJobNumSearchKey: '',
-      //   employeeNameSearchKey: '',
-      //   jobId: 0,
-      //   pageSize: this.pgSize
-      // })
     }
   }
 };

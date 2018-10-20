@@ -26,11 +26,12 @@
           align="right">
         </el-date-picker>
         <el-form-item>
-          <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
+          <el-button type="primary" @click="onSearch" icon="el-icon-search">查询</el-button>
         </el-form-item>
       </el-form>
       <d2-crud
             :columns="columns"
+            :index-row="indexRow"
             :data="tableInlineData"
             :pagination="pagination"
             :loading="loading"
@@ -47,6 +48,9 @@ export default {
   data() {
     return {
       loading: false,
+      indexRow: {
+        title: '#'
+      },
       columns: [
         {
           title: "订单号",
@@ -95,7 +99,7 @@ export default {
       },
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
-      pageSize: 200,
+      pageSize: 1000,
       searchItem: {
         carPlateNumberSearchKey: "",
         customerNameSearchKey: "",
@@ -139,8 +143,7 @@ export default {
             }
           }
         ]
-      },
-      searching: false
+      }
     };
   },
   computed: {
@@ -174,11 +177,12 @@ export default {
         });
     },
     _getOrderPriceList(params) {
+      this.loading = true;
       getOrderPriceList(params)
         .then(res => {
           if (res.code === 0) {
-            this.loading = false;
             this.tableData = res.orderPriceModels;
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -186,7 +190,6 @@ export default {
         });
     },
     onSearch() {
-      this.loading = true;
       this._getOrderPriceList({
         current: this.currentPage,
         pageSize: this.pageSize,
@@ -201,21 +204,6 @@ export default {
     onTimeChange(time) {
       this.searchItem.startTime = time[0];
       this.searchItem.endTime = time[1];
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.pageSize = val;
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-      // this._getAllRouterAndEmployee({
-      //   current: this.currentPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-      //   pageSize: val,
-      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-      // })
     }
   }
 };

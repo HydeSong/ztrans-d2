@@ -22,6 +22,7 @@
       </el-form>
       <d2-crud
           :columns="columns"
+          :index-row="indexRow"
           :data="tableInlineData"
           :pagination="pagination"
           :loading="loading"
@@ -123,6 +124,9 @@ export default {
   data() {
     return {
       loading: false,
+      indexRow: {
+        title: '#'
+      },
       columns: [
         {
           title: "线路别名",
@@ -146,6 +150,7 @@ export default {
         layout: "sizes, prev, pager, next, jumper, ->, total"
       },
       rowHandle: {
+        fixed: 'right',
         custom: [
           {
             text: "删除",
@@ -157,9 +162,9 @@ export default {
       },
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
-      pageSize: 20,
+      pageSize: 1000,
       curPage: 1,
-      pgSize: 10,
+      pgSize: 1000,
       routerDetail: [],
       searchItem: {
         routerDetailAliaSearchKey: "",
@@ -214,14 +219,7 @@ export default {
     this._getRouterAliaList({
       customerNumId: this.customerNumId
     });
-    this._getAllRouterAndCar({
-      current: this.currentPage,
-      pageSize: 1000,
-      customerNumId: this.customerNumId,
-      driverNameSearchKey: this.searchItem.driverNameSearchKey,
-      carPlateNumberSearchKey: this.searchItem.carPlateNumberSearchKey,
-      routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-    });
+    this.onSearch();
   },
   methods: {
     _addRouterToCar(params) {
@@ -267,6 +265,7 @@ export default {
         });
     },
     _getAllRouterAndCar(params) {
+      this.loading = true;
       getAllRouterAndCar(params)
         .then(res => {
           if (res.code === 0) {
@@ -290,7 +289,6 @@ export default {
         });
     },
     onSearch() {
-      this.loading = true;
       const params = {
         current: this.currentPage,
         pageSize: this.pageSize,

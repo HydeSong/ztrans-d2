@@ -29,75 +29,22 @@
           align="right">
         </el-date-picker>
         <el-form-item>
-          <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
+          <el-button type="primary" @click="onSearch" icon="el-icon-search">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onAdd" icon="el-icon-plus">新增</el-button>
         </el-form-item>
       </el-form>
-      <el-table
-        size="mini"
-        :data="tableInlineData"
-        highlight-current-row
-        style="width: 100%"
-        stripe>
-        <el-table-column
-          fixed
-          type="index"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          fixed
-          prop="customerName"
-          label="客户名称">
-        </el-table-column>
-        <el-table-column
-          width="140"
-          prop="customerSimpleCode"
-          label="客户代码">
-        </el-table-column>
-        <el-table-column
-          prop="prvCityArea"
-          label="所在地区">
-        </el-table-column>
-        <el-table-column
-          prop="contactName"
-          label="联系人">
-        </el-table-column>
-        <el-table-column
-          prop="contactPhone"
-          label="联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="saleName"
-          label="销售员">
-        </el-table-column>
-        <el-table-column
-          prop="createDtme"
-          label="注册日期">
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="160">
-          <template slot-scope="scope">
-            <el-button @click="onEditCustomer(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
-            <el-button @click="onDeleteCustomer(scope.$index, scope.row)" type="text" size="small">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination-wrapper">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalPage">
-        </el-pagination>
-      </div>
+      <d2-crud
+          :columns="columns"
+          :index-row="indexRow"
+          :data="tableInlineData"
+          :pagination="pagination"
+          :loading="loading"
+          :rowHandle="rowHandle"
+          @edit="onEditCustomer"
+          @view="onView"
+          @delete="onDeleteCustomer"/>
       <el-dialog title="客户详情" :visible.sync="popDialog">
         <div class="block">
           客户信息
@@ -468,11 +415,71 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
-      value5: "",
+      loading: false,
+      indexRow: {
+        title: '#'
+      },
+      columns: [
+        {
+          title: "客户名称",
+          key: "customerName"
+        },
+        {
+          title: "客户代码",
+          key: "customerSimpleCode"
+        },
+        {
+          title: "所在地区",
+          key: "prvCityArea"
+        },
+        {
+          title: "联系人",
+          key: "contactName"
+        },
+        {
+          title: "联系电话",
+          key: "contactPhone"
+        },
+        {
+          title: "销售员",
+          key: "saleName"
+        },
+        {
+          title: "注册日期",
+          key: "createDtme"
+        }
+      ],
+      pagination: {
+        pageSize: 10,
+        layout: "sizes, prev, pager, next, jumper, ->, total"
+      },
+      rowHandle: {
+        fixed: 'right',
+        custom: [
+          {
+            text: "编辑",
+            type: "text",
+            size: "mini",
+            emit: "edit"
+          },
+          {
+            text: "查看",
+            type: "text",
+            size: "mini",
+            emit: "view"
+          },
+          {
+            text: "删除",
+            type: "text",
+            size: "mini",
+            emit: "delete"
+          }
+        ]
+      },
       customerNumId: Cookies.get("__user__customernumid"),
       franchiseeId: "",
       currentPage: 1,
-      pageSize: 200,
+      pageSize: 1000,
       searchItem: {
         saleId: "",
         contactNameSearchKey: "",
@@ -486,7 +493,6 @@ export default {
       customerSales: [],
       customerDetail: {},
       constantDetail: [],
-      searching: false,
       popDialog: false,
       editCustomerPopDialog: false,
       addCustomerPopDialog: false,
@@ -875,10 +881,12 @@ export default {
         });
     },
     _getAllMasterCustomer(params) {
+      this.loading = true;
       getAllMasterCustomer(params)
         .then(res => {
           if (res.code === 0) {
             this.tableData = res.customerMaster;
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -1122,7 +1130,7 @@ export default {
       this.searchItem.registerStartTime = time[0];
       this.searchItem.registerEndTime = time[1];
     },
-    onView(index, row) {
+    onView({index, row}) {
       this.popDialog = true;
       this._getMasterCustomerDetail({
         customerNumId: this.customerNumId,
@@ -1132,7 +1140,7 @@ export default {
       this.addContactItem.customerMasterId = row.customerMasterId;
       this.addContactItem.customerNumId = this.customerNumId;
     },
-    onEditCustomer(index, row) {
+    onEditCustomer({index, row}) {
       this.editCustomerPopDialog = true;
       this._getMasterCustomerDetail({
         customerNumId: this.customerNumId,
@@ -1159,7 +1167,7 @@ export default {
       this.addContactItem.contactName = "";
       this.addContactItem.contactPhone = "";
     },
-    onDeleteCustomer(index, row) {
+    onDeleteCustomer({index, row}) {
       this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1203,21 +1211,6 @@ export default {
     },
     onAddContactConfirm() {
       this._addCustomerContact(this.addContactItem);
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.pageSize = val;
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-      // this._getAllRouterAndEmployee({
-      //   current: this.currentPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-      //   pageSize: val,
-      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-      // })
     }
   }
 };

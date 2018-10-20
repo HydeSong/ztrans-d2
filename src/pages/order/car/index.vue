@@ -28,11 +28,12 @@
           :picker-options="pickerOptions">
         </el-date-picker>
         <el-form-item>
-          <el-button type="primary" @click="onSearch" icon="el-icon-search" :loading="searching">查询</el-button>
+          <el-button type="primary" @click="onSearch" icon="el-icon-search">查询</el-button>
         </el-form-item>
       </el-form>
       <d2-crud
           :columns="columns"
+          :index-row="indexRow"
           :data="tableInlineData"
           :pagination="pagination"
           :loading="loading"
@@ -57,7 +58,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSearchPop" icon="el-icon-search" :loading="searching">查询</el-button>
+            <el-button type="primary" @click="onSearchPop" icon="el-icon-search">查询</el-button>
           </el-form-item>
         </el-form>
         <el-table
@@ -180,6 +181,9 @@ export default {
   data() {
     return {
       loading: false,
+      indexRow: {
+        title: '#'
+      },
       columns: [
         {
           title: "订单号",
@@ -267,6 +271,7 @@ export default {
         layout: "sizes, prev, pager, next, jumper, ->, total"
       },
       rowHandle: {
+        fixed: 'right',
         custom: [
           {
             text: "指派车辆",
@@ -278,9 +283,9 @@ export default {
       },
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
-      pageSize: 200,
+      pageSize: 1000,
       curPage: 1,
-      pgSize: 100,
+      pgSize: 1000,
       routerDetail: [],
       carTypes: [],
       carSizes: [],
@@ -303,7 +308,6 @@ export default {
       },
       driverSeries: "",
       tableData: [],
-      searching: false,
       addDialog: false,
       orderDetailDialog: false,
       orderDetail: {},
@@ -374,17 +378,7 @@ export default {
     this._getCarSizeList({
       customerNumId: this.customerNumId
     });
-    this._getOrderByCustomerNumId({
-      current: this.currentPage,
-      pageSize: 1000,
-      customerNumId: this.customerNumId,
-      deliverStatus: this.searchItem.deliverStatus,
-      carType: this.searchItem.carType,
-      appointmentDate: this.searchItem.appointmentDate,
-      customerNameSearchKey: this.searchItem.customerNameSearchKey,
-      routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
-      routerNumberSearchKey: this.searchItem.routerNumberSearchKey
-    });
+    this.onSearch();
   },
   methods: {
     _getDriverOrderDetail(params) {
@@ -427,11 +421,12 @@ export default {
         });
     },
     _getOrderByCustomerNumId(params) {
-      console.log(params);
+      this.loading = true;
       getOrderByCustomerNumId(params)
         .then(res => {
           if (res.code === 0) {
             this.tableData = res.orderModel;
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -528,35 +523,6 @@ export default {
         driverSeries: row.series,
         orderSeries: this.searchItemPop.series
       });
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.pageSize = val;
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-      // this._getAllRouterAndEmployee({
-      //   current: this.currentPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-      //   pageSize: val,
-      //   routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-      // })
-    },
-    handleSzChange(val) {
-      this.pgSize = val;
-    },
-    handleCurChange(val) {
-      this.curPage = val;
-      // this._getAllEmployee({
-      //   current: this.curPage,
-      //   customerNumId: this.customerNumId,
-      //   employeeJobNumSearchKey: '',
-      //   employeeNameSearchKey: '',
-      //   jobId: 0,
-      //   pageSize: this.pgSize
-      // })
     }
   }
 };

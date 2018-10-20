@@ -19,6 +19,7 @@
       </el-form>
       <d2-crud
             :columns="columns"
+            :index-row="indexRow"
             :data="tableInlineData"
             :pagination="pagination"
             :loading="loading"
@@ -98,6 +99,9 @@ export default {
   data() {
     return {
       loading: false,
+      indexRow: {
+        title: '#'
+      },
       columns: [
         {
           title: "线路别名",
@@ -113,6 +117,7 @@ export default {
         layout: "sizes, prev, pager, next, jumper, ->, total"
       },
       rowHandle: {
+        fixed: 'right',
         custom: [
           {
             text: "删除",
@@ -124,9 +129,9 @@ export default {
       },
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
-      pageSize: 20,
+      pageSize: 1000,
       curPage: 1,
-      pgSize: 10,
+      pgSize: 1000,
       routerDetail: [],
       searchItem: {
         routerDetailAliaSearchKey: "",
@@ -144,12 +149,6 @@ export default {
     };
   },
   computed: {
-    totalPage() {
-      return this.tableData.length;
-    },
-    addTotalPage() {
-      return this.baseCustomers.length;
-    },
     tableInlineData() {
       return this.tableData.slice(
         (this.currentPage - 1) * this.pageSize,
@@ -167,13 +166,7 @@ export default {
     this._getRouterAliaList({
       customerNumId: this.customerNumId
     });
-    this._getAllRouterAndEmployee({
-      current: this.currentPage,
-      customerNumId: this.customerNumId,
-      employeeNameSearchKey: this.searchItem.employeeNameSearchKey,
-      pageSize: 1000,
-      routerDetailAliaSearchKey: this.searchItem.routerDetailAliaSearchKey
-    });
+    this.onSearch();
   },
   methods: {
     _addRouterToEmployee(params) {
@@ -219,6 +212,7 @@ export default {
         });
     },
     _getAllRouterAndEmployee(params) {
+      this.loading = true;
       getAllRouterAndEmployee(params)
         .then(res => {
           if (res.code === 0) {
@@ -242,7 +236,6 @@ export default {
         });
     },
     onSearch() {
-      this.loading = true;
       const params = {
         current: this.currentPage,
         customerNumId: this.customerNumId,
