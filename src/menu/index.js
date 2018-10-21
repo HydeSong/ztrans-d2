@@ -26,7 +26,7 @@ const order = {
   icon: 'file-text',
   children: (pre => [
     { path: `${pre}car`, title: '指派车辆', icon: 'truck' },
-    { path: `${pre}order`, title: '订单', icon: 'file-text' }
+    { path: `${pre}order`, title: '订单', icon: 'file-text' },
   ])('/order/')
 }
 
@@ -84,7 +84,8 @@ export const side = [
   customer,
   truck,
   price,
-  orderprice
+  orderprice,
+  createorder
   // demoBusiness
 ]
 

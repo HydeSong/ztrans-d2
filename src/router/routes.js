@@ -47,7 +47,8 @@ const frameIn = [
     component: () => import('@/components/core/d2-layout-main'),
     children: (pre => [
       { path: 'car', name: `${pre}car`, component: () => import('@/pages/order/car'), meta: { ...meta, title: '指派车辆' } },
-      { path: 'order', name: `${pre}order`, component: () => import('@/pages/order/order'), meta: { ...meta, title: '订单' } }
+      { path: 'order', name: `${pre}order`, component: () => import('@/pages/order/order'), meta: { ...meta, title: '订单' } },
+      { path: 'orderdetail', name: `${pre}orderdetail`, component: () => import('@/pages/order/orderdetail'), meta: { ...meta, title: '订单详情' } }
     ])('order-')
   },
   {
