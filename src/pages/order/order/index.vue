@@ -607,7 +607,7 @@ export default {
       }
     },
     getOrderDetail({index, row}) {
-      this.$router.push({path:'/order/orderDetail',query:{orderId:row.series}});
+      this.$router.push({path:'/order/order-detail',query:{orderId:row.series}});
       // this.$router.push({name:'/order/orderDetail',params:{orderId:row.series}});
       // this.$router.push('/order/orderDetail?orderId='+row.series);
     },

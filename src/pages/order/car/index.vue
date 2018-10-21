@@ -473,7 +473,7 @@ export default {
       this.onSearchPop();
     },
     getOrderDetail({index, row}) {
-      this.$router.push({path:'/order/orderDetail',query:{orderId:row.series}});
+      this.$router.push({path:'/order/order-detail',query:{orderId:row.series}});
     },
     onAssignConfirm() {
       if (this.orderDetail.carRealMoney <= this.orderDetail.carMoney) {

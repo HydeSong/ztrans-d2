@@ -1,36 +1,36 @@
 <template>
   <d2-container type="full" class="page">
     <template>
-      <el-form :inline="true" :model="searchItem" size="large" >
+      <el-form :inline="true" size="large" >
         <el-form-item label="订单号" >
           <el-input v-model="orderId" placeholder="请输入订单号" style="width:200px"></el-input>
         </el-form-item>
       <el-form-item style="width:200px">
-        <el-button type="primary" @click="getOrder()"   icon="el-icon-search" :loading="searching">查询订单</el-button>
+        <el-button type="primary" @click="getOrder()"   icon="el-icon-search">查询订单</el-button>
       </el-form-item>
       </el-form>
 
-      <el-form :inline="true" :model="searchItem" size="large" >
+      <el-form :inline="true" size="large" >
         <el-form-item label="订单号" >
-          <el-input v-model="order.series"   style="width:200px" disabled></el-input>
+          <el-input v-model="order.series" style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="线路别名" >
-          <el-input v-model="order.routerAlisa"   style="width:300px" disabled></el-input>
+          <el-input v-model="order.routerAlisa" style="width:300px" disabled></el-input>
         </el-form-item>
         <el-form-item label="订单状态" >
-          <el-input v-model="order.deliverStatus"   style="width:200px" disabled></el-input>
+          <el-input v-model="order.deliverStatus" style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="订单结算状态" >
-          <el-input v-model="order.orderBalanceStatus"   style="width:200px" disabled></el-input>
+          <el-input v-model="order.orderBalanceStatus" style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="订单类型" >
-          <el-input v-model="order.orderType"   style="width:200px" disabled></el-input>
+          <el-input v-model="order.orderType" style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="订单车辆车型" >
-          <el-input v-model="order.carTypeName"   style="width:200px" disabled></el-input>
+          <el-input v-model="order.carTypeName" style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="订单车辆尺寸" >
-          <el-input v-model="order.carSizeName"   style="width:200px" disabled></el-input>
+          <el-input v-model="order.carSizeName" style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="需要搬卸" >
           <el-input v-model="order.wetherTakeover"   style="width:200px" disabled></el-input>
@@ -127,20 +127,17 @@
 </template>
 
 <script>
-import {
-  getOrderDetailBySeries
-} from "@/api/order";
+import { getOrderDetailBySeries } from "@/api/order";
 
 import Cookies from "js-cookie";
 export default {
   data() {
     return {
-      value5: "",
       customerNumId: Cookies.get("__user__customernumid"),
       orderId: "",
       order: {
-        series:"",
-        routerAlisa:"",
+        series: "",
+        routerAlisa: "",
         carTypeName: "",
         carSizeName: "",
         wetherTakeover: "",
@@ -149,7 +146,7 @@ export default {
         createOrderName: "",
         routerStations: [],
         goodsRemark: "",
-        remark:"",
+        remark: "",
         createOrderTime: "",
         sendAddressDetail: "",
         sendGoodsPersonName: "",
@@ -174,7 +171,7 @@ export default {
         driverCarBrandRealName: "",
         driverCarWeightRealName: "",
         routerSource: "",
-        routerDestination: "",
+        routerDestination: ""
       }
     };
   },
@@ -182,75 +179,68 @@ export default {
   created() {
     this.orderId = this.$route.query.orderId;
     if (!this.orderId == "") {
-    this.getOrder()
-    {
+      this.getOrder();
       this._getOrderDetailBySeries({
         customerNumId: this.customerNumId,
         series: this.orderId
       });
     }
-  }
   },
-  watch: {
-
-  },
+  watch: {},
   methods: {
-    getOrder(){
-     this. _getOrderDetailBySeries({
+    getOrder() {
+      this._getOrderDetailBySeries({
         customerNumId: this.customerNumId,
-        series: this.orderId});
-
-  },
+        series: this.orderId
+      });
+    },
     _getOrderDetailBySeries(params) {
       getOrderDetailBySeries(params)
         .then(res => {
-        if (res.code === 0) {
-        this.order.series=res.series;
-        this.order.routerAlisa=res.routerAlisa;
-        this.order.carTypeName=res.carTypeName;
-        this.order.carSizeName=res.carSizeName;
-        this.order.wetherTakeover=res.wetherTakeover;
-        this.order.appointmentDate=res.appointmentDate;
-        this.order.masterCustomerName=res.masterCustomerName;
-        this.order.createOrderName=res.createOrderName;
-        this.order.routerStations=res.routerStations;
-        this.order.goodsRemark=res.goodsRemark;
-        this.order.remark=res.remark;
-        this.order.createOrderTime=res.createOrderTime;
-        this.order.sendAddressDetail=res.sendAddressDetail;
-        this.order.sendGoodsPersonName=res.sendGoodsPersonName;
-        this.order.sendGoodsPersonMobile=res.sendGoodsPersonMobile;
-        this.order.receiveGoodsPersonMobile=res.receiveGoodsPersonMobile;
-        this.order.receiveGoodsPersonName=res.receiveGoodsPersonName;
-        this.order.receiveAddressDetail=res.receiveAddressDetail;
-        this.order.carPlateNumber=res.carPlateNumber;
-        this.order.driverName=res.driverName;
-        this.order.driverPhone=res.driverPhone;
-        this.order.driverIdentityId=res.driverIdentityId;
-        this.order.orderMoney=res.orderMoney;
-        this.order.driverMoney=res.driverMoney;
-        this.order.deliverStatus=res.deliverStatus;
-        this.order.orderBalanceStatus=res.orderBalanceStatus;
-        this.order.orderType=res.orderType;
-        this.order.driverRemark=res.driverRemark;
-        this.order.driverReceitp=res.driverReceitp;
-        this.order.driverAddFee=res.driverAddFee;
-        this.order.driverCarSizeRealName=res.driverCarSizeRealName;
-        this.order.driverCarTypeRealName=res.driverCarTypeRealName;
-        this.order.driverCarBrandRealName=res.driverCarBrandRealName;
-        this.order.driverCarWeightRealName=res.driverCarWeightRealName;
-        this.order.routerSource=res.routerSource;
-        this.order.routerDestination=res.routerDestination;
-      }
-    })
-    .catch(err => {
-        console.log(err);
-    });
-    },
-
+          if (res.code === 0) {
+            this.order.series = res.series;
+            this.order.routerAlisa = res.routerAlisa;
+            this.order.carTypeName = res.carTypeName;
+            this.order.carSizeName = res.carSizeName;
+            this.order.wetherTakeover = res.wetherTakeover;
+            this.order.appointmentDate = res.appointmentDate;
+            this.order.masterCustomerName = res.masterCustomerName;
+            this.order.createOrderName = res.createOrderName;
+            this.order.routerStations = res.routerStations;
+            this.order.goodsRemark = res.goodsRemark;
+            this.order.remark = res.remark;
+            this.order.createOrderTime = res.createOrderTime;
+            this.order.sendAddressDetail = res.sendAddressDetail;
+            this.order.sendGoodsPersonName = res.sendGoodsPersonName;
+            this.order.sendGoodsPersonMobile = res.sendGoodsPersonMobile;
+            this.order.receiveGoodsPersonMobile = res.receiveGoodsPersonMobile;
+            this.order.receiveGoodsPersonName = res.receiveGoodsPersonName;
+            this.order.receiveAddressDetail = res.receiveAddressDetail;
+            this.order.carPlateNumber = res.carPlateNumber;
+            this.order.driverName = res.driverName;
+            this.order.driverPhone = res.driverPhone;
+            this.order.driverIdentityId = res.driverIdentityId;
+            this.order.orderMoney = res.orderMoney;
+            this.order.driverMoney = res.driverMoney;
+            this.order.deliverStatus = res.deliverStatus;
+            this.order.orderBalanceStatus = res.orderBalanceStatus;
+            this.order.orderType = res.orderType;
+            this.order.driverRemark = res.driverRemark;
+            this.order.driverReceitp = res.driverReceitp;
+            this.order.driverAddFee = res.driverAddFee;
+            this.order.driverCarSizeRealName = res.driverCarSizeRealName;
+            this.order.driverCarTypeRealName = res.driverCarTypeRealName;
+            this.order.driverCarBrandRealName = res.driverCarBrandRealName;
+            this.order.driverCarWeightRealName = res.driverCarWeightRealName;
+            this.order.routerSource = res.routerSource;
+            this.order.routerDestination = res.routerDestination;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
-
-
 };
 </script>
 

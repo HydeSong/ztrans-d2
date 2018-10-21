@@ -99,6 +99,14 @@ const frameIn = [
           ...meta,
           title: '订单'
         }
+      }, {
+        path: 'order-detail',
+        name: `${pre}detail`,
+        component: () => import ('@/pages/order/orderdetail'),
+        meta: {
+          ...meta,
+          title: '订单详情'
+        }
       }
     ])('order-')
   }, {
