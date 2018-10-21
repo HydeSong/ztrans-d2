@@ -43,7 +43,87 @@
           :pagination="pagination"
           :loading="loading"
           :rowHandle="rowHandle"
-          @assign="onAssign"/>
+          @assign="onAssign"
+          @detail="getOrderDetail"/>
+      <!-- <el-table
+        size="mini"
+        :data="tableInlineData"
+        highlight-current-row
+        style="width: 100%"
+        stripe>
+        <el-table-column
+          fixed
+          type="index"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          fixed
+          prop="series"
+          label="订单号">
+        </el-table-column>
+        <el-table-column
+          width="140"
+          prop="routerAlisa"
+          label="线路别名（编号）">
+        </el-table-column>
+        <el-table-column
+          prop="driverName"
+          label="司机姓名">
+        </el-table-column>
+        <el-table-column
+          prop="carPlateNumber"
+          label="车牌号">
+        </el-table-column>
+        <el-table-column
+          prop="carTypeName"
+          label="车型">
+        </el-table-column>
+        <el-table-column
+          prop="carSizeName"
+          label="尺寸">
+        </el-table-column>
+        <el-table-column
+          prop="appointmentDate"
+          label="用车时间">
+        </el-table-column>
+        <el-table-column
+          prop="initPrice"
+          label="起步价">
+        </el-table-column>
+        <el-table-column
+          prop="masterCustomerName"
+          label="客户姓名">
+        </el-table-column>
+        <el-table-column
+          prop="createOrderName"
+          label="下单人">
+        </el-table-column>
+        <el-table-column
+          prop="createOrderTime"
+          label="下单时间">
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="160">
+          <template slot-scope="scope">
+            <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">修改车辆</el-button>
+            <el-button @click="getOrderDetail(scope.$index, scope.row)" type="text" size="small">订单详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block">
+        <el-pagination
+          size="mini"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalPage">
+        </el-pagination>
+      </div> -->
       <el-dialog title="修改车辆" :visible.sync="addDialog">
         <el-form :inline="true" :model="searchItemPop" size="mini">
           <el-form-item>
@@ -276,12 +356,19 @@ export default {
       },
       rowHandle: {
         fixed: 'right',
+        width: '130',
         custom: [
           {
             text: "指派车辆",
             type: "text",
             size: "mini",
             emit: "assign"
+          },
+          {
+            text: "订单详情",
+            type: "text",
+            size: "mini",
+            emit: "detail"
           }
         ]
       },
@@ -518,6 +605,11 @@ export default {
       } else {
         this.$message.error("接单价必须不高于车辆报价！");
       }
+    },
+    getOrderDetail({index, row}) {
+      this.$router.push({path:'/order/orderDetail',query:{orderId:row.series}});
+      // this.$router.push({name:'/order/orderDetail',params:{orderId:row.series}});
+      // this.$router.push('/order/orderDetail?orderId='+row.series);
     },
     onCheckOrderDetail(index, row) {
       this.orderDetailDialog = true;

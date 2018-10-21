@@ -84,7 +84,8 @@ export const side = [
   customer,
   truck,
   price,
-  orderprice
+  orderprice,
+  createorder
   // demoBusiness
 ]
 
