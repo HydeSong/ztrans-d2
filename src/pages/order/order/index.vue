@@ -74,10 +74,6 @@
           label="尺寸">
         </el-table-column>
         <el-table-column
-          prop="wetherTakeover"
-          label="需要搬卸">
-        </el-table-column>
-        <el-table-column
           prop="appointmentDate"
           label="用车时间">
         </el-table-column>
@@ -86,16 +82,8 @@
           label="起步价">
         </el-table-column>
         <el-table-column
-          prop="overstepPrice"
-          label="超出价格">
-        </el-table-column>
-        <el-table-column
           prop="masterCustomerName"
           label="客户姓名">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsLocationNum"
-          label="发货/收货点数">
         </el-table-column>
         <el-table-column
           prop="createOrderName"
@@ -106,43 +94,12 @@
           label="下单时间">
         </el-table-column>
         <el-table-column
-          prop="sendGoodsPersonName"
-          label="发货人">
-        </el-table-column>
-        <el-table-column
-          prop="sendAddressDetail"
-          label="发货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="sendGoodsPersonMobile"
-          label="发货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonName"
-          label="收货人">
-        </el-table-column>
-        <el-table-column
-          prop="receiveAddressDetail"
-          label="收货详细地址">
-        </el-table-column>
-        <el-table-column
-          prop="receiveGoodsPersonMobile"
-          label="收货人联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="goodsRemark"
-          label="货物描述">
-        </el-table-column>
-        <el-table-column
-          prop="remark"
-          label="补充信息">
-        </el-table-column>
-        <el-table-column
           fixed="right"
           label="操作"
-          width="100">
+          width="160">
           <template slot-scope="scope">
             <el-button @click="onAssign(scope.$index, scope.row)" type="text" size="small">修改车辆</el-button>
+            <el-button @click="getOrderDetail(scope.$index, scope.row)" type="text" size="small">订单详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -552,6 +509,11 @@ export default {
       } else {
         this.$message.error("接单价必须不高于车辆报价！");
       }
+    },
+    getOrderDetail(index, row) {
+      this.$router.push({path:'/order/orderDetail',query:{orderId:row.series}});
+      // this.$router.push({name:'/order/orderDetail',params:{orderId:row.series}});
+      // this.$router.push('/order/orderDetail?orderId='+row.series);
     },
     onCheckOrderDetail(index, row) {
       this.orderDetailDialog = true;

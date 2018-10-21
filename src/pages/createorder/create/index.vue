@@ -2,7 +2,7 @@
   <d2-container type="full" class="page">
     <template>
       <el-form :inline="true" :model="searchItem" size="large" >
-        <el-form-item label="大客户名字:">
+        <el-form-item label="大客户名字" style="width:296px">
           <el-autocomplete v-model="customerName"
                            placeholder="大客户名字"
                            clearable
@@ -11,7 +11,7 @@
                            style="width:200px">
           </el-autocomplete>
         </el-form-item>
-        <el-form-item label="线路别名:" style="width:400px">
+        <el-form-item label="线路别名" style="width:300px">
           <el-autocomplete v-model="routerAlial"
                            placeholder="线路别名"
                            clearable
@@ -21,7 +21,7 @@
           </el-autocomplete>
         </el-form-item>
 
-        <el-form-item label="是否需要搬卸:" style="width:400px">
+        <el-form-item label="是否需要搬卸" style="width:400px">
           <el-select v-model="createOrder.wetherTakeover">
             <el-option
               v-for="item in takeOver"
@@ -30,9 +30,6 @@
               :value="item.value">
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="路径站点个数" style="width:300px">
-          <el-input v-model="createOrder.sendGoodsLocationNum" placeholder="路径站点个数"></el-input>
         </el-form-item>
         <el-form-item label="发货人名字" >
           <el-input v-model="createOrder.sendGoodsPersonName" placeholder="发货人名字" style="width:200px"></el-input>
@@ -58,7 +55,7 @@
         <el-form-item label="收货地(省/市/区/县/)" style="width:500px">
           <el-input v-model="destinationLocalction" disabled style="width:300px"></el-input>
         </el-form-item>
-        <el-form-item label="车型和车长:" style="width:324px">
+        <el-form-item label="车型和车长" style="width:324px">
           <el-select v-model="carTypeAndSize" placeholder="请选择车型和车长" style="width:200px">
             <el-option
               v-for="item in carAndPriceModels"
@@ -69,15 +66,18 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="价格" style="width:324px">
+        <el-form-item label="价格" style="width:300px">
           <el-input v-model="priceAndInstance"  style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="超里程费" style="width:324px">
           <el-input v-model="overPrice" disabled style="width:200px"></el-input>
         </el-form-item>
+        <el-form-item label="路径站点个数" style="width:295px">
+          <el-input v-model="createOrder.sendGoodsLocationNum" placeholder="路径站点个数" style="width:195px"></el-input>
+        </el-form-item>
         <el-form-item label="约车时间" style="width:500px">
           <el-date-picker
-            size="mini"
+            size="large"
             v-model="createOrder.appointmentDate"
             type="datetime"
             placeholder="请选择约车时间"
@@ -151,7 +151,7 @@ export default {
       createOrder: {
         carTypeSeries:"",
         carSizeSeries:"",
-        customerNumId: this.customerNumId,
+        customerNumId: Cookies.get("__user__customernumid"),
         customerMasterId: "",
         wetherSpecialCustomerPrice: "",
         routerDetailSeries: "",

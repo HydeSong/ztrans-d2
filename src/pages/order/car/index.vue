@@ -37,7 +37,8 @@
           :pagination="pagination"
           :loading="loading"
           :rowHandle="rowHandle"
-          @assign="onAssign"/>
+          @assign="onAssign"
+          @click="getOrderDetail"/>
       <el-dialog title="指派车辆" :visible.sync="addDialog">
         <el-form :inline="true" :model="searchItemPop" size="mini">
           <el-form-item>
@@ -183,11 +184,13 @@ export default {
       columns: [
         {
           title: "订单号",
-          key: "series"
+          key: "series",
+          width:"200px"
         },
         {
           title: "线路别名（编号）",
-          key: "routerAlisa"
+          key: "routerAlisa",
+          width:"200px"
         },
         {
           title: "车型",
@@ -198,28 +201,18 @@ export default {
           key: "carSizeName"
         },
         {
-          title: "需要搬卸",
-          key: "wetherTakeover"
-        },
-        {
           title: "用车时间",
-          key: "appointmentDate"
+          key: "appointmentDate",
+          width:"200px"
         },
         {
           title: "起步价",
           key: "initPrice"
         },
         {
-          title: "超出价格",
-          key: "overstepPrice"
-        },
-        {
           title: "客户姓名",
-          key: "masterCustomerName"
-        },
-        {
-          title: "发货/收货点数",
-          key: "sendGoodsLocationNum"
+          key: "masterCustomerName",
+          width:"200px"
         },
         {
           title: "下单人",
@@ -227,39 +220,8 @@ export default {
         },
         {
           title: "下单时间",
-          key: "createOrderTime"
-        },
-        {
-          title: "发货人",
-          key: "sendGoodsPersonName"
-        },
-        {
-          title: "发货详细地址",
-          key: "sendAddressDetail"
-        },
-        {
-          title: "发货人联系电话",
-          key: "sendGoodsPersonMobile"
-        },
-        {
-          title: "收货人",
-          key: "receiveGoodsPersonName"
-        },
-        {
-          title: "收货详细地址",
-          key: "receiveAddressDetail"
-        },
-        {
-          title: "收货人联系电话",
-          key: "receiveGoodsPersonMobile"
-        },
-        {
-          title: "货物描述",
-          key: "goodsRemark"
-        },
-        {
-          title: "补充信息",
-          key: "remark"
+          key: "createOrderTime",
+          width:"200px"
         }
       ],
       pagination: {
@@ -273,6 +235,12 @@ export default {
             type: "text",
             size: "mini",
             emit: "assign"
+          },
+          {
+            text: "订单详情",
+            type: "text",
+            size: "mini",
+            emit: "click"
           }
         ]
       },
@@ -507,6 +475,9 @@ export default {
       this.searchItemPop.series = row.series;
       // 加载全部数据
       this.onSearchPop();
+    },
+    getOrderDetail({index, row}) {
+      this.$router.push({path:'/order/orderDetail',query:{orderId:row.series}});
     },
     onAssignConfirm() {
       if (this.orderDetail.carRealMoney <= this.orderDetail.carMoney) {
