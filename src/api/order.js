@@ -109,3 +109,30 @@ export function getOrderDetailBySeries (params) {
 
   return axios.get(url, {params: data})
 }
+
+export function deleteOrder (params) {
+  const url = `${CONFIG.HOST}/deleteOrder`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}
+
+
+export function cancelOrderStatus (params) {
+  const url = `${CONFIG.HOST}/cancelOrderStatus`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+
+  return axios.get(url, {params: data})
+}

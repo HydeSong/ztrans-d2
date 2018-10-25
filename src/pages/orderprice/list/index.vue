@@ -91,6 +91,10 @@ export default {
         {
           title: "司机应收",
           key: "driverMoney"
+        },
+        {
+          title: "司机额外费用",
+          key: "driverAddFee"
         }
       ],
       pagination: {

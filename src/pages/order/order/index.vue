@@ -23,6 +23,11 @@
             <el-option v-for="(item, index) in carSizes" :key="index" :label="item.sizeName" :value="item.sizeId"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item>
+          <el-select v-model="searchItem.orderType" placeholder="订单类型" clearable>
+            <el-option v-for="(item, index) in orderTypes" :key="index" :label="item.orderTypeName" :value="item.orderTypeId"></el-option>
+          </el-select>
+        </el-form-item>
         <el-date-picker
           size="mini"
           v-model="searchItem.appointmentDate"
@@ -44,7 +49,8 @@
           :loading="loading"
           :rowHandle="rowHandle"
           @assign="onAssign"
-          @detail="getOrderDetail"/>
+          @detail="getOrderDetail"
+          @cancelOrder="cancelOrder"/>
       <!-- <el-table
         size="mini"
         :data="tableInlineData"
@@ -258,8 +264,12 @@ import {
   selectDriver,
   confirmDriver,
   getDriverOrderDetail,
-  getCarSizeList
+  getCarSizeList,
+  cancelOrderStatus
 } from "@/api/order";
+import {
+  getOrderType
+} from "@/api/dictionary";
 import Cookies from "js-cookie";
 export default {
   data() {
@@ -278,6 +288,22 @@ export default {
           key: "routerAlisa"
         },
         {
+          title: "订单状态",
+          key: "deliveryStatus"
+        },
+        {
+          title: "订单类型",
+          key: "orderType"
+        },
+        {
+          title: "司机姓名",
+          key: "driverName"
+        },
+        {
+          title: "车牌号",
+          key: "carPlateNumber"
+        },
+        {
           title: "车型",
           key: "carTypeName"
         },
@@ -286,28 +312,12 @@ export default {
           key: "carSizeName"
         },
         {
-          title: "需要搬卸",
-          key: "wetherTakeover"
-        },
-        {
           title: "用车时间",
           key: "appointmentDate"
         },
         {
-          title: "起步价",
-          key: "initPrice"
-        },
-        {
-          title: "超出价格",
-          key: "overstepPrice"
-        },
-        {
           title: "客户姓名",
           key: "masterCustomerName"
-        },
-        {
-          title: "发货/收货点数",
-          key: "sendGoodsLocationNum"
         },
         {
           title: "下单人",
@@ -316,38 +326,6 @@ export default {
         {
           title: "下单时间",
           key: "createOrderTime"
-        },
-        {
-          title: "发货人",
-          key: "sendGoodsPersonName"
-        },
-        {
-          title: "发货详细地址",
-          key: "sendAddressDetail"
-        },
-        {
-          title: "发货人联系电话",
-          key: "sendGoodsPersonMobile"
-        },
-        {
-          title: "收货人",
-          key: "receiveGoodsPersonName"
-        },
-        {
-          title: "收货详细地址",
-          key: "receiveAddressDetail"
-        },
-        {
-          title: "收货人联系电话",
-          key: "receiveGoodsPersonMobile"
-        },
-        {
-          title: "货物描述",
-          key: "goodsRemark"
-        },
-        {
-          title: "补充信息",
-          key: "remark"
         }
       ],
       pagination: {
@@ -356,10 +334,10 @@ export default {
       },
       rowHandle: {
         fixed: 'right',
-        width: '130',
+        width: '190',
         custom: [
           {
-            text: "指派车辆",
+            text: "变更车辆",
             type: "text",
             size: "mini",
             emit: "assign"
@@ -369,6 +347,13 @@ export default {
             type: "text",
             size: "mini",
             emit: "detail"
+          }
+          ,
+          {
+            text: "废弃订单",
+            type: "text",
+            size: "mini",
+            emit: "cancelOrder"
           }
         ]
       },
@@ -380,8 +365,10 @@ export default {
       routerDetail: [],
       carTypes: [],
       carSizes: [],
+      orderTypes: [],
       searchItem: {
         carType: "",
+        orderType:"",
         appointmentDate: "",
         customerNameSearchKey: "",
         routerAliaSearchKey: "",
@@ -471,6 +458,9 @@ export default {
     this._getCarSizeList({
       customerNumId: this.customerNumId
     });
+    this._getOrderTypeList({
+      customerNumId: this.customerNumId
+    });
     this.onSearch();
   },
   methods: {
@@ -509,11 +499,41 @@ export default {
           console.log(err);
         });
     },
+    cancelOrder({index, row}) {
+      this._cancelOrderStatus({
+        customerNumId: this.customerNumId,
+        series: row.series
+      });
+      // 加载全部数据
+    },
+    _cancelOrderStatus(params) {
+      cancelOrderStatus(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message.success("作废订单成功！");
+            this.onSearch();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     _getCarSizeList(params) {
       getCarSizeList(params)
         .then(res => {
           if (res.code === 0) {
             this.carSizes = res.carSizes;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _getOrderTypeList(params) {
+      getOrderType(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.orderTypes = res.orderTypeModels;
           }
         })
         .catch(err => {
@@ -566,6 +586,7 @@ export default {
         customerNumId: this.customerNumId,
         deliverStatus: this.searchItem.deliverStatus,
         carType: this.searchItem.carType,
+        orderType: this.searchItem.orderType,
         appointmentDate: this.searchItem.appointmentDate,
         customerNameSearchKey: this.searchItem.customerNameSearchKey,
         routerAliaSearchKey: this.searchItem.routerAliaSearchKey,

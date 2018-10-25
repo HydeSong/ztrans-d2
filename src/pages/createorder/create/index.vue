@@ -55,7 +55,7 @@
         <el-form-item label="收货地(省/市/区/县/)" style="width:500px">
           <el-input v-model="destinationLocalction" disabled style="width:300px"></el-input>
         </el-form-item>
-        <el-form-item label="车型和车长" style="width:324px">
+        <el-form-item label="车型和车长" style="width:285px">
           <el-select v-model="carTypeAndSize" placeholder="请选择车型和车长" style="width:200px">
             <el-option
               v-for="item in carAndPriceModels"
@@ -65,17 +65,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item label="价格" style="width:300px">
-          <el-input v-model="priceAndInstance"  style="width:200px" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="超里程费" style="width:324px">
-          <el-input v-model="overPrice" disabled style="width:200px"></el-input>
-        </el-form-item>
-        <el-form-item label="路径站点个数" style="width:295px">
+        <el-form-item label="路径站点个数" style="width:300px">
           <el-input v-model="createOrder.sendGoodsLocationNum" placeholder="路径站点个数" style="width:195px"></el-input>
         </el-form-item>
-        <el-form-item label="约车时间" style="width:500px">
+        <el-form-item label="约车时间" style="width:1200px">
           <el-date-picker
             size="large"
             v-model="createOrder.appointmentDate"
@@ -377,13 +370,6 @@ export default {
         this.$message({
           type: "error",
           message: "约车时间不可以为空！"
-        });
-        return;
-      }
-      if (this.createOrder.goodsRemark === "") {
-        this.$message({
-          type: "error",
-          message: "货物备注不可以为空！"
         });
         return;
       }

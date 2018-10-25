@@ -194,3 +194,15 @@ export function createOrderByWeb (params) {
   return axios.get(url, {params: data})
 
 }
+export function deleteOldCustomerContact (params) {
+  const url = `${CONFIG.HOST}/deleteOldCustomerContact`
+  const ts = timestamp()
+  const data = {
+    sid: sid(),
+    timestamp: ts,
+    params: paramsify(params),
+    sign: signify(params, ts)
+  }
+  return axios.get(url, {params: data})
+
+}
