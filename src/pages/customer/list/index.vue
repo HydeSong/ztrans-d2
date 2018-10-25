@@ -392,7 +392,8 @@ import {
   deleteCustomerContact,
   updateMasterCustomer,
   addCustomerContact,
-  updateCustomerContact
+  updateCustomerContact,
+  deleteOldCustomerContact
 } from "@/api/customer";
 import {
   getCheckStatus,
@@ -927,6 +928,20 @@ export default {
           console.log(err);
         });
     },
+    _deleteOldCustomerContact(params, index) {
+      deleteOldCustomerContact(params)
+      .then(res => {
+        if (res.code === 0) {
+          this.$message({
+            type: "success",
+           message: "删除老联系人成功!"
+         });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+   },
     _addMasterCustomer(params) {
       console.log(params);
       if (params.customerName === "") {
@@ -1090,9 +1105,25 @@ export default {
       addCustomerContact(params)
         .then(res => {
           if (res.code === 0) {
+            if(res.hasSameNameContact=='Y'){
+              this.$confirm("发现此用户在其他客户下也有注册,推测为曾经作为散户下过单，另外一名客户名字叫“"+res.customerMasterName+"”是否删除旧联系人？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+                .then(() => {
+                  this._deleteOldCustomerContact(
+                    {
+                      customerNumId: this.customerNumId,
+                      oldCustomerMasterId: res.oldCustomerMasterId,
+                      newCustomerMasterId: res.newCustomerMasterId
+                    }
+                  );
+                })
+            }
             this.$message({
               type: "success",
-              message: "添加成功!"
+              message: "添加新联系人成功!"
             });
             this.addContactPopDialog = false;
             // 刷新数据

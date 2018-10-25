@@ -17,6 +17,9 @@
         <el-form-item label="线路别名" >
           <el-input v-model="order.routerAlisa" style="width:300px" disabled></el-input>
         </el-form-item>
+        <el-form-item label="订单报价" >
+          <el-input v-model="order.orderMoney" style="width:200px" disabled></el-input>
+        </el-form-item>
         <el-form-item label="订单状态" >
           <el-input v-model="order.deliverStatus" style="width:200px" disabled></el-input>
         </el-form-item>
@@ -51,9 +54,6 @@
         <el-form-item label="下单时间" >
           <el-input v-model="order.createOrderTime"   style="width:200px" disabled></el-input>
         </el-form-item>
-        <el-form-item label="订单金额" >
-          <el-input v-model="order.orderMoney"   style="width:200px" disabled></el-input>
-        </el-form-item>
         <el-form-item label="发货地址详情" >
           <el-input v-model="order.sendAddressDetail"   style="width:200px" disabled></el-input>
         </el-form-item>
@@ -83,10 +83,6 @@
         </el-form-item>
         <el-form-item label="司机身份证" >
           <el-input v-model="order.driverIdentityId"   style="width:200px" disabled></el-input>
-        </el-form-item>
-
-        <el-form-item label="司机获得价格" >
-          <el-input v-model="order.driverMoney"   style="width:200px" disabled></el-input>
         </el-form-item>
         <el-form-item label="司机交接单" >
           <el-input v-model="order.driverReceitp"   style="width:200px" disabled></el-input>
@@ -234,6 +230,7 @@ export default {
             this.order.driverCarWeightRealName = res.driverCarWeightRealName;
             this.order.routerSource = res.routerSource;
             this.order.routerDestination = res.routerDestination;
+            this.order.initPrice = res.initPrice;
           }
         })
         .catch(err => {

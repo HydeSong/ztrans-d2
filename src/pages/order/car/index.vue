@@ -18,6 +18,11 @@
             <el-option v-for="(item, index) in carTypes" :key="index" :label="item.typeName" :value="item.typeId"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item>
+          <el-select v-model="searchItem.orderType" placeholder="订单类型" clearable>
+            <el-option v-for="(item, index) in orderTypes" :key="index" :label="item.orderTypeName" :value="item.orderTypeId"></el-option>
+          </el-select>
+        </el-form-item>
         <el-date-picker
           size="mini"
           v-model="searchItem.appointmentDate"
@@ -39,7 +44,8 @@
           :loading="loading"
           :rowHandle="rowHandle"
           @assign="onAssign"
-          @detail="getOrderDetail"/>
+          @detail="getOrderDetail"
+          @deleteOrder="deleteOrder"/>
       <el-dialog title="指派车辆" :visible.sync="addDialog">
         <el-form :inline="true" :model="searchItemPop" size="mini">
           <el-form-item>
@@ -174,8 +180,12 @@ import {
   selectDriver,
   confirmDriver,
   getDriverOrderDetail,
-  getCarSizeList
+  getCarSizeList,
+  deleteOrder
 } from "@/api/order";
+import {
+  getOrderType
+} from "@/api/dictionary";
 import Cookies from "js-cookie";
 
 export default {
@@ -197,6 +207,14 @@ export default {
           width:"200px"
         },
         {
+          title: "订单状态",
+          key: "deliveryStatus"
+        },
+        {
+          title: "订单类型",
+          key: "orderType"
+        },
+        {
           title: "车型",
           key: "carTypeName"
         },
@@ -208,10 +226,6 @@ export default {
           title: "用车时间",
           key: "appointmentDate",
           width:"200px"
-        },
-        {
-          title: "起步价",
-          key: "initPrice"
         },
         {
           title: "客户姓名",
@@ -234,7 +248,7 @@ export default {
       },
       rowHandle: {
         fixed: 'right',
-        width: '130',
+        width: '190',
         custom: [
           {
             text: "指派车辆",
@@ -247,6 +261,12 @@ export default {
             type: "text",
             size: "mini",
             emit: "detail"
+          },
+          {
+            text: "删除订单",
+            type: "text",
+            size: "mini",
+            emit: "deleteOrder"
           }
         ]
       },
@@ -258,8 +278,10 @@ export default {
       routerDetail: [],
       carTypes: [],
       carSizes: [],
+      orderTypes: [],
       searchItem: {
         carType: "",
+        orderType:"",
         appointmentDate: "",
         customerNameSearchKey: "",
         routerAliaSearchKey: "",
@@ -347,6 +369,9 @@ export default {
     this._getCarSizeList({
       customerNumId: this.customerNumId
     });
+    this._getOrderTypeList({
+      customerNumId: this.customerNumId
+    });
     this.onSearch();
   },
   methods: {
@@ -424,11 +449,34 @@ export default {
           console.log(err);
         });
     },
+    _getOrderTypeList(params) {
+      getOrderType(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.orderTypes = res.orderTypeModels;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     _getRouterAliaList(params) {
       getRouterAliaList(params)
         .then(res => {
           if (res.code === 0) {
             this.routerDetail = res.routerDetail;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    _deleteOrder(params) {
+      deleteOrder(params)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message.success("删除订单成功！");
+            this.onSearch();
           }
         })
         .catch(err => {
@@ -442,6 +490,7 @@ export default {
         customerNumId: this.customerNumId,
         deliverStatus: this.searchItem.deliverStatus,
         carType: this.searchItem.carType,
+        orderType: this.searchItem.orderType,
         appointmentDate: this.searchItem.appointmentDate,
         customerNameSearchKey: this.searchItem.customerNameSearchKey,
         routerAliaSearchKey: this.searchItem.routerAliaSearchKey,
@@ -474,6 +523,13 @@ export default {
     },
     getOrderDetail({index, row}) {
       this.$router.push({path:'/order/order-detail',query:{orderId:row.series}});
+    },
+    deleteOrder({index, row}) {
+      this._deleteOrder({
+        customerNumId: this.customerNumId,
+        series: row.series
+      });
+      // 加载全部数据
     },
     onAssignConfirm() {
       if (this.orderDetail.carRealMoney <= this.orderDetail.carMoney) {
