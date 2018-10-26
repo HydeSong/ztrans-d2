@@ -107,6 +107,7 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
+      searching:false,
       value5: "",
       customerNumId: Cookies.get("__user__customernumid"),
       franchiseeId: "",
@@ -345,11 +346,13 @@ export default {
     },
 
     _createOrderByWeb(){
+      this.searching=true;
       if (this.createOrder.customerMasterId === "") {
         this.$message({
           type: "error",
           message: "大客户名字不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.routerDetailSeries === "") {
@@ -357,6 +360,7 @@ export default {
           type: "error",
           message: "线路不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.carSizeSeries === "") {
@@ -364,6 +368,7 @@ export default {
           type: "error",
           message: "车型车长不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.appointmentDate === "") {
@@ -371,6 +376,7 @@ export default {
           type: "error",
           message: "约车时间不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.initPrice === "") {
@@ -378,6 +384,7 @@ export default {
           type: "error",
           message: "订单报价不可以为空！请去维护"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.sendGoodsPersonName === "") {
@@ -385,6 +392,7 @@ export default {
           type: "error",
           message: "发货人名字不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.sendGoodsPersonMobile === "") {
@@ -392,6 +400,7 @@ export default {
           type: "error",
           message: "发货人手机不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.sendAddressDetail === "") {
@@ -399,6 +408,7 @@ export default {
           type: "error",
           message: "发货人地址不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.receiveGoodsPersonName === "") {
@@ -406,6 +416,7 @@ export default {
           type: "error",
           message: "收货人名字不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.receiveGoodsPersonMobile === "") {
@@ -413,6 +424,7 @@ export default {
           type: "error",
           message: "收货人手机不可以为空！"
         });
+        this.searching=false;
         return;
       }
       if (this.createOrder.receiveAddressDetail === "") {
@@ -420,6 +432,7 @@ export default {
           type: "error",
           message: "收货人地址不可以为空！"
         });
+        this.searching=false;
         return;
       }
       this.$confirm("是否确定下单?", "提示", {
@@ -437,6 +450,7 @@ export default {
         console.log(err);
     });
     })
+      this.searching=false;
     },
 
     cancelSign(){

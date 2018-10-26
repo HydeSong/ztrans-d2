@@ -304,7 +304,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addCustomerPopDialog = false" size="mini">取 消</el-button>
-          <el-button type="primary" @click="onAddCustomerConfirm" size="mini">确 定</el-button>
+          <el-button type="primary" @click="onAddCustomerConfirm" size="mini"  :loading="loading">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="编辑联系人" :visible.sync="editContactPopDialog">
@@ -375,7 +375,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addContactPopDialog = false" size="mini">取 消</el-button>
-          <el-button type="primary" @click="onAddContactConfirm" size="mini">确 定</el-button>
+          <el-button type="primary" @click="onAddContactConfirm" size="mini"  :loading="loading">确 定</el-button>
         </div>
       </el-dialog>
     </template>
@@ -1155,7 +1155,9 @@ export default {
       this.addCustomerItem.customerNumId = this.customerNumId;
     },
     onAddCustomerConfirm() {
+      this.loading=true;
       this._addMasterCustomer(this.addCustomerItem);
+      this.loading=false;
     },
     onRegisterTimeChange(time) {
       this.searchItem.registerStartTime = time[0];
@@ -1241,7 +1243,9 @@ export default {
       this._updateCustomerContact(this.editContactItem);
     },
     onAddContactConfirm() {
+      this.loading=true;
       this._addCustomerContact(this.addContactItem);
+      this.loading=false;
     }
   }
 };
