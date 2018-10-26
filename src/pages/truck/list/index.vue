@@ -250,7 +250,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addCarPopDialog = false" size="mini">取 消</el-button>
-          <el-button type="primary" @click="onAddCarConfirm" size="mini">确 定</el-button>
+          <el-button type="primary" @click="onAddCarConfirm" size="mini" :loading="loading">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="编辑车辆" :visible.sync="editCarPopDialog">
@@ -1130,8 +1130,10 @@ export default {
       };
     },
     onAddCarConfirm() {
+      this.loading=true;
       this.addCarItem.customerNumId = this.customerNumId;
       this._addCar(this.addCarItem);
+      this.loading=false;
     },
     onEditCar({ index, row }) {
       this.addCarItem.drivingLicense = "";

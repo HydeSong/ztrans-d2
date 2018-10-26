@@ -78,7 +78,7 @@
                 <el-option v-for="(item, index) in routerDetail" :key="index" :label="item.routerAlia" :value="item.series"></el-option>
               </el-select>
             </el-form-item>
-            <el-button type="primary" @click="onAddRouterToEmployeeComfirm" size="mini">确定</el-button>
+            <el-button type="primary" @click="onAddRouterToEmployeeComfirm" size="mini" :loading="loading">确定</el-button>
           </el-form>
         </el-dialog>
       </el-dialog>
@@ -262,12 +262,14 @@ export default {
       this.addItemParam.employeeNumId = row.customerNumId;
     },
     onAddRouterToEmployeeComfirm() {
+      this.loading=true;
       this.innerVisible = false;
       this._addRouterToEmployee({
         customerNumId: this.customerNumId,
         employeeNumId: this.addItemParam.employeeNumId,
         routerDetailSeries: this.addItemParam.routerDetailSeries
       });
+      this.loading=false;
     },
     onDelete({ index, row }) {
       this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {

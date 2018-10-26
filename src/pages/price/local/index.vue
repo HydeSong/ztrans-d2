@@ -244,7 +244,7 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="addDialog = false" size="mini">取 消</el-button>
           <el-button type="primary" icon="el-icon-plus" @click="onAddPrice" size="mini">新增报价</el-button>
-          <el-button type="primary" @click="onAddConfirm" size="mini">提 交</el-button>
+          <el-button type="primary" @click="onAddConfirm" size="mini" :loading="loading">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog
@@ -543,6 +543,7 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
+      loading: false,
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
       pageSize: 200,
@@ -1041,12 +1042,14 @@ export default {
       this.priceSetAddList = [];
     },
     onAddConfirm() {
+      this.loading=true;
       this.addItem.customerNumId = this.customerNumId;
       this.addItem.destinationCity = this.addItem.sourceCity;
       this.addItem.destinationCityArea = this.addItem.sourceCityArea;
       this.addItem.destinationPrv = this.addItem.sourcePrv;
       this.addItem.destinationTown = this.addItem.sourceTown;
       this._addRouterPrice(this.addItem);
+      this.loading=false;
     },
     onEditPrice(index, row) {
       this.innerEditVisible = true;

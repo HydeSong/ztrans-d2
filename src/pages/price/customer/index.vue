@@ -120,7 +120,7 @@
           线路设置
         </div>
         <div class="block" style="text-align: left; padding: 0 15px">
-          <el-form :inline="true" :model="addItem" size="mini">
+          <el-form :inline="true" :model="addItem" size="mini" >
             <el-form-item label="客户">
               <el-select v-model="addItem.customerSeries" placeholder="请选择" clearable>
                 <el-option v-for="(item, index) in customerMasterList" :key="index" :label="item.customerName" :value="item.customerMasterId"></el-option>
@@ -291,7 +291,7 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="addDialog = false" size="mini">取 消</el-button>
           <el-button type="primary" icon="el-icon-plus" @click="onAddPrice" size="mini">新增报价</el-button>
-          <el-button type="primary" @click="onAddConfirm" size="mini">提 交</el-button>
+          <el-button type="primary" @click="onAddConfirm" size="mini" :loading="loading">提 交</el-button>
         </span>
       </el-dialog>
       <el-dialog
@@ -631,6 +631,7 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
+      loading: false,
       customerNumId: Cookies.get("__user__customernumid"),
       currentPage: 1,
       pageSize: 200,
@@ -1001,11 +1002,13 @@ export default {
         });
     },
     _addRouterCustomerPrice(params) {
+      this.loading = true;
       if (params.customerSeries === "") {
         this.$message({
           type: "error",
           message: "大客户不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.routerAlia === "") {
@@ -1013,6 +1016,7 @@ export default {
           type: "error",
           message: "线路别名不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.routerNumber === "") {
@@ -1020,6 +1024,7 @@ export default {
           type: "error",
           message: "线路编号不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.sourcePrv === "") {
@@ -1027,6 +1032,7 @@ export default {
           type: "error",
           message: "起始省不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.sourceCity === "") {
@@ -1034,6 +1040,7 @@ export default {
           type: "error",
           message: "起始市不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.sourceCityArea === "") {
@@ -1041,6 +1048,7 @@ export default {
           type: "error",
           message: "起始区不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.sourceTown === "") {
@@ -1048,6 +1056,7 @@ export default {
           type: "error",
           message: "起始镇不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.destinationPrv === "") {
@@ -1055,6 +1064,7 @@ export default {
           type: "error",
           message: "目的省不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.destinationCity === "") {
@@ -1062,6 +1072,7 @@ export default {
           type: "error",
           message: "目的市不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.destinationCityArea === "") {
@@ -1069,6 +1080,7 @@ export default {
           type: "error",
           message: "目的区不可以为空！"
         });
+        this.loading = false;
         return;
       }
       if (params.destinationTown === "") {
@@ -1076,6 +1088,7 @@ export default {
           type: "error",
           message: "目的镇不可以为空！"
         });
+        this.loading = false;
         return;
       }
       var x;
@@ -1085,6 +1098,7 @@ export default {
             type: "error",
             message: "车型不可以为空！"
           });
+          this.loading = false;
           return;
         }
         if (params.children[x].carSizeName === "") {
@@ -1092,6 +1106,7 @@ export default {
             type: "error",
             message: "尺寸不可以为空！"
           });
+          this.loading = false;
           return;
         }
         var y;
@@ -1101,6 +1116,7 @@ export default {
               type: "error",
               message: "起步价不可以为空！"
             });
+            this.loading = false;
             return;
           }
           if (params.children[x].routerPriceList[y].initDistance === "") {
@@ -1108,6 +1124,7 @@ export default {
               type: "error",
               message: "起步距离如果不清楚请写0！"
             });
+            this.loading = false;
             return;
           }
           if (params.children[x].routerPriceList[y].overstepPrice === "") {
@@ -1115,6 +1132,7 @@ export default {
               type: "error",
               message: "超过指定范围价如果不清楚请写0！"
             });
+            this.loading = false;
             return;
           }
           if (
@@ -1124,6 +1142,7 @@ export default {
               type: "error",
               message: "加盟商提成比例如果不清楚请写0！"
             });
+            this.loading = false;
             return;
           }
           if (params.children[x].routerPriceList[y].saleProportion === "") {
@@ -1131,6 +1150,7 @@ export default {
               type: "error",
               message: "销售提成比例如果不清楚请写0！"
             });
+            this.loading = false;
             return;
           }
         }
@@ -1145,6 +1165,7 @@ export default {
             this.addDialog = false;
             this.onSearch();
           }
+          this.loading = false;
         })
         .catch(err => {
           console.log(err);
